@@ -1,0 +1,295 @@
+;; -*- mode: emacs-lisp; lexical-binding:t; coding: utf-8-emacs; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Wed Oct  7 13:04:29 2020
+;; Desktop file format version 208
+;; Emacs version 27.1
+
+;; Global section:
+(setq desktop-saved-frameset [frameset 1 (24446 8013 523714 991000) (desktop . "208") "mschwartz@yyz" nil nil ((((minibuffer . t) (tty-type . "screen-256color") (tty . "/dev/tty") (display-type . color) (background-mode . dark) (cursor-color . "#ff9800") (foreground-color . "#ffffff") (background-color . "#262626") (border-color . "#3a3a3a") (font . "tty") (height . 123) (width . 162) (modeline . t) (unsplittable) (menu-bar-lines . 1) (tab-bar-lines . 0) (tabs (current-tab (name . "DashboardTab.js") (explicit-name))) (frameset--id . "5C56-7BDE-BADE-0753") (frameset--mini t)) ((min-height . 4) (min-width . 36) (min-height-ignore . 2) (min-width-ignore . 4) (min-height-safe . 1) (min-width-safe . 4) (min-pixel-height . 4) (min-pixel-width . 36) (min-pixel-height-ignore . 2) (min-pixel-width-ignore . 4) (min-pixel-height-safe . 1) (min-pixel-width-safe . 4)) hc (pixel-width . 162) (pixel-height . 122) (total-width . 162) (total-height . 122) (normal-height . 1.0) (normal-width . 1.0) (combination-limit) (leaf (pixel-width . 26) (pixel-height . 122) (total-width . 26) (total-height . 122) (normal-height . 1.0) (normal-width . 0.17549668874172186) (parameters (window-side . left) (window-slot . 0)) (buffer " *NeoTree*" (selected) (hscroll . 0) (fringes 0 0 nil nil) (margins nil) (scroll-bars nil 0 t nil 0 t nil) (vscroll . 0) (dedicated . t) (point . 340) (start . 1)) (prev-buffers (" *NeoTree*" 1 531))) (leaf (last . t) (pixel-width . 136) (pixel-height . 122) (total-width . 136) (total-height . 122) (normal-height . 1.0) (normal-width . 0.8245033112582781) (buffer "DashboardTab.js" (selected . t) (hscroll . 0) (fringes 0 0 nil nil) (margins nil) (scroll-bars nil 0 t nil 0 t nil) (vscroll . 0) (dedicated) (point . 603) (start . 1)))))])
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring '(#("Theater" 0 7 (isearch-regexp-function nil isearch-case-fold-search nil)) #("Device" 0 6 (isearch-regexp-function nil isearch-case-fold-search nil)) #("Devices" 0 7 (isearch-regexp-function nil isearch-case-fold-search nil)) #("action=" 0 7 (isearch-regexp-function nil isearch-case-fold-search nil)) #("dispatch={dispatch}" 0 19 (isearch-regexp-function nil isearch-case-fold-search nil)) #("ActionButton" 0 12 (isearch-regexp-function nil isearch-case-fold-search nil)) #("Bravia" 0 6 (isearch-regexp-function nil isearch-case-fold-search nil)) #("}action" 0 7 (isearch-regexp-function nil isearch-case-fold-search nil)) #("dispatch={dispatch} " 0 20 (isearch-regexp-function nil isearch-case-fold-search nil)) #("Tivo" 0 4 (isearch-regexp-function nil isearch-case-fold-search nil)) #("num" 0 3 (isearch-regexp-function nil isearch-case-fold-search nil)) #("AppleTV" 0 7 (isearch-regexp-function nil isearch-case-fold-search nil)) #("mini " 0 5 (isearch-regexp-function nil isearch-case-fold-search nil)) #("topic-=" 0 7 (isearch-regexp-function nil isearch-case-fold-search nil)) #("message=" 0 8 (isearch-regexp-function nil isearch-case-fold-search nil)) #("RemoteButton" 0 12 (isearch-regexp-function nil isearch-case-fold-search nil))))
+(setq register-alist '((48 . #("import TheaterScreen from \"./Theater/TheaterScreen\";\n" 0 6 (font-lock-face font-lock-keyword-face fontified t yank-handler (evil-yank-line-handler nil t)) 6 7 (fontified t yank-handler (evil-yank-line-handler nil t)) 7 20 (font-lock-face font-lock-variable-name-face fontified t yank-handler (evil-yank-line-handler nil t)) 20 21 (fontified t yank-handler (evil-yank-line-handler nil t)) 21 25 (font-lock-face font-lock-keyword-face fontified t yank-handler (evil-yank-line-handler nil t)) 25 26 (fontified t yank-handler (evil-yank-line-handler nil t)) 26 51 (font-lock-face font-lock-string-face fontified t yank-handler (evil-yank-line-handler nil t)) 51 53 (fontified t yank-handler (evil-yank-line-handler nil t))))))
+(setq file-name-history nil)
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Dashboard/DashboardTab.js"
+  "DashboardTab.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  603
+  '(603 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 8013 513365 779000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring (1 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Common/FanButton.js"
+  "FanButton.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1078
+  '(1078 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5971 929352 304000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (1073 1 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Dashboard/DashboardScreen.js"
+  "DashboardScreen.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1057
+  '(1057 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5831 606791 311000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring (313 223 1553 187))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/MainScreen.js"
+  "MainScreen.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1165
+  '(1124 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5728 930386 854000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (591 3291 3292 2483 3590 3684 1084 1085))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/TheaterTab.js"
+  "TheaterTab.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1178
+  '(1179 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5709 259398 402000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (839 6344 4306 3664 1 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/TheaterScreen.js"
+  "TheaterScreen.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  223
+  '(222 t)
+  nil
+  nil
+  '((buffer-display-time 24446 5581 440169 525000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (1042 1142 1135))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/SpeakersListGroup.js"
+  "SpeakersListGroup.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode magit-file-mode lsp-mode which-key-mode)
+  1254
+  '(1470 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5362 695891 614000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring (1205 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/ActivitiesListGroup.js"
+  "ActivitiesListGroup.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  971
+  '(1054 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5330 421173 190000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (1268 1416 1366 409 1 1 1 1 1 1 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/DevicesListGroup.js"
+  "DevicesListGroup.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1219
+  '(1008 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5321 217452 524000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/AudioControls.js"
+  "AudioControls.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  2537
+  '(2537 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5215 678794 710000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (1255 1256 2580 1036 1037 2560 2448 2630 1 2562 2588 2536 3111 1561))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Common/ThermostatButton.js"
+  "ThermostatButton.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  3276
+  '(3276 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 5075 431364 942000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (2226 1882 1 1 1 1 1 1 1 1 1 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/Devices/DenonControls.js"
+  "DenonControls.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  2960
+  '(2960 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 3614 341299 208000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring (2827 2710 1311 1 1 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/Devices/BraviaControls.js"
+  "BraviaControls.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  7692
+  '(7692 nil)
+  nil
+  nil
+  '((buffer-display-time 24446 3459 31628 244000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring (7668 130 7661 3289 3611 3549 3550 1979 1980 6946 6831 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/lib/Utils.js"
+  "Utils.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode magit-file-mode lsp-mode which-key-mode)
+  800
+  '(1 nil)
+  nil
+  nil
+  '((buffer-display-time 24445 62221 593789 720000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/Devices/TivoControls.js"
+  "TivoControls.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  8175
+  '(2010 nil)
+  nil
+  nil
+  '((buffer-display-time 24445 61909 589493 409000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring (57 6006 4681 3145 2015 1 8752 5704))))
+
+(desktop-create-buffer 208
+  "/usr/share/emacs/27.1/etc/COPYING"
+  "COPYING"
+  'text-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode which-key-mode view-mode goto-address-mode)
+  33176
+  '(33176 nil)
+  t
+  nil
+  '((buffer-display-time 24445 58167 842115 738000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Common/MQTTButton.js"
+  "MQTTButton.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  525
+  '(526 nil)
+  nil
+  nil
+  '((buffer-display-time 24445 5333 878885 706000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (1019 368 1017 402 1013 1))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/Devices/AppleTVControls.js"
+  "AppleTVControls.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1784
+  '(1785 nil)
+  nil
+  nil
+  '((buffer-display-time 24445 5092 627710 192000) (buffer-file-coding-system . utf-8-unix) (overwrite-mode))
+  '((mark-ring (767 2622 1 902 903 4622))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Common/Temperature.js"
+  "Temperature.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  394
+  '(626 nil)
+  nil
+  nil
+  '((buffer-display-time 24445 801 286612 820000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/TransportControls.js"
+  "TransportControls.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  381
+  '(1137 nil)
+  nil
+  nil
+  '((buffer-display-time 24444 64132 476386 998000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/index.js"
+  "index.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  418
+  '(450 nil)
+  nil
+  nil
+  '((buffer-display-time 24444 61512 407093 46000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring (424 1 623))))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Common/Clock.js"
+  "Clock.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1946
+  '(nil nil)
+  nil
+  nil
+  '((buffer-display-time 24444 57760 212674 212000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/mschwartz/gitlab/mschwartz/robodomo-rust/client/src/Tablet/Theater/ButtonList.js"
+  "ButtonList.js"
+  'rjsx-mode
+  '(override-global-mode flycheck-mode undo-tree-mode helm-ff-cache-mode helm-mode company-mode auto-revert-mode magit-file-mode lsp-mode which-key-mode)
+  1881
+  '(1882 nil)
+  nil
+  nil
+  '((buffer-display-time 24444 51626 120053 69000) (buffer-file-coding-system . undecided-unix) (overwrite-mode))
+  '((mark-ring nil)))
+

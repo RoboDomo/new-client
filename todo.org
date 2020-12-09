@@ -1,0 +1,99 @@
+TODO:
+
+* BUGS
+  - Ripples bigger/smaller than tiles
+  - assure ENV TITLE is honored (some show node instead of whatever-microservice)
+  - Garage Door say "opening" and "closing" too.
+  - can't control theater apple tv
+
+* TODO
+  - remove usages of yarn
+
+* User Interface
+  - better fan tile - on/off and high/med/low separate?
+  - better dimmer tile - on/off and level separate?
+  - presence tile (or in clock tile)
+
+* Speech Synthesis (Say)
+  - Spa every 10 degrees
+
+* Documentation repository
+  - wip
+
+* Lennox iComfort
+  - Get lccid and other hard coded values in URL via iComfort class (parse HTML, whatever)
+
+* Alerts (weather, low battery, etc.)
+  - SAY IT (say topic)
+  - Low Battery
+  - Alexa notify me (notifications)? - does not speak, makes ring yellow and you can ask for the notification
+    https://www.amazon.com/dp/B07BB2FYFS/ref=tsm_1_tp_tc
+
+* Presence Microservice
+  - Say "person_name is home" ?
+
+* Arrival Sensors
+  - Triggers (open garage or cart door)
+  - close door(s) when geofence exited.
+
+* Configure Microservices
+  - configure using HostBase await Config()
+    - eliminate dependencies on environment variables
+
+* Phone (in progress)
+* Portrait
+
+BUGS: (temporarily removed)
+* Hubitat Microservice - poll dimmers manually for off and level
+  - being done by Rules Machine in Hubitat.  Too fast makes it become unresponsive.
+
+* Settings
+  - log MQTT and show it in settings 
+  - Settings forms and logs and restart services
+  - systat kind of display
+  - clear localStorage
+
+* Theater
+ - node-appletv broken (no now playing information)
+ - show Spa Temp on Theater tab
+ - Harmony Device/Controls
+
+* Network monitoring
+  - messages when device joins/leaves
+
+
+* Roomba https://github.com/koalazak/dorita980
+ - controls
+ - status
+ - map
+ - etc.
+
+* ubnt devices
+  - iPhone 12 Pro Max (mike)
+  - remove xs max
+
+* Weather
+  - possibly unify messages no matter what service is used
+
+* collector-microservice
+  - revisit this code.  It currently does a nop() call which loops forever.
+
+* Microservices
+  - restart
+    [x] appletv-microservice
+    [x] autelis-microservice
+    [x] bravia-microservice
+    ---- no [ ] collector-miocroservice
+    [x] config-miocroservice
+    [x] denon-microservice
+    [x] harmony-microservice
+    [x] here.com-microservice
+    [x] hubitat-microservice
+    [x] icomfort-microservice
+    [x] lgtv-microservice
+    [x] macro-microservice
+    [x] myq-microservice
+    [x] nest-microservice
+    [x] tivo-microservice
+    [x] triggers-microservice
+    [x] tvguide-microservice
