@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles";
 import Clock from "Common/Clock";
-
+// import { data as Config} from "lib/Config";
 import MQTT from "lib/MQTT";
 
 const dayNames = [
@@ -18,23 +18,47 @@ class ClockTile extends React.Component {
   constructor(props) {
     super(props);
     this.style = styles.tile(2, 2);
+    this.tile = props.tile;
     this.state = {
       date: new Date(),
       weather: null,
     };
 
     this.handleWeather = this.handleWeather.bind(this);
+    this.handlePresence = this.handlePresence.bind(this);
   }
 
   handleWeather(topic, message) {
     this.setState({ weather: message });
   }
+
+  handlePresence(topic, message) {
+    const parts = topic.split("/"),
+      key = parts[1],
+      newState = {};
+
+    newState[key] = message;
+    this.setState(newState);
+  }
+
   componentDidMount() {
+    const presence = this.tile.presence || [];
+
     MQTT.subscribe("weather/92211/status/astronomy", this.handleWeather);
+    for (const person of presence) {
+      MQTT.subscribe(`presence/${person}/status/present`, this.handlePresence);
+    }
   }
 
   componentWillUnmount() {
+    const presence = this.tile.presence || [];
     MQTT.unsubscribe("weather/92211/status/astronomy", this.handleWeather);
+    for (const person of presence) {
+      MQTT.unsubscribe(
+        `presence/${person}/status/present`,
+        this.handlePresence
+      );
+    }
   }
 
   renderWeather() {
@@ -43,7 +67,7 @@ class ClockTile extends React.Component {
     }
 
     const weather = this.state.weather;
-    
+
     const sunrise = new Date(weather.sunrise * 1000)
         .toLocaleTimeString()
         .replace(":00 ", " "),
@@ -59,6 +83,25 @@ class ClockTile extends React.Component {
     );
   }
 
+  renderPresence() {
+    const presence = this.tile.presence || [];
+    if (presence.length === 0) {
+      return null;
+    }
+
+    return (
+      <>
+        {presence.map((person) => {
+          const home = this.state[person];
+          return (
+            <div style={{ color: !home ? "red" : undefined }}>
+              {person} {home ? "HOME" : "AWAY"}
+            </div>
+          );
+        })}
+      </>
+    );
+  }
   render() {
     const date = this.state.date;
 
@@ -72,6 +115,7 @@ class ClockTile extends React.Component {
             <Clock ampm={false} military={false} seconds="small" />
           </div>
           {this.renderWeather()}
+          {this.renderPresence()}
           <div style={{ fontSize: 8 }}>
             {window.innerWidth} x {window.innerHeight}
           </div>

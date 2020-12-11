@@ -1,6 +1,7 @@
 import React from "react";
 import {
   //  Grid,
+  Button,
   Navbar,
   TabContainer,
   TabContent,
@@ -27,9 +28,9 @@ import WeatherScreen from "./Weather/WeatherScreen";
 import ThingsScreen from "./Things/ThingsScreen";
 import RGBScreen from "./RGB/RGBScreen";
 import SettingsScreen from "./Settings/SettingsScreen";
+import SystemsScreen from "./Systems/SystemsScreen";
 
-import MQTTButton from "Common/MQTTButton";
-// import Say from "lib/Say";
+// import MQTTButton from "Common/MQTTButton";
 
 const debug = require("debug")("MainScreen");
 
@@ -50,6 +51,8 @@ const tabInfo = {
   7: "rgb",
   settings: 8,
   8: "settings",
+  systems: 9,
+  9: "systems",
 };
 
 const LOCALSTORAGE_KEY = "MAIN_TAB_STATE";
@@ -146,6 +149,9 @@ class MainScreen extends React.Component {
                 <TabPane mountOnEnter unmountOnExit eventKey={8}>
                   <SettingsScreen />
                 </TabPane>
+                <TabPane mountOnEnter unmountOnExit eventKey={9}>
+                  <SystemsScreen />
+                </TabPane>
               </TabContent>
               <Navbar
                 fixed="top"
@@ -161,8 +167,8 @@ class MainScreen extends React.Component {
                   }}
                   style={{ marginLeft: -24 }}
                 >
-                  <MQTTButton
-                    mini
+                  <Button
+                    style={{width: 40, height: 20}}
                     variant={muteSpeech !== "false" ? "danger" : "success"}
                     onClick={() => {
                       const newSpeech =
@@ -172,11 +178,11 @@ class MainScreen extends React.Component {
                     }}
                   >
                     {muteSpeech === "false" ? (
-                      <FaVolumeUp style={{ marginTop: -6 }} />
+                      <FaVolumeUp style={{ marginTop: -24, marginLeft: -4 }} />
                     ) : (
-                      <FaVolumeMute style={{ marginTop: -6 }} />
+                      <FaVolumeMute style={{ marginTop: -24, marginLeft: -4 }} />
                     )}
-                  </MQTTButton>
+                  </Button>
                   <span style={{ marginLeft: 8 }}>RoboDomo</span>
                 </Navbar.Brand>
                 <Nav className="mr-auto" defaultActiveKey={this.activeTab}>
@@ -213,6 +219,9 @@ class MainScreen extends React.Component {
 
                   <Nav.Link eventKey={8}>
                     <MdSettings /> Settings
+                  </Nav.Link>
+                  <Nav.Link eventKey={9}>
+                    <IoIosAnalytics /> Systems
                   </Nav.Link>
                 </Nav>
               </Navbar>

@@ -62,12 +62,14 @@ class MQTT extends EventEmitter {
   handleMessage(payload) {
     const topic = payload.destinationName,
       message = payload.payloadString;
-    console.log(
-      "%cmessage <<< %c" + topic + " %c" + message.substr(0, 20),
-      "font-weight: bold;",
-      "color:red; font-weight: bold",
-      "color:blue; font-weight: bold"
-    );
+    if (topic.indexOf("sysinfo") !== 0) {
+      console.log(
+        "%cmessage <<< %c" + topic + " %c" + message.substr(0, 20),
+        "font-weight: bold;",
+        "color:red; font-weight: bold",
+        "color:blue; font-weight: bold"
+      );
+    }
     if (this.listenerCount(topic)) {
       // console.log(
       //   "%cmessage <<< %c" + topic + " %c" + message.substr(0, 20),

@@ -48,6 +48,53 @@ const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
+// convert time in seconds to { days: days, hours: hours, minutes: minutes, seconds: seconds }
+const getElapsed = (time) => {
+  const ret = {};
+  const leadZero = (n) => {
+    if (n <= 9) {
+      return "0" + n;
+    }
+    return n;
+  };
+
+  ret.days = Math.floor(time / 86400);
+  time -= ret.days * 86400;
+
+  ret.hours = Math.floor(time / 3600) % 24;
+  time -= ret.hours * 3600;
+
+  ret.minutes = Math.floor(time / 60) % 60;
+  time -= ret.minutes * 60;
+
+  ret.seconds = time % 60;
+
+  ret.formatted = "";
+  if (ret.days) {
+    ret.formatted += `${ret.days} days, `;
+  }
+
+  ret.uptime = ret.formatted + `${ret.hours}:${leadZero(ret.minutes)}`;
+  ret.formatted += `${ret.hours} hours, ${leadZero(
+    ret.minutes
+  )} minutes, ${leadZero(ret.seconds)} seconds`;
+
+  return ret;
+};
+
+// formatting routines
+const pct = (v, decimalPlaces = 2) => {
+  return (v * 100).toFixed(decimalPlaces);
+};
+
+const formatMB = (n) => {
+  return (n / (1024 * 1024)).toFixed(2) + " MB";
+};
+
+const formatGB = (n) => {
+  return (n / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+};
+
 //
 export {
   mangle, //
@@ -55,4 +102,8 @@ export {
   formatElapsedTime, //
   isOn, //
   sleep, //
+  getElapsed, //
+  pct,
+  formatMB,
+  formatGB,
 };

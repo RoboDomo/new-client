@@ -13,6 +13,7 @@ import MacroTile from "./Tiles/MacroTile";
 import SwitchTile from "./Tiles/SwitchTile";
 import DimmerTile from "./Tiles/DimmerTile";
 import FanTile from "./Tiles/FanTile";
+import PresenceTile from "./Tiles/PresenceTile";
 
 class DashboardTab extends React.Component {
   constructor(props) {
@@ -25,9 +26,11 @@ class DashboardTab extends React.Component {
       // console.log("tile", tile);
       switch (tile.type) {
         case "clock":
-          return <ClockTile key={xkey} />;
+          return <ClockTile key={xkey} tile={tile} />;
         case "weather":
           return <WeatherTile key={xkey} tile={tile} />;
+        case "presence":
+          return <PresenceTile key={xkey} tile={tile} />;
         case "icomfort":
         case "thermostat":
         case "nest":
@@ -36,23 +39,23 @@ class DashboardTab extends React.Component {
         // case "thermostat":
         //   return <ThermostatTile key={key} />;
         case "theater":
-        return <TheaterTile key={xkey} tile={tile} />;
+          return <TheaterTile key={xkey} tile={tile} />;
         case "pool":
-        return <PoolTile key={xkey} tile={tile} />;
+          return <PoolTile key={xkey} tile={tile} />;
         case "spa":
-        return <SpaTile key={xkey} tile={tile} />;
+          return <SpaTile key={xkey} tile={tile} />;
         case "garagedoor":
-        return <GarageDoorTile key={xkey} tile={tile} />;
+          return <GarageDoorTile key={xkey} tile={tile} />;
         case "lock":
-        return <LockTile  key={xkey} tile={tile} />;
+          return <LockTile key={xkey} tile={tile} />;
         case "macro":
-        return <MacroTile key={xkey} tile={tile} />;
+          return <MacroTile key={xkey} tile={tile} />;
         case "switch":
-        return <SwitchTile key={xkey} tile={tile} />;
+          return <SwitchTile key={xkey} tile={tile} />;
         case "fan":
-        return <FanTile key={xkey} tile={tile} />;
+          return <FanTile key={xkey} tile={tile} />;
         case "dimmer":
-        return <DimmerTile key={xkey} tile={tile} />;
+          return <DimmerTile key={xkey} tile={tile} />;
         default:
           console.log(tile);
           return (
