@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./styles";
 import { BiHome } from "react-icons/bi";
+import { BsFillPersonDashFill, BsFillPersonCheckFill } from "react-icons/bs";
 import MQTT from "lib/MQTT";
 
 class PresenceTile extends React.Component {
@@ -50,14 +51,24 @@ class PresenceTile extends React.Component {
     if (presence.length === 0) {
       return null;
     }
+
+    const personStyle = {
+      marginTop: -4,
+    };
+
     return (
       <div style={style}>
         <BiHome size={30} style={{ marginBottom: 8, color: style.color }} />
         {presence.map((person) => {
           const home = this.state[person];
           return (
-            <div style={{ color: !home ? "red" : undefined }}>
-              {person} {home ? "HOME" : "AWAY"}
+            <div style={{ fontSize: 19, color: !home ? "red" : "green" }}>
+              {home ? (
+                <BsFillPersonCheckFill style={personStyle} />
+              ) : (
+                <BsFillPersonDashFill style={personStyle} />
+              )}
+              &nbsp;&nbsp; {person}
             </div>
           );
         })}

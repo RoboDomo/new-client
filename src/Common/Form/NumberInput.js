@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { Button } from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -6,6 +6,12 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 const NumberInput = ({ value, step = 1, min, max, onValueChange, style }) => {
   const timer = useRef(null);
   const [val, setVal] = useState(Number(value));
+
+  useEffect(() => {
+    console.log("NEW VALUE", value);
+    setVal(value);
+  }, [value]);
+
   const change = value => {
     if (value <= min) {
       value = min;
@@ -54,4 +60,6 @@ const NumberInput = ({ value, step = 1, min, max, onValueChange, style }) => {
     </div>
   );
 };
+
+//
 export default NumberInput;

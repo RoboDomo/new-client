@@ -1,10 +1,12 @@
 import React from "react";
+import { Row, Col, Button, ButtonGroup, Modal } from "react-bootstrap";
+import NumberInput from "Common/Form/NumberInput";
 import styles from "./styles";
 
 import { TiAdjustBrightness } from "react-icons/ti";
 
 import MQTT from "lib/MQTT";
-import { isOn, sleep } from "lib/Utils";
+import { isOn } from "lib/Utils";
 
 import Ripples from "react-ripples";
 
@@ -15,7 +17,7 @@ class DimmerTile extends React.Component {
     this.tile = props.tile;
     this.device = props.tile.device;
     this.hub = props.tile.hub;
-    this.state = {};
+    this.state = { show: false };
 
     //
     this.handleLevelMessage = this.handleLevelMessage.bind(this);
@@ -34,19 +36,10 @@ class DimmerTile extends React.Component {
   }
 
   async handleClick() {
-    // console.log("CLICKED!", this.state);
-    if (this.pending) {
-      return;
+    if (this.state.level !== undefined) {
+      this.setState({ show: true });
     }
-    this.pending = true;
-
-    if (this.state.power) {
-      await MQTT.publish(`${this.hub}/${this.device}/set/switch`, "off");
-    } else {
-      await MQTT.publish(`${this.hub}/${this.device}/set/switch`, "on");
-    }
-
-    await sleep(1000);
+    return;
   }
 
   componentDidMount() {
@@ -87,13 +80,108 @@ class DimmerTile extends React.Component {
     style.backgroundColor = bg;
     style.padding = 8;
     return (
-      <Ripples color="#ffffff">
-        <div style={style} onClick={this.handleClick}>
-          <TiAdjustBrightness size={30} style={{ marginBottom: 4, color: fg }} />
-          <div style={{ fontWeight: "normal" }}>{this.device}</div>
-          <div style={{ fontSize: 20 }}>{value}</div>
-        </div>
-      </Ripples>
+      <>
+        <Modal
+          show={this.state.show}
+          onHide={() => {
+            this.setState({ show: false });
+          }}
+          /* backdrop="static" */
+          centered
+          size="lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Adjust {this.device}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ margin: "auto" }}>
+            <Row>
+              <Col sm={4} style={{ marginTop: 10 }}>
+                <ButtonGroup size="lg">
+                  <Button
+                    variant={this.state.power ? undefined : "dark"}
+                    style={{ marginLeft: 0 }}
+                    onClick={async () => {
+                      await MQTT.publish(
+                        `${this.hub}/${this.device}/set/switch`,
+                        "off"
+                      );
+                    }}
+                  >
+                    Off
+                  </Button>
+                  <Button
+                    variant={this.state.power ? "dark" : undefined}
+                    onClick={async () => {
+                      await MQTT.publish(
+                        `${this.hub}/${this.device}/set/switch`,
+                        "on"
+                      );
+                    }}
+                  >
+                    On
+                  </Button>
+                </ButtonGroup>
+              </Col>
+              <Col sm={2} style={{ marginTop: 11 }}>
+                <Button
+                  onClick={async () => {
+                    await MQTT.publish(
+                      `${this.hub}/${this.device}/set/level`,
+                      5
+                    );
+                  }}
+                >
+                  Dim
+                </Button>
+              </Col>
+              <Col sm={4}>
+                <NumberInput
+                  value={this.state.level}
+                  onValueChange={async (value) => {
+                    await MQTT.publish(
+                      `${this.hub}/${this.device}/set/level`,
+                      value
+                    );
+                  }}
+                />
+              </Col>
+              <Col sm={2} style={{ marginTop: 11 }}>
+                <Button
+                  onClick={async () => {
+                    await MQTT.publish(
+                      `${this.hub}/${this.device}/set/level`,
+                      100
+                    );
+                  }}
+                >
+                  Max
+                </Button>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                this.setState({ show: false });
+              }}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Ripples color="#ffffff">
+          <div style={style} onClick={this.handleClick}>
+            <TiAdjustBrightness
+              size={30}
+              style={{ marginBottom: 4, color: fg }}
+            />
+            <div style={{ fontWeight: "normal" }}>{this.device}</div>
+            <div style={{ fontSize: 20 }}>{value}</div>
+          </div>
+        </Ripples>
+      </>
     );
   }
 }

@@ -120,7 +120,6 @@ class SensorsTab extends React.Component {
 
 
     //
-    console.log("Render SensorsTab");
     return (
       <div style={{ padding: 20, marginTop: 10 }}>
         <Row>

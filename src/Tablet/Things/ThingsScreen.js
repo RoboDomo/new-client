@@ -12,8 +12,8 @@ class ThingsScreen extends React.Component {
     this.state = {
       activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || "1",
     };
+
     const things = Config.smartthings.things;
-    console.log("thingsScreen", things);
     try {
       this.roomsMap = {
         All: [],

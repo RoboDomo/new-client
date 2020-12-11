@@ -1,5 +1,12 @@
 import React from "react";
-import { Row, Col, ListGroup, ListGroupItem } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  ButtonGroup,
+  Button,
+  ListGroup,
+  ListGroupItem,
+} from "react-bootstrap";
 import Thermostat from "react-nest-thermostat";
 import { data as Config } from "lib/Config";
 
@@ -62,6 +69,7 @@ const hvacMode = (zoneDetail) => {
     case 6:
       break;
   }
+
   return hvacMode;
 };
 
@@ -158,8 +166,8 @@ class IComfortOverview extends React.Component {
             width="140px"
             height="140px"
             away={Boolean(zoneDetail.AwayModeEnabled)}
-            ambientTemperature={Locale.ftoc(ambient_temperature, metric)}
-            targetTemperature={Locale.ftoc(target, metric)}
+            targetTemperature={Locale.ftoc(ambient_temperature, metric)}
+            ambientTemperature={Locale.ftoc(target, metric)}
             hvacMode={hvac_mode}
             leaf={zoneDetail.FeelsLikeEnabled}
           />
@@ -168,20 +176,6 @@ class IComfortOverview extends React.Component {
         <ListGroupItem variant={variantHvacMode(hvac_mode)}>
           System Mode
           <span style={{ float: "right" }}>{system_mode}</span>
-        </ListGroupItem>
-
-        <ListGroupItem>
-          Feels Like
-          <span style={{ float: "right" }}>
-            <Temperature value={Number(zoneDetail.AmbientTemperature.Value)} />
-          </span>
-        </ListGroupItem>
-
-        <ListGroupItem>
-          Fan
-          <span style={{ float: "right" }}>
-            {zoneDetail.isFanRunning ? "RUNNING" : "OFF"}
-          </span>
         </ListGroupItem>
 
         <ListGroupItem>
@@ -211,10 +205,84 @@ class IComfortOverview extends React.Component {
             <Temperature value={Number(zoneDetail.HeatSetPoint.Value)} />
           </span>
         </ListGroupItem>
+
+        <ListGroupItem>
+          Fan
+          <span style={{ float: "right" }}>
+            {zoneDetail.isFanRunning ? "RUNNING" : "OFF"}
+          </span>
+        </ListGroupItem>
+
+        <ListGroupItem>
+          Feels Like
+          <span style={{ float: "right" }}>
+            <Temperature value={Number(zoneDetail.AmbientTemperature.Value)} />
+          </span>
+        </ListGroupItem>
       </ListGroup>
     );
   }
 
+  renderControls() {
+    const { zone0, zone1, zone2, zone3 } = this.state;
+    if (!zone0 || !zone1 || !zone2 || !zone3) {
+      return null;
+    }
+    const setSystemMode = (mode) => {
+      MQTT.publish(`icomfort/zone0/set/mode`, mode);
+      MQTT.publish(`icomfort/zone1/set/mode`, mode);
+      MQTT.publish(`icomfort/zone2/set/mode`, mode);
+      MQTT.publish(`icomfort/zone3/set/mode`, mode);
+    };
+
+    const mode = zone0.zoneDetail.SystemMode,
+      all =
+        mode === zone1.zoneDetail.SystemMode &&
+        mode === zone2.zoneDetail.SystemMode &&
+        mode === zone3.zoneDetail.SystemMode;
+
+    console.log("ALL", all, mode, zone1);
+    return (
+      <ButtonGroup type="radio" size="lg" name="hvac">
+        <Button
+          variant={all && mode === 4 ? "dark" : undefined}
+          style={{ width: 85, fontSize: 14 }}
+          onClick={() => {
+            setSystemMode("off");
+          }}
+        >
+          All Off
+        </Button>
+        <Button
+          variant={all && mode === 1 ? "dark" : undefined}
+          style={{ width: 85, fontSize: 14 }}
+          onClick={() => {
+            setSystemMode("heat");
+          }}
+        >
+          All Heat
+        </Button>
+        <Button
+          variant={all && mode === 0 ? "dark" : undefined}
+          style={{ width: 85, fontSize: 14 }}
+          onClick={() => {
+            setSystemMode("cool");
+          }}
+        >
+          All Cool
+        </Button>
+        <Button
+          variant={all && mode === 2 ? "dark" : undefined}
+          style={{ width: 110, fontSize: 14 }}
+          onClick={() => {
+            setSystemMode("both");
+          }}
+        >
+          All Both
+        </Button>
+      </ButtonGroup>
+    );
+  }
   render() {
     const { zone0, zone1, zone2, zone3 } = this.state;
     if (!zone0 || !zone1 || !zone2 || !zone3) {
@@ -222,12 +290,17 @@ class IComfortOverview extends React.Component {
     }
 
     return (
-      <Row style={{ marginTop: 40, marginLeft: "5%", marginRight: "5%" }}>
-        <Col>{this.renderZone(zone0)}</Col>
-        <Col>{this.renderZone(zone1)}</Col>
-        <Col>{this.renderZone(zone2)}</Col>
-        <Col>{this.renderZone(zone3)}</Col>
-      </Row>
+      <>
+        <Row style={{ marginTop: 30, marginLeft: "5%", marginRight: "5%" }}>
+          <Col>{this.renderZone(zone0)}</Col>
+          <Col>{this.renderZone(zone1)}</Col>
+          <Col>{this.renderZone(zone2)}</Col>
+          <Col>{this.renderZone(zone3)}</Col>
+        </Row>
+        <div style={{ textAlign: "center", marginTop: 20 }}>
+          {this.renderControls()}
+        </div>
+      </>
     );
   }
 }
