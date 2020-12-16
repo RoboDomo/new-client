@@ -84,9 +84,10 @@ class RingTab extends React.Component {
           <h1>
             {this.device} Battery {this.state.battery}%
           </h1>
-          <Table>
+          <Table striped>
             <thead>
               <tr>
+                <th>Num</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Type</th>
@@ -95,11 +96,12 @@ class RingTab extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(this.state.events).map((key) => {
+              {Object.keys(this.state.events).map((key, counter) => {
                 const event = this.state.events[key].event;
                 console.log(event);
                 return (
                   <tr key={key}>
+                    <td>{counter + 1}</td>
                     <td>{new Date(event.created_at).toLocaleDateString()}</td>
                     <td>{new Date(event.created_at).toLocaleTimeString()}</td>
                     <td>{event.kind}</td>
