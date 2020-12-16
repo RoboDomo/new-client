@@ -126,7 +126,7 @@ class iComfortTile extends React.Component {
       this.setState({ systemMode: mode });
     };
 
-    console.log("renderNumberField", target, metric, this.state);
+    // console.log("renderNumberField", target, metric, this.state);
     // if (this.state.systemMode === undefined) {
     //   return null;
     // }

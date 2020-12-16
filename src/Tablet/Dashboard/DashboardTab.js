@@ -14,6 +14,8 @@ import SwitchTile from "./Tiles/SwitchTile";
 import DimmerTile from "./Tiles/DimmerTile";
 import FanTile from "./Tiles/FanTile";
 import PresenceTile from "./Tiles/PresenceTile";
+import RGBTile from "./Tiles/RGBTile";
+import RingTile from "./Tiles/RingTile";
 
 class DashboardTab extends React.Component {
   constructor(props) {
@@ -25,6 +27,10 @@ class DashboardTab extends React.Component {
       const xkey = "tile-" + key;
       // console.log("tile", tile);
       switch (tile.type) {
+        case "ring":
+          return <RingTile key={xkey} tile={tile} />;
+        case "rgb":
+          return <RGBTile key={xkey} tile={tile} />;
         case "clock":
           return <ClockTile key={xkey} tile={tile} />;
         case "weather":

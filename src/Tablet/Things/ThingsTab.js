@@ -3,6 +3,7 @@ import React from "react";
 import MQTT from "lib/MQTT";
 import { isOn } from "lib/Utils";
 
+// import { Button } from "react-bootstrap";
 import ToggleField from "Common/Form/ToggleField";
 import DimmerField from "Common/Form/DimmerField";
 import FanField from "Common/Form/FanField";
@@ -22,6 +23,7 @@ class ThingsTab extends React.Component {
         button: {},
         contact: {},
         temperature: {},
+        // rgb: {}
       },
     };
 
@@ -205,6 +207,7 @@ class ThingsTab extends React.Component {
     const room = this.state.room,
       things = this.state.things;
 
+    console.log("this.state", this.state);
     return (
       <div style={{ overflow: "scroll", height: "100vh", paddingBottom: 300 }}>
         <div
@@ -218,6 +221,8 @@ class ThingsTab extends React.Component {
               type = thing.type;
             let t;
             switch (type) {
+              case "rgb":
+                return null;
               case "switch":
                 t = things.switch[thing.name];
                 if (!t) {

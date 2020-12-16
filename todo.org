@@ -8,6 +8,7 @@ TODO:
 
 * TODO
   - remove usages of yarn
+  - master bedroom tv virtual switch
 
 * User Interface
   - better fan tile - on/off and high/med/low separate?

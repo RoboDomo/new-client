@@ -13,13 +13,13 @@ class ThingsScreen extends React.Component {
       activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || "1",
     };
 
-    const things = Config.smartthings.things;
     try {
       this.roomsMap = {
         All: [],
       };
 
       for (const thing of Config.smartthings.things) {
+        console.log("thing", thing);
         this.roomsMap.All.push(thing);
         for (const room of thing.rooms) {
           if (room !== "*") {

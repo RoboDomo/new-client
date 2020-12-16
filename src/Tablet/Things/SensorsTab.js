@@ -14,18 +14,28 @@ class SensorsTab extends React.Component {
   }
 
   handleSensorMessage(topic, message) {
-    const parts = topic.split("/"),
-      type = parts.pop(),
-      name = parts[1];
+    const parts = topic.split("/");
+    let type = parts.pop();
+    parts.pop();
+    const name = parts.pop();
 
-    // console.log("hendleMessage", name, type, message);
+    if (name === "Garage Door") {
+      console.log(
+        `hendleMessage name(${name}) type(${type}) message(${message})`
+      );
+    }
+    if (type === "doorbell" || type === "door_state") {
+      type = "contact";
+    }
     if (!this.sensors[type]) {
       console.log("invalid sensor ", name, type, message);
       return;
     }
+    this.sensors[type] = this.sensors[type] || {};
+    this.sensors[type][name] = this.sensors[type][name] || {};
     this.sensors[type][name].value = message;
     this.sensors[type][name].formatted = message;
-    this.setState({sensors: this.sensors});
+    this.setState({ sensors: this.sensors });
   }
 
   componentDidMount() {
@@ -34,7 +44,10 @@ class SensorsTab extends React.Component {
         hub = sensor.source;
       this.sensors[type] = this.sensors[type] || {};
       this.sensors[type][sensor.name] = sensor;
-      if (hub === "smartthings") {
+      // console.log("sensor", sensor);
+      if (sensor.topic) {
+        MQTT.subscribe(sensor.topic, this.handleSensorMessage);
+      } else if (hub === "smartthings") {
         MQTT.subscribe(
           `${hub}/${sensor.name}/${type}`,
           this.handleSensorMessage
@@ -53,7 +66,9 @@ class SensorsTab extends React.Component {
       const type = sensor.type,
         hub = sensor.source;
 
-      if (hub === "smartthings") {
+      if (sensor.topic) {
+        MQTT.unsubscribe(sensor.topic, this.handleSensorMessage);
+      } else if (hub === "smartthings") {
         MQTT.unsubscribe(
           `${hub}/${sensor.name}/${type}`,
           this.handleSensorMessage
@@ -75,6 +90,7 @@ class SensorsTab extends React.Component {
     if (!this.state.sensors) {
       return null;
     }
+    console.log("render sensors", this.sensors);
     const metric = Config.metric;
 
     //
@@ -82,9 +98,11 @@ class SensorsTab extends React.Component {
       let key = 0;
 
       const m = [],
-            h = this.sensors[type];
+        h = this.sensors[type];
 
+      // if (type === "motion") {
       // console.log(type, h);
+      // }
 
       for (const s of Object.keys(h)) {
         m.push(h[s]);
@@ -95,6 +113,7 @@ class SensorsTab extends React.Component {
           return null;
         }
 
+        // console.log("render sensor", sensor);
         return (
           <div key={"type" + key++}>
             {sensor.name}
@@ -117,7 +136,6 @@ class SensorsTab extends React.Component {
         </Col>
       );
     };
-
 
     //
     return (

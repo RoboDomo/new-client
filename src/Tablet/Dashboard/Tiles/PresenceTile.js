@@ -10,9 +10,9 @@ class PresenceTile extends React.Component {
     this.style = styles.tile(1, 1);
     this.tile = props.tile;
 
-    console.log("presence", this.tile);
     this.state = {};
 
+    //
     this.handlePresence = this.handlePresence.bind(this);
   }
 
@@ -29,17 +29,24 @@ class PresenceTile extends React.Component {
     const presence = this.tile.people || [];
 
     for (const person of presence) {
-      MQTT.subscribe(`presence/${person}/status/present`, this.handlePresence);
+      for (const device of person.devices) {
+        MQTT.subscribe(
+          `presence/${person.name}/status/${device}`,
+          this.handlePresence
+        );
+      }
     }
   }
 
   componentWillUnmount() {
     const presence = this.tile.people || [];
     for (const person of presence) {
-      MQTT.unsubscribe(
-        `presence/${person}/status/present`,
-        this.handlePresence
-      );
+      for (const device of person.devices) {
+        MQTT.unsubscribe(
+          `presence/${person.name}/status/${device}`,
+          this.handlePresence
+        );
+      }
     }
   }
 
@@ -56,19 +63,20 @@ class PresenceTile extends React.Component {
       marginTop: -4,
     };
 
+    let key =0;
     return (
       <div style={style}>
         <BiHome size={30} style={{ marginBottom: 8, color: style.color }} />
         {presence.map((person) => {
-          const home = this.state[person];
+          const home = this.state[person.name];
           return (
-            <div style={{ fontSize: 19, color: !home ? "red" : "green" }}>
+            <div key={++key} style={{ fontSize: 19, color: !home ? "red" : "green" }}>
               {home ? (
                 <BsFillPersonCheckFill style={personStyle} />
               ) : (
                 <BsFillPersonDashFill style={personStyle} />
               )}
-              &nbsp;&nbsp; {person}
+              &nbsp;&nbsp; {person.name}
             </div>
           );
         })}

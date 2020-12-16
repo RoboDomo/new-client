@@ -1,11 +1,10 @@
 // TODO: queue texts to speak?
 
 import Logger from "lib/Logger";
+import MQTT from "lib/MQTT";
 
 class Speak {
   constructor() {
-    // console.log("Construct Speak");
-    // console.log("voices", speechSynthesis.getVoices());
     this.lastMessage = null;
     this.voices = null;
     this.voice = null;
@@ -22,7 +21,6 @@ class Speak {
       const u = new SpeechSynthesisUtterance(message);
       if (!this.voices) {
         this.voices = speechSynthesis.getVoices();
-        // console.log("voices", this.voices);
         if (this.voices.length) {
           this.voice = this.voices[0];
         }
@@ -35,7 +33,6 @@ class Speak {
             v[key] = voice[key];
           }
           const vv = JSON.stringify(v);
-          console.log("voice", "lang", voice.lang, "record", voice, vv);
           Logger.alert(vv);
           this.voice = voice;
           if (voice.default) {
@@ -81,9 +78,24 @@ class Speak {
 //
 const speaker = new Speak();
 
-const say = (message) => {
-  speaker.say(message);
+const say = async (message) => {
+  await speaker.say(message);
 };
+
+let interval = setInterval(async () => {
+  try {
+    MQTT.subscribe(
+      "say",
+      async (topic, message) => {
+        await say(message);
+      },
+      10
+    );
+    clearInterval(interval);
+  } catch (e) {
+    // console.log("Say retry");
+  }
+});
 
 //
 export default say;

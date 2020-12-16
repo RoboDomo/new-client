@@ -16,8 +16,8 @@ import { TiThermometer } from "react-icons/ti";
 import { IoIosAnalytics } from "react-icons/io";
 import { FaSwimmingPool, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { TiWeatherCloudy } from "react-icons/ti";
-import { MdMenu, MdSettings } from "react-icons/md";
-import { IoIosColorPalette } from "react-icons/io";
+import { MdMenu, MdSettings, MdVideoLibrary } from "react-icons/md";
+// import { IoIosColorPalette } from "react-icons/io";
 
 // screens
 import DashboardScreen from "./Dashboard/DashboardScreen";
@@ -26,7 +26,7 @@ import IComfortScreen from "./IComfort/IComfortScreen";
 import AutelisScreen from "./Autelis/AutelisScreen";
 import WeatherScreen from "./Weather/WeatherScreen";
 import ThingsScreen from "./Things/ThingsScreen";
-import RGBScreen from "./RGB/RGBScreen";
+import RingScreen from "./Ring/RingScreen";
 import SettingsScreen from "./Settings/SettingsScreen";
 import SystemsScreen from "./Systems/SystemsScreen";
 
@@ -47,8 +47,8 @@ const tabInfo = {
   5: "autelis",
   things: 6,
   6: "things",
-  rgb: 7,
-  7: "rgb",
+  ring: 7,
+  7: "ring",
   settings: 8,
   8: "settings",
   systems: 9,
@@ -144,11 +144,13 @@ class MainScreen extends React.Component {
                 </TabPane>
 
                 <TabPane mountOnEnter unmountOnExit eventKey={7}>
-                  <RGBScreen />
+                  <RingScreen />
                 </TabPane>
+
                 <TabPane mountOnEnter unmountOnExit eventKey={8}>
                   <SettingsScreen />
                 </TabPane>
+
                 <TabPane mountOnEnter unmountOnExit eventKey={9}>
                   <SystemsScreen />
                 </TabPane>
@@ -214,7 +216,7 @@ class MainScreen extends React.Component {
                   </Nav.Link>
 
                   <Nav.Link eventKey={7}>
-                    <IoIosColorPalette /> RGB
+                    <MdVideoLibrary /> Ring
                   </Nav.Link>
 
                   <Nav.Link eventKey={8}>
