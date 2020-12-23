@@ -66,7 +66,7 @@ class Speak {
     this.interval = setInterval(async () => {
       if (!speechSynthesis.speaking) {
         const message = this.queue.pop();
-        if (message !== this.lastMessage) {
+        if (message && message !== this.lastMessage) {
           await this.sayit(message);
         }
         this.lastMessage = message;
@@ -84,14 +84,17 @@ const say = async (message) => {
 
 let interval = setInterval(async () => {
   try {
-    MQTT.subscribe(
-      "say",
-      async (topic, message) => {
-        await say(message);
-      },
-      10
-    );
-    clearInterval(interval);
+    if (
+      MQTT.subscribe(
+        "say",
+        async (topic, message) => {
+          await say(message);
+        },
+        10
+      )
+    ) {
+      clearInterval(interval);
+    }
   } catch (e) {
     // console.log("Say retry");
   }

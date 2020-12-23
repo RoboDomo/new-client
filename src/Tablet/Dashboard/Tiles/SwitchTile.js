@@ -62,17 +62,19 @@ class SwitchTile extends React.Component {
       this.style
     );
     return (
-      <Ripples color="#ffffff">
-        <div style={style} onClick={this.handleClick}>
-          <div style={{ textAlign: "center" }} onClick={this.handleClick}>
-            <TiLightbulb size={30} style={{ marginBottom: 4 }} />
-            <div style={{ fontWeight: "normal" }}>{this.device}</div>
-            <div style={{ fontSize: 20 }}>
-              {this.state.power ? "ON" : "OFF"}
+      <div style={{ overflow: "none" }}>
+        <Ripples color="#ffffff">
+          <div style={style} onClick={this.handleClick}>
+            <div style={{ textAlign: "center" }} onClick={this.handleClick}>
+              <TiLightbulb size={30} style={{ marginBottom: 4 }} />
+              <div style={{ fontWeight: "normal" }}>{this.device}</div>
+              <div style={{ fontSize: 20 }}>
+                {this.state.power ? "ON" : "OFF"}
+              </div>
             </div>
           </div>
-        </div>
-      </Ripples>
+        </Ripples>
+      </div>
     );
   }
 }

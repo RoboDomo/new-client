@@ -25,40 +25,18 @@ class ClockTile extends React.Component {
     };
 
     this.handleWeather = this.handleWeather.bind(this);
-    this.handlePresence = this.handlePresence.bind(this);
   }
 
   handleWeather(topic, message) {
     this.setState({ weather: message });
   }
 
-  handlePresence(topic, message) {
-    const parts = topic.split("/"),
-      key = parts[1],
-      newState = {};
-
-    newState[key] = message;
-    this.setState(newState);
-  }
-
   componentDidMount() {
-    const presence = this.tile.presence || [];
-
     MQTT.subscribe("weather/92211/status/astronomy", this.handleWeather);
-    for (const person of presence) {
-      MQTT.subscribe(`presence/${person}/status/present`, this.handlePresence);
-    }
   }
 
   componentWillUnmount() {
-    const presence = this.tile.presence || [];
     MQTT.unsubscribe("weather/92211/status/astronomy", this.handleWeather);
-    for (const person of presence) {
-      MQTT.unsubscribe(
-        `presence/${person}/status/present`,
-        this.handlePresence
-      );
-    }
   }
 
   renderWeather() {

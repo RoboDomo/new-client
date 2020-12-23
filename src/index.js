@@ -23,9 +23,10 @@ enableAutoTTS();
 
 const main = async () => {
   MQTT.on("connect", async () => {
-    MQTT.subscribe("say", (topic, message) => {
-      Say(message);
-    });
+    // MQTT.subscribe("say", (topic, message) => {
+    //   debugger;
+    //   Say(message);
+    // });
     const config = new Config();
     config.registerChange(async (data) => {
       if (data) {

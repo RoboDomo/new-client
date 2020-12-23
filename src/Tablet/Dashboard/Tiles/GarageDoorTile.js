@@ -112,13 +112,15 @@ class GarageDoorTile extends React.Component {
     }
 
     return (
-      <Ripples color="#ffffff">
-        <div style={style} onClick={this.handleClick}>
-          <div>{this.renderIcon()}</div>
-          <div>{this.device.title}</div>
-          {this.renderDoorState()}
-        </div>
-      </Ripples>
+      <div style={{ overflow: "none" }}>
+        <Ripples color="#ffffff">
+          <div style={style} onClick={this.handleClick}>
+            <div>{this.renderIcon()}</div>
+            <div>{this.device.title}</div>
+            {this.renderDoorState()}
+          </div>
+        </Ripples>
+      </div>
     );
   }
 }

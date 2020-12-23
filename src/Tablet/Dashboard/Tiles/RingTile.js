@@ -1,6 +1,8 @@
 import React from "react";
 import styles from "./styles";
 
+import Ripples from "react-ripples";
+
 import { MdRadioButtonChecked } from "react-icons/md";
 import {
   FaBatteryEmpty,
@@ -98,31 +100,31 @@ class RingTile extends React.Component {
     if (pct < 10) {
       return (
         <div style={batteryStyles.empty}>
-          <FaBatteryEmpty/> {pct}%
+          <FaBatteryEmpty /> {pct}%
         </div>
       );
     } else if (pct < 37) {
       return (
         <div style={batteryStyles.quarter}>
-          <FaBatteryQuarter/> {pct}%
+          <FaBatteryQuarter /> {pct}%
         </div>
       );
     } else if (pct < 63) {
       return (
         <div style={batteryStyles.half}>
-          <FaBatteryHalf/> {pct}%
+          <FaBatteryHalf /> {pct}%
         </div>
       );
     } else if (pct < 87) {
       return (
         <div style={batteryStyles.threequarters}>
-          <FaBatteryThreeQuarters/> {pct}%
+          <FaBatteryThreeQuarters /> {pct}%
         </div>
       );
     }
     return (
       <div style={batteryStyles.full}>
-        <FaBatteryFull/> {pct}%
+        <FaBatteryFull /> {pct}%
       </div>
     );
   }
@@ -132,10 +134,18 @@ class RingTile extends React.Component {
     styles.padding = 8;
 
     return (
-      <div style={styles}>
-        <MdRadioButtonChecked style={{ fontSize: 30 }} />
-        <div>{this.device}</div>
-        <div>{this.renderBattery()}</div>
+      <div style={{ overflow: "none" }}>
+        <Ripples color="#ffffff">
+          <div style={styles}
+               onClick={() => {
+                 window.location.hash="ring";
+               }}
+          >
+            <MdRadioButtonChecked style={{ fontSize: 30 }} />
+            <div>{this.device}</div>
+            <div>{this.renderBattery()}</div>
+          </div>
+        </Ripples>
       </div>
     );
   }

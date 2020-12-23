@@ -1,5 +1,5 @@
 import React from "react";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 
 import MQTT from "lib/MQTT";
 
@@ -9,7 +9,7 @@ class RingTab extends React.Component {
     this.tile = props.tile;
     this.location = this.tile.location;
     this.device = this.tile.device;
-    this.state = {};
+    this.state = { event: false };
     //
     this.handleMessage = this.handleMessage.bind(this);
   }
@@ -74,45 +74,96 @@ class RingTab extends React.Component {
     }
   }
 
+  renderTable() {
+    if (this.state.event) {
+      return null;
+    }
+    return (
+      <div style={{ height: 720, overflow: "auto" }}>
+        <h1>
+          {this.device} Battery {this.state.battery}%
+        </h1>
+        <Table striped>
+          <thead>
+            <tr>
+              <th>Num</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Type</th>
+              <th>Recording</th>
+              <th>State</th>
+              <th>View</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(this.state.events).map((key, counter) => {
+              const event = this.state.events[key].event;
+              console.log(event);
+              return (
+                <tr key={key}>
+                  <td>{counter + 1}</td>
+                  <td>{new Date(event.created_at).toLocaleDateString()}</td>
+                  <td>{new Date(event.created_at).toLocaleTimeString()}</td>
+                  <td>{event.kind}</td>
+                  <td>{event.recording_status}</td>
+                  <td>{event.state}</td>
+                  <td>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        this.setState({ event: event });
+                      }}
+                    >
+                      Play
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
+    );
+  }
+
+  renderVideo() {
+    if (!this.state.event) {
+      return null;
+    }
+    const event = this.state.event;
+    return (
+      <div>
+        <h1>
+          <Button
+            className="float-right"
+            style={{ marginRight: 10 }}
+            onClick={() => {
+              this.setState({ event: null });
+            }}
+          >
+            Close
+          </Button>
+          {this.device} {event.kind}{" "}
+          {new Date(event.created_at).toLocaleDateString()}
+        </h1>
+        <video
+          controls
+          autoPlay
+          style={{ height: 520, width: 1000, overflow: "auto" }}
+        >
+          <source src={event.url} />
+        </video>
+      </div>
+    );
+  }
   render() {
     if (!this.state.events) {
       return null;
     }
     return (
       <>
-        <div style={{ height: 720, overflow: "auto" }}>
-          <h1>
-            {this.device} Battery {this.state.battery}%
-          </h1>
-          <Table striped>
-            <thead>
-              <tr>
-                <th>Num</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Type</th>
-                <th>Recording</th>
-                <th>State</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(this.state.events).map((key, counter) => {
-                const event = this.state.events[key].event;
-                console.log(event);
-                return (
-                  <tr key={key}>
-                    <td>{counter + 1}</td>
-                    <td>{new Date(event.created_at).toLocaleDateString()}</td>
-                    <td>{new Date(event.created_at).toLocaleTimeString()}</td>
-                    <td>{event.kind}</td>
-                    <td>{event.recording_status}</td>
-                    <td>{event.state}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </div>
+        {this.renderTable()}
+        {this.renderVideo()}
       </>
     );
   }

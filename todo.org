@@ -5,6 +5,9 @@ TODO:
   - assure ENV TITLE is honored (some show node instead of whatever-microservice)
   - Garage Door say "opening" and "closing" too.
   - can't control theater apple tv
+  - client seems to lose connection after running a long time, forcing a reset (RoboDomo logo).
+    1) Ping periodically?
+    2) Subscribe/unsuscribe issues?
 
 * TODO
   - remove usages of yarn

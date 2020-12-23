@@ -108,6 +108,7 @@ class FanTile extends React.Component {
                     `${this.hub}/${this.device}/set/switch`,
                     "off"
                   );
+                  this.setState({ show: false });
                 }}
               >
                 Off
@@ -119,6 +120,7 @@ class FanTile extends React.Component {
                     `${this.hub}/${this.device}/set/level`,
                     25
                   );
+                  this.setState({ show: false });
                 }}
               >
                 Low
@@ -130,6 +132,7 @@ class FanTile extends React.Component {
                     `${this.hub}/${this.device}/set/level`,
                     50
                   );
+                  this.setState({ show: false });
                 }}
               >
                 Medium
@@ -141,6 +144,7 @@ class FanTile extends React.Component {
                     `${this.hub}/${this.device}/set/level`,
                     75
                   );
+                  this.setState({ show: false });
                 }}
               >
                 High
@@ -158,23 +162,25 @@ class FanTile extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
-        <Ripples color="#ffffff">
-          <div style={style}>
-            <div
-              style={{
-                textAlign: "center",
-              }}
-              onClick={this.handleClick}
-            >
-              <BiWind
-                size={30}
-                style={{ marginBottom: 4, color: style.color }}
-              />
-              <div>{this.device}</div>
-              <div style={{ fontSize: 20 }}>{value}</div>
+        <div style={{ overflow: "none" }}>
+          <Ripples color="#ffffff">
+            <div style={style}>
+              <div
+                style={{
+                  textAlign: "center",
+                }}
+                onClick={this.handleClick}
+              >
+                <BiWind
+                  size={30}
+                  style={{ marginBottom: 4, color: style.color }}
+                />
+                <div>{this.device}</div>
+                <div style={{ fontSize: 20 }}>{value}</div>
+              </div>
             </div>
-          </div>
-        </Ripples>
+          </Ripples>
+        </div>
       </>
     );
   }

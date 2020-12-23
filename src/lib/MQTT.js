@@ -4,11 +4,26 @@ import { Client } from "paho-mqtt";
 
 const debug = require("debug")("MQTT");
 
+const timestamp = () => {
+  const d = new Date();
+  return (
+    d.getHours() +
+    ":" +
+    d.getMinutes() +
+    "." +
+    d.getSeconds() +
+    "." +
+    (d.getTime() % 1000)
+  );
+};
+
 class MQTT extends EventEmitter {
   constructor() {
     super();
-    // this.cache = {};
+    this.cache = {};
     this.setMaxListeners(50);
+    this.interval = null;
+    this.retain = true;
     //
     this.handleConnect = this.handleConnect.bind(this);
     this.handleFailure = this.handleFailure.bind(this);
@@ -19,6 +34,7 @@ class MQTT extends EventEmitter {
 
   connect() {
     // this.host = '192.168.0.40';
+    this.conneected = false;
     this.host = "nuc1";
     this.port = 80;
     debug("... connecting", this.host, this.port);
@@ -41,14 +57,28 @@ class MQTT extends EventEmitter {
   }
 
   //
-  handleConnect() {
+  async handleConnect() {
     debug("... connected");
+    this.connected = true;
     this.emit("connect");
+    // ping every so often (10 seconds?) to assure connection is alive and
+    // radio not turned off due to lack of incoming.
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+    this.interval = setInterval(async () => {
+      const save = this.retain;
+      this.retain = false;
+      this.publish("ping", "ping");
+      this.retain = save;
+    }, 10000);
   }
 
   handleFailure() {
     debug("mqtt", "onFailure");
     this.emit("failure");
+    alert("mqtt failure");
+    this.connected = false;
     // mosca retries for us
   }
 
@@ -61,15 +91,19 @@ class MQTT extends EventEmitter {
 
   handleMessage(payload) {
     const topic = payload.destinationName,
-      message = payload.payloadString;
+      message = payload.payloadString,
+      ds = timestamp();
+
     if (topic.indexOf("sysinfo") !== 0) {
       console.log(
-        "%cmessage <<< %c" + topic + " %c" + message.substr(0, 20),
+        ds + " %cmessage <<< %c" + topic + " %c" + message.substr(0, 20),
         "font-weight: bold;",
         "color:red; font-weight: bold",
         "color:blue; font-weight: bold"
       );
     }
+    localStorage.setItem(topic, message);
+    this.cache[topic] = message;
     if (this.listenerCount(topic)) {
       // console.log(
       //   "%cmessage <<< %c" + topic + " %c" + message.substr(0, 20),
@@ -83,19 +117,38 @@ class MQTT extends EventEmitter {
   }
 
   onConnectionLost(e) {
+    this.connected = false;
     console.log("mqtt", "onConnectionLost", e);
     this.emit("connectionlost");
+    alert("connection lost");
     this.mqtt.connect({ success: this.handleConnect });
   }
 
   subscribe(topic, handler) {
-    if (!this.listenerCount(topic)) {
-      console.log("MQTT subscribe", topic);
+    if (!this.connected) {
+      return false;
+    }
+    if (!this.listenerCount(topic) && handler) {
+      console.log(timestamp() + " subscribe", topic);
       this.mqtt.subscribe(topic);
+    }
+    else {
+      console.log(timestamp() + " already subscribed", topic);
     }
     if (handler) {
       this.on(topic, handler);
     }
+    const state = this.cache[topic] || localStorage.getItem(topic);
+    if (state && handler) {
+      setTimeout(() => {
+        try {
+          handler(topic, JSON.parse(state));
+        } catch (e) {
+          handler(topic, state);
+        }
+      }, 1);
+    }
+    return true;
   }
 
   unsubscribe(topic, handler) {
@@ -110,21 +163,35 @@ class MQTT extends EventEmitter {
     }
   }
 
+  clearTopic(topic) {
+    this.publish(topic, null);
+  }
+
   publish(topic, message) {
-    if (typeof message !== "string") {
-      message = JSON.stringify(message);
-      this.mqtt.publish(topic, message);
+    const ds = timestamp();
+
+    if (message === null || message === undefined) {
       console.log(
-        "%cmessage >>> %c" + topic + " %c" + message,
+        ds + " %cmessage >>> %c" + topic + " %c" + message,
+        "font-weight: bold;",
+        "color:red; font-weight: bold",
+        "color:blue; font-weight: bold"
+      );
+      this.mqtt.publish(topic, message, 0);
+    } else if (typeof message !== "string") {
+      message = JSON.stringify(message);
+      this.mqtt.publish(topic, message, 0);
+      console.log(
+        ds + " %cmessage >>> %c" + topic + " %c" + message,
         "font-weight: bold;",
         "color:red; font-weight: bold",
         "color:blue; font-weight: bold"
       );
       //      console.log("%cMQTT >>>", message, "backround:blue");
     } else {
-      this.mqtt.publish(topic, String(message));
+      this.mqtt.publish(topic, String(message), 0);
       console.log(
-        "%c>>> message %c" + topic + " %c" + String(message),
+        ds + " %c>>> message %c" + topic + " %c" + String(message),
         "font-weight: bold;",
         "color:red; font-weight: bold",
         "color:blue; font-weight: bold"

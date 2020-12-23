@@ -62,21 +62,22 @@ class LockTile extends React.Component {
     const style = Object.assign({}, this.style);
     style.padding = 8;
     if (this.state.locked) {
-      style.color = '#00ff00';
-    }
-    else {
-      style.color = 'yellow';
+      style.color = "#00ff00";
+    } else {
+      style.color = "yellow";
     }
     return (
-      <Ripples color="#ffffff">
-        <div style={style} onClick={this.handleClick}>
-          <div>{this.renderIcon()}</div>
-          <div>{this.tile.title}</div>
-          <div style={{ fontSize: 20, marginTop: 4 }}>
-            {this.state.locked ? "LOCKED" : "UNLOCKED"}
+      <div style={{ overflow: "none" }}>
+        <Ripples color="#ffffff">
+          <div style={style} onClick={this.handleClick}>
+            <div>{this.renderIcon()}</div>
+            <div>{this.tile.title}</div>
+            <div style={{ fontSize: 20, marginTop: 4 }}>
+              {this.state.locked ? "LOCKED" : "UNLOCKED"}
+            </div>
           </div>
-        </div>
-      </Ripples>
+        </Ripples>
+      </div>
     );
   }
 }

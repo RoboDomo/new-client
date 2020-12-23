@@ -79,6 +79,7 @@ class DimmerTile extends React.Component {
     style.color = fg;
     style.backgroundColor = bg;
     style.padding = 8;
+
     return (
       <>
         <Modal
@@ -105,6 +106,7 @@ class DimmerTile extends React.Component {
                         `${this.hub}/${this.device}/set/switch`,
                         "off"
                       );
+                      this.setState({ show: false });
                     }}
                   >
                     Off
@@ -116,6 +118,7 @@ class DimmerTile extends React.Component {
                         `${this.hub}/${this.device}/set/switch`,
                         "on"
                       );
+                      this.setState({ show: false });
                     }}
                   >
                     On
@@ -129,6 +132,7 @@ class DimmerTile extends React.Component {
                       `${this.hub}/${this.device}/set/level`,
                       5
                     );
+                    this.setState({ show: false });
                   }}
                 >
                   Dim
@@ -152,6 +156,7 @@ class DimmerTile extends React.Component {
                       `${this.hub}/${this.device}/set/level`,
                       100
                     );
+                    this.setState({ show: false });
                   }}
                 >
                   Max
@@ -171,16 +176,18 @@ class DimmerTile extends React.Component {
           </Modal.Footer>
         </Modal>
 
-        <Ripples color="#ffffff">
-          <div style={style} onClick={this.handleClick}>
-            <TiAdjustBrightness
-              size={30}
-              style={{ marginBottom: 4, color: fg }}
-            />
-            <div style={{ fontWeight: "normal" }}>{this.device}</div>
-            <div style={{ fontSize: 20 }}>{value}</div>
-          </div>
-        </Ripples>
+        <div style={{ overflow: "none" }}>
+          <Ripples color="#ffffff">
+            <div style={style} onClick={this.handleClick}>
+              <TiAdjustBrightness
+                size={30}
+                style={{ marginBottom: 4, color: fg }}
+              />
+              <div style={{ fontWeight: "normal" }}>{this.device}</div>
+              <div style={{ fontSize: 20 }}>{value}</div>
+            </div>
+          </Ripples>
+        </div>
       </>
     );
   }

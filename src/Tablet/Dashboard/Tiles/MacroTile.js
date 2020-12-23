@@ -21,23 +21,25 @@ class MacroTile extends React.Component {
 
   render() {
     const label = this.label,
-          style = Object.assign({}, this.style);
+      style = Object.assign({}, this.style);
 
     style.padding = 8;
     return (
-      <Ripples color="#ffffff">
-        <div style={style}>
-          <div style={{ flexDirection: "column" }} onClick={this.onClick}>
-            <div
-              style={{ fontSize: 24, textAlign: "center", marginBottom: 2 }}
-            >
-              <FaRunning size={24} />
+      <div style={{ overflow: "none" }}>
+        <Ripples color="#ffffff">
+          <div style={style}>
+            <div style={{ flexDirection: "column" }} onClick={this.onClick}>
+              <div
+                style={{ fontSize: 24, textAlign: "center", marginBottom: 2 }}
+              >
+                <FaRunning size={24} />
+              </div>
+              <div style={{ textAlign: "center" }}>{"Macro"}</div>
+              <div>{label}</div>
             </div>
-            <div style={{ textAlign: "center" }}>{"Macro"}</div>
-            <div>{label}</div>
           </div>
-        </div>
-      </Ripples>
+        </Ripples>
+      </div>
     );
   }
 }

@@ -13,7 +13,9 @@ import AppleTVControls from "Tablet/Theater/Devices/AppleTVControls";
 import RokuControls from "Tablet/Theater/Devices/RokuControls";
 import TivoControls from "Tablet/Theater/Devices/TivoControls";
 import BraviaControls from "Tablet/Theater/Devices/BraviaControls";
+import LGTVControls from "Tablet/Theater/Devices/LGTVControls";
 import DenonControls from "Tablet/Theater/Devices/DenonControls";
+import HarmonyControls from "Tablet/Theater/Devices/HarmonyControls";
 
 import MQTT from "lib/MQTT";
 import { isOn, mangle } from "lib/Utils";
@@ -59,6 +61,9 @@ class TheaterTab extends React.Component {
         case "tivo":
           this.state.tivo = device;
           break;
+        case "harmony":
+          this.state.harmony = device;
+          break;
         case "roku":
           this.state.roku = device;
           break;
@@ -86,7 +91,7 @@ class TheaterTab extends React.Component {
   }
 
   handleInputChange(state) {
-    console.log("change", state);
+    // console.log("change", state);
     // if (state.avr && state.avr.power === false) {
     //   state.avr.input = "OFF";
     // }
@@ -106,7 +111,7 @@ class TheaterTab extends React.Component {
       avrInput = mangle(state.avr.input);
 
     if (tvInput === undefined || avrInput === undefined) {
-      console.log("inputs undefined");
+      // console.log("inputs undefined");
       return;
     }
 
@@ -144,8 +149,8 @@ class TheaterTab extends React.Component {
   }
 
   handleRokuMessage(topic, message) {
-    console.log("ROKU", topic, message);
-    this.setStae({ roku: message });
+    // console.log("ROKU", topic, message);
+    this.setState({ roku: message });
   }
 
   handleLGTVMessage(topic, message) {
@@ -162,16 +167,16 @@ class TheaterTab extends React.Component {
         if (state.foregroundApp) {
           const foregroundApp = state.foregroundApp;
           const app = state.launchPoints[foregroundApp.appId];
-          console.log("app", app);
+          // console.log("app", app);
           const title = app.title;
-          console.log("title", title);
+          // console.log("title", title);
           const lp = title || "unknown";
           const inp = state.tv.power ? lp : "OFF";
 
           state.tv.input = inp;
-          console.log("foregroundApp", state.foregroundApp, title, lp, inp);
+          // console.log("foregroundApp", state.foregroundApp, title, lp, inp);
           state.tv.input = inp;
-          console.log("change", inp);
+          // console.log("change", inp);
           this.handleInputChange(state);
         } else {
           state.tv.input = "OFF";
@@ -179,25 +184,25 @@ class TheaterTab extends React.Component {
         }
         break;
       case "foregroundApp":
-        console.log("foregroundApp", message);
+        // console.log("foregroundApp", message);
         state.foregroundApp = message;
         if (!state.launchPoints) {
           state.tvInput = "OFF";
-          console.log("change OFF");
+          // console.log("change OFF");
           this.handleInputChange(state);
         } else {
           const foregroundApp = state.foregroundApp;
           if (foregroundApp.appId !== "") {
             const app = state.launchPoints[foregroundApp.appId];
-            console.log("app", app);
+            // console.log("app", app);
             const title = app.title;
-            console.log("title", title);
+            // console.log("title", title);
             const lp = title || "unknown";
             const inp = state.tv.power ? lp : "OFF";
 
             state.tv.input = inp;
             // if (state.tv.power) {
-            console.log("change ", inp);
+            // console.log("change ", inp);
             // }
           }
           this.handleInputChange(state);
@@ -250,7 +255,7 @@ class TheaterTab extends React.Component {
   }
 
   handleActivityClick(activity) {
-    console.log("Clicked activity", activity);
+    // console.log("Clicked activity", activity);
     const state = Object.assign({}, this.state);
     state.currentActivity = activity;
     state.currentDevice = this.findDevice(activity.defaultDevice);
@@ -262,7 +267,7 @@ class TheaterTab extends React.Component {
   }
 
   handleDeviceClick(device) {
-    console.log("Clicked device", device);
+    // console.log("Clicked device", device);
     const state = Object.assign({}, this.state);
     state.currentDevice = device;
     this.setState(state);
@@ -406,8 +411,14 @@ class TheaterTab extends React.Component {
         return <TivoControls device={this.state.tivo} />;
       case "bravia":
         return <BraviaControls device={this.state.tv} />;
+      case "lgtv":
+        return (
+          <LGTVControls device={this.state.tv} input={this.state.tv.input} />
+        );
       case "denon":
         return <DenonControls device={this.state.avr} />;
+      case "harmony":
+        return <HarmonyControls hub={this.state.harmony} />;
       case "roku":
         return <RokuControls device={this.state.roku} />;
       default:
@@ -418,24 +429,24 @@ class TheaterTab extends React.Component {
   render() {
     const state = Object.assign({}, this.state);
     this.handleInputChange(state);
-    console.log(
-      "render",
-      "tv",
-      state.tv.power,
-      state.tv.input,
-      "avr",
-      state.avr.power,
-      state.avr.input
-    );
-    console.log(
-      "  render",
-      "tv",
-      this.state.tv.power,
-      this.state.tv.input,
-      "avr",
-      this.state.avr.power,
-      this.state.avr.input
-    );
+    // console.log(
+    //   "render",
+    //   "tv",
+    //   state.tv.power,
+    //   state.tv.input,
+    //   "avr",
+    //   state.avr.power,
+    //   state.avr.input
+    // );
+    // console.log(
+    //   "  render",
+    //   "tv",
+    //   this.state.tv.power,
+    //   this.state.tv.input,
+    //   "avr",
+    //   this.state.avr.power,
+    //   this.state.avr.input
+    // );
     return (
       <Row style={{ marginTop: 12 }}>
         <Col sm={2}>
