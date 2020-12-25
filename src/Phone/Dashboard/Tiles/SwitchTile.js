@@ -7,7 +7,7 @@ import MQTT from "lib/MQTT";
 
 class SwitchTile extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     const tile = props.tile;
     this.tile = tile;
     this.hub = tile.hub;
@@ -39,7 +39,12 @@ class SwitchTile extends React.Component {
   render() {
     if (this.state.power) {
       return (
-        <div style={{ color: "yellow" }}>
+        <div
+          onClick={() => {
+            MQTT.publish(`${this.hub}/${this.name}/set/switch`, "off")
+          }}
+          style={{ color: "yellow", fontSize: 18 }}
+        >
           <TiLightbulb
             style={{
               fontSize: 24,
@@ -49,12 +54,18 @@ class SwitchTile extends React.Component {
             }}
           />
           {"  "}
-          {this.name} ON
+          {this.name}
+          <div style={{ float: "right" }}>ON</div>
         </div>
       );
     } else {
       return (
-        <div>
+        <div
+          style={{ fontSize: 18 }}
+          onClick={() => {
+            MQTT.publish(`${this.hub}/${this.name}/set/switch`, "on")
+          }}
+        >
           <TiLightbulb
             style={{
               fontSize: 24,
@@ -64,7 +75,8 @@ class SwitchTile extends React.Component {
             }}
           />
           {"  "}
-          {this.name} OFF
+          {this.name}
+          <div style={{ float: "right" }}>OFF</div>
         </div>
       );
     }

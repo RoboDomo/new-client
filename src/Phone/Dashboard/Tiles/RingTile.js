@@ -1,11 +1,5 @@
 import React from "react";
-import styles from "./styles";
-
-import Ripples from "react-ripples";
-
 import { MdRadioButtonChecked } from "react-icons/md";
-
-
 import {
   FaBatteryEmpty,
   FaBatteryQuarter,
@@ -13,6 +7,7 @@ import {
   FaBatteryThreeQuarters,
   FaBatteryFull,
 } from "react-icons/fa";
+
 import MQTT from "lib/MQTT";
 
 const fontSize = 18,
@@ -45,17 +40,14 @@ class RingTile extends React.Component {
     this.tile = props.tile;
     this.location = this.tile.location;
     this.device = this.tile.device;
-    this.styles = styles.tile(1, 1);
 
     this.state = {};
 
-    console.log("Ring", props, this.device, this.location);
     //
     this.handleMessage = this.handleMessage.bind(this);
   }
 
   handleMessage(topic, message) {
-    // console.log("handleMessage", topic, message);
     const parts = topic.split("/"),
       key = parts.pop(),
       newState = {};
@@ -132,22 +124,16 @@ class RingTile extends React.Component {
   }
 
   render() {
-    const styles = Object.assign({}, this.styles);
-    styles.padding = 8;
-
     return (
-      <div style={{ overflow: "none" }}>
-        <Ripples color="#ffffff">
-          <div style={styles}
-               onClick={() => {
-                 window.location.hash="ring";
-               }}
-          >
-            <MdRadioButtonChecked style={{ fontSize: 30 }} />
-            <div>{this.device}</div>
-            <div>{this.renderBattery()}</div>
-          </div>
-        </Ripples>
+      <div
+        style={{ fontSize: 18 }}
+        onClick={() => {
+          window.location.hash = "ring";
+        }}
+      >
+        <MdRadioButtonChecked style={{ marginRight: 10, fontSize: 30 }} />
+        {this.device}
+        <div style={{ float: "right" }}>{this.renderBattery()}</div>
       </div>
     );
   }

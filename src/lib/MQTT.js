@@ -102,7 +102,7 @@ class MQTT extends EventEmitter {
         "color:blue; font-weight: bold"
       );
     }
-    localStorage.setItem(topic, message);
+    // localStorage.setItem(topic, message);
     this.cache[topic] = message;
     if (this.listenerCount(topic)) {
       // console.log(
@@ -131,16 +131,17 @@ class MQTT extends EventEmitter {
     if (!this.listenerCount(topic) && handler) {
       console.log(timestamp() + " subscribe", topic);
       this.mqtt.subscribe(topic);
-    }
-    else {
+    } else {
       console.log(timestamp() + " already subscribed", topic);
     }
     if (handler) {
       this.on(topic, handler);
     }
-    const state = this.cache[topic] || localStorage.getItem(topic);
+
+    const state = this.cache[topic]; // || localStorage.getItem(topic);
     if (state && handler) {
       setTimeout(() => {
+        console.log("handler", topic, state);
         try {
           handler(topic, JSON.parse(state));
         } catch (e) {
@@ -157,9 +158,11 @@ class MQTT extends EventEmitter {
       if (!this.listenerCount(topic)) {
         console.log("MQTT unsubscribe", topic);
         this.mqtt.unsubscribe(topic);
+        this.cache[topic] = undefined;
       }
     } else {
       this.mqtt.unsubscribe(topic);
+      this.cache[topic] = undefined;
     }
   }
 

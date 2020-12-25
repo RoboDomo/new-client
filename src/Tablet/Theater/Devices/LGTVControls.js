@@ -15,7 +15,7 @@
 import React from "react";
 import MQTTButton from "Common/MQTTButton";
 
-import { Image, ButtonGroup, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { ButtonGroup } from "react-bootstrap";
 
 import {
   FaChevronUp,
@@ -36,6 +36,7 @@ import LGTVTransport from "Tablet/Transport/LGTVTransport";
 
 import MQTT from "lib/MQTT";
 
+/*
 const ignoredLaunchPoints = [
   "HDMI1",
   "HDMI2",
@@ -60,6 +61,7 @@ const ignoredLaunchPoints = [
   "Set Up TV for Amazon Alexa",
   "LG Remote Service",
 ];
+*/
 
 class LGTVControls extends React.Component {
   constructor(props) {
@@ -69,16 +71,17 @@ class LGTVControls extends React.Component {
     this.device = props.device;
     //
     this.handleLaunchPointsMessage = this.handleLaunchPointsMessage.bind(this);
-    this.handleForegroundAppMessage = this.handleForegroundAppMessage.bind(this);
+    this.handleForegroundAppMessage = this.handleForegroundAppMessage.bind(
+      this
+    );
   }
 
   handleLaunchPointsMessage(topic, message) {
-    this.setState({ launchPoints: message});
+    this.setState({ launchPoints: message });
   }
   handleForegroundAppMessage(topic, message) {
-    this.setState({ foregroundApp: message});
+    this.setState({ foregroundApp: message });
   }
-
 
   componentDidMount() {
     MQTT.subscribe(
@@ -123,6 +126,7 @@ class LGTVControls extends React.Component {
       }
     } catch (e) {}
 
+    /*
     const renderLaunchPoints = () => {
       if (!launchPoints) {
         return null;
@@ -187,6 +191,7 @@ class LGTVControls extends React.Component {
         </>
       );
     };
+    */
 
     const renderNowPlaying = () => {
       if (true || !foregroundApp || !launchPoints) {
@@ -365,10 +370,12 @@ class LGTVControls extends React.Component {
         <div style={{ marginTop: 4 }}>{renderControlButtons()}</div>
         <div style={{ margin: 10 }}>{renderJoystick()}</div>
         <div>{renderKeypad()}</div>
-        <div style={{ marginTop: 4 }}> <LGTVTransport device={this.device.device}/> </div>
+        <div style={{ marginTop: 4 }}>
+          {" "}
+          <LGTVTransport device={this.device.device} />{" "}
+        </div>
       </div>
     );
-
   }
 }
 

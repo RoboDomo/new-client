@@ -17,6 +17,7 @@ const Phone = lazy(() =>
     "./Phone/MainScreen" /* webpackChunkName: "phone", webpackPrefetch: true  */
   )
 );
+
 // const Portrait = lazy(() =>
 //   import(
 //     "./Portrait/MainScreen" /* webpackChunkName: "portrait", webpackPrefetch: true  */
@@ -28,7 +29,7 @@ const Platform = () => {
     return (
       <>
         <Alert />
-        <Phone />;
+        <Phone />
       </>
     );
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, ButtonGroup, Button } from "react-bootstrap";
+import { Row, /*Col,*/ ButtonGroup, Button } from "react-bootstrap";
 import {
   FaChevronUp,
   FaChevronDown,
@@ -113,6 +113,7 @@ class HarmonyControls extends React.Component {
   render() {
     const { commands } = this.state;
     if (commands === undefined) {
+      console.log("no commands!", commands);
       return null;
     }
 

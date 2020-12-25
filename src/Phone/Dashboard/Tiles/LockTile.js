@@ -1,15 +1,10 @@
 import React from "react";
-import Ripples from "react-ripples";
-import styles from "./styles";
 import { BsFillLockFill, BsFillUnlockFill } from "react-icons/bs";
-
 import MQTT from "lib/MQTT";
 
-// TODO: add MyQ garage door status
 class LockTile extends React.Component {
   constructor(props) {
     super(props);
-    this.style = styles.tile(1, 1);
     // console.log("props", props)A
     this.tile = props.tile;
     this.locks = this.tile.locks;
@@ -21,8 +16,11 @@ class LockTile extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
+  handleLockMessage(topic, message) {
+    this.setState({ locked: message === "locked" });
+  }
+
   handleClick() {
-    console.log("state", this.state.locked);
     if (this.state.locked) {
       console.log("unlock");
       MQTT.publish(`${this.tile.hub}/${this.tile.device}/set/unlock`, "unlock");
@@ -30,10 +28,6 @@ class LockTile extends React.Component {
       console.log("lock");
       MQTT.publish(`${this.tile.hub}/${this.tile.device}/set/lock`, "lock");
     }
-  }
-
-  handleLockMessage(topic, message) {
-    this.setState({ locked: message === "locked" });
   }
 
   componentDidMount() {
@@ -52,14 +46,30 @@ class LockTile extends React.Component {
 
   renderIcon() {
     return this.state.locked ? (
-      <BsFillLockFill size={30} style={{ marginBottom: 4 }} />
+      <BsFillLockFill
+        size={30}
+        style={{
+          float: "left",
+          marginLeft: -6,
+          marginRight: 10,
+          marginTop: -6,
+        }}
+      />
     ) : (
-      <BsFillUnlockFill style={{ marginBottom: 4 }} size={30} />
+      <BsFillUnlockFill
+        style={{
+          float: "left",
+          marginLeft: -6,
+          marginRight: 10,
+          marginTop: -6,
+        }}
+        size={30}
+      />
     );
   }
 
   render() {
-    const style = Object.assign({}, this.style);
+    const style = { fontSize: 18 };
     style.padding = 8;
     if (this.state.locked) {
       style.color = "green";
@@ -67,16 +77,12 @@ class LockTile extends React.Component {
       style.color = "yellow";
     }
     return (
-      <div style={{ overflow: "none" }}>
-        <Ripples color="#ffffff">
-          <div style={style} onClick={this.handleClick}>
-            <div>{this.renderIcon()}</div>
-            <div>{this.tile.title}</div>
-            <div style={{ fontSize: 20, marginTop: 4 }}>
-              {this.state.locked ? "LOCKED" : "UNLOCKED"}
-            </div>
-          </div>
-        </Ripples>
+      <div style={style} onClick={this.handleClick}>
+        {this.renderIcon()}
+        {this.tile.title}
+        <div style={{ fontSize: 20, marginLeft: 10, marginRight: -8, float: "right" }}>
+          {this.state.locked ? "LOCKED" : "UNLOCKED"}
+        </div>
       </div>
     );
   }

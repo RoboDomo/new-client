@@ -23,6 +23,7 @@ enableAutoTTS();
 
 const main = async () => {
   MQTT.on("connect", async () => {
+    Say("welcome to Robo Domo");
     // MQTT.subscribe("say", (topic, message) => {
     //   debugger;
     //   Say(message);

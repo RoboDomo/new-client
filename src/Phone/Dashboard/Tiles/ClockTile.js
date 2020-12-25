@@ -4,14 +4,13 @@ import Clock from "Common/Clock";
 class ClockTile extends React.Component {
   constructor(props) {
     super(props);
-    super(props);
     // this.style = styles.tile(2, 2);
     this.state = {
       date: new Date(),
       weather: null,
     };
 
-    this.handleWeather = this.handleWeather.bind(this);
+    // this.handleWeather = this.handleWeather.bind(this);
   }
 
   render() {

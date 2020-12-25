@@ -4,24 +4,27 @@ import { ListGroup } from "react-bootstrap";
 import { Card } from "react-bootstrap";
 import { data as Config } from "lib/Config";
 
-import ClockTile from "./ClockTile";
-import DimmerTile from "./DimmerTile";
-import GarageDoorTile from "./GarageDoorTile";
-import FanTile from "./FanTile";
-import MacroTile from "./MacroTile";
-import PoolTile from "./PoolTile";
-import SpaTile from "./SpaTile";
-import SwitchTile from "./SwitchTile";
-import TheaterTile from "./TheaterTile";
-import ThermostatTile from "./ThermostatTile";
-import WeatherTile from "./WeatherTile";
+import ClockTile from "./Tiles/ClockTile";
+import DimmerTile from "./Tiles/DimmerTile";
+import GarageDoorTile from "./Tiles/GarageDoorTile";
+import FanTile from "./Tiles/FanTile";
+import LockTile from "./Tiles/LockTile";
+import RingTile from "./Tiles/RingTile";
+import RGBTile from "./Tiles/RGBTile";
+import MacroTile from "./Tiles/MacroTile";
+import PoolTile from "./Tiles/PoolTile";
+import SpaTile from "./Tiles/SpaTile";
+import SwitchTile from "./Tiles/SwitchTile";
+import TheaterTile from "./Tiles/TheaterTile";
+import ThermostatTile from "./Tiles/ThermostatTile";
+import WeatherTile from "./Tiles/WeatherTile";
+import PresenceTile from "./Tiles/PresenceTile";
 
 const LOCALSTORAGE_KEY = "PHONE-DASHBOARD-TABS";
 
 class DashboardScreen extends React.Component {
   constructor(props) {
-    super(props);
-    console.log("DashboardScreen", props);
+    super();
     this.state = {
       activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || 1,
     };
@@ -45,6 +48,12 @@ class DashboardScreen extends React.Component {
                   <GarageDoorTile tile={tile} />
                 </ListGroup.Item>
               );
+            case "presence":
+              return (
+                <ListGroup.Item key={key++}>
+                  <PresenceTile tile={tile} />
+                </ListGroup.Item>
+              );
             case "dimmer":
               return (
                 <ListGroup.Item key={key++}>
@@ -55,6 +64,24 @@ class DashboardScreen extends React.Component {
               return (
                 <ListGroup.Item key={key++}>
                   <FanTile tile={tile} />
+                </ListGroup.Item>
+              );
+            case "lock":
+              return (
+                <ListGroup.Item key={key++}>
+                  <LockTile tile={tile} />
+                </ListGroup.Item>
+              );
+            case "ring":
+              return (
+                <ListGroup.Item key={key++}>
+                  <RingTile tile={tile} />
+                </ListGroup.Item>
+              );
+            case "rgb":
+              return (
+                <ListGroup.Item key={key++}>
+                  <RGBTile tile={tile} />
                 </ListGroup.Item>
               );
             case "macro":
@@ -157,7 +184,6 @@ class DashboardScreen extends React.Component {
   }
 
   render() {
-    console.log("render", Config.dashboards);
     let key = 1;
     return (
       <>

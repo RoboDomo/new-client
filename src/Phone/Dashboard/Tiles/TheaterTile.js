@@ -276,10 +276,13 @@ class TheaterTile extends React.Component {
 
   render() {
     if (!this.theater) {
-      return null;
+      return <div>Theater</div>;
     }
 
     const activity = this.getActivityInfo();
+    if (!activity) {
+      return <div>Theater</div>;
+    }
     // if (!activity) {
     //   return (
     //     <div>
@@ -299,7 +302,7 @@ class TheaterTile extends React.Component {
 
     const renderActivity = () => {
       if (!activity) {
-        return <>TheaterTile</>;
+        return <span>Theater</span>;
       }
       return (
         <>
@@ -309,32 +312,34 @@ class TheaterTile extends React.Component {
     };
 
     const renderTiVo = () => {
-      if (!activity || !this.state.channels || !this.state.channel) {
-        return null;
+      if (!activity || !this.state.channels || !this.state.channel || !device) {
+        return <>TheaterTile</>;
       }
       const channel = this.state.channels[this.state.channel];
       return (
-        <div style={{ marginLeft: 40, marginTop: 12 }}>
-          {device.name}{" "}<br/>
-          <img
-            style={{
-              marginLeft: 10,
-              marginRight: 10,
-              height: 24,
-              width: "auto",
-            }}
-            src={channel.logo.URL}
-            alt={channel.afffiliate}
-          />{" "}
-          {this.state.channel} {channel.name}
-        </div>
+        <>
+          <span style={{ marginLeft: 4 }}>{device.name}</span>
+          <br />
+          <div style={{ float: "right", marginTop: 2 }}>
+            {this.state.channel} {channel.name}
+            <img
+              style={{
+                marginLeft: 10,
+                marginRight: 10,
+                height: 24,
+                width: "auto",
+              }}
+              src={channel.logo.URL}
+              alt={channel.afffiliate}
+            />
+          </div>
+        </>
       );
     };
 
     const renderDenon = () => {
-      console.log(this.avr, this.state);
       if (!this.avr) {
-        return null;
+        return <div>Theater</div>;
       }
 
       const renderPower = () => {
@@ -352,7 +357,7 @@ class TheaterTile extends React.Component {
         }
       };
       return (
-        <div style={{ marginLeft: 40, marginTop: 12 }}>
+        <div style={{ float: "right", marginRight: 54, marginTop: 2 }}>
           {renderPower()}
           {renderVolume()}
         </div>
@@ -364,7 +369,7 @@ class TheaterTile extends React.Component {
     };
 
     return (
-      <div>
+      <span>
         <CgScreen
           style={{
             marginTop: -4,
@@ -376,7 +381,7 @@ class TheaterTile extends React.Component {
         {renderActivity()}
         {renderDevice()}
         {renderDenon()}
-      </div>
+      </span>
     );
   }
 }

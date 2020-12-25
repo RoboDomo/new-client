@@ -10,7 +10,7 @@ import MQTT from "lib/MQTT";
 
 class RGBTile extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.tile = props.tile;
     this.style = styles.tile(1, 1);
     this.device = props.tile.device;
@@ -61,8 +61,6 @@ class RGBTile extends React.Component {
         break;
     }
     this.setState({ rgb: this.form.rgb });
-    console.log("COLOR", color, topic, message);
-    // this.setState({ active: isOn(message) });
   }
 
   componentDidMount() {
@@ -160,7 +158,7 @@ class RGBTile extends React.Component {
             }}
             update={() => {
               console.log("update", this.form);
-              const h = this.form.hsv;
+              /* const h = this.form.hsv; */
               /* MQTT.publish(`${this.hub}/${this.name}/set/color`,{hue: h.h, saturation: h.s, level: h.v}); */
               MQTT.publish(`${this.hub}/${this.name}/set/red`, this.form.rgb.r);
               MQTT.publish(

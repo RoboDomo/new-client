@@ -21,7 +21,7 @@ import { BsDropletHalf } from "react-icons/bs";
 
 class WeatherTab extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.location = props.location;
     this.zip = props.location.device;
 

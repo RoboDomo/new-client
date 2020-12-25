@@ -9,7 +9,7 @@ import { RiUpload2Fill, RiDownload2Fill } from "react-icons/ri";
 // TODO: add MyQ garage door status
 class GarageDoorTile extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.style = styles.tile(1, 1);
     this.tile = props.tile;
     this.device = this.tile.device;

@@ -1,7 +1,6 @@
 TODO:
 
 * BUGS
-  - Ripples bigger/smaller than tiles
   - assure ENV TITLE is honored (some show node instead of whatever-microservice)
   - Garage Door say "opening" and "closing" too.
   - can't control theater apple tv
@@ -14,8 +13,6 @@ TODO:
   - master bedroom tv virtual switch
 
 * User Interface
-  - better fan tile - on/off and high/med/low separate?
-  - better dimmer tile - on/off and level separate?
   - presence tile (or in clock tile)
 
 * Speech Synthesis (Say)
@@ -54,7 +51,6 @@ BUGS: (temporarily removed)
 * Settings
   - log MQTT and show it in settings 
   - Settings forms and logs and restart services
-  - systat kind of display
   - clear localStorage
 
 * Theater

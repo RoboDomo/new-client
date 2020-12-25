@@ -28,6 +28,7 @@ import { TiWeatherCloudy, TiThermometer } from "react-icons/ti";
 
 import DashboardScreen from "Phone/Dashboard/DashboardScreen";
 import TheaterScreen from "Phone/Theater/TheaterScreen";
+import WeatherScreen from "Phone/Weather/WeatherScreen";
 // import Weather from "Phone/Weather/Weather";
 // import Nest from "Phone/Nest/Nest";
 // import Sensors from "Phone/Sensors/Sensors";
@@ -142,7 +143,7 @@ class MainScreen extends React.Component {
               <DashboardScreen />
             </TabPane>
             <TabPane eventKey={2}>{ <TheaterScreen /> }</TabPane>
-            <TabPane eventKey={3}>{/* <Weather /> */}</TabPane>
+            <TabPane eventKey={3}>{ <WeatherScreen />}</TabPane>
             <TabPane eventKey={4}>{/* <Nest /> */}</TabPane>
             <TabPane eventKey={5}>{/* <Sensors /> */}</TabPane>
             <TabPane eventKey={6}>{/* <Autelis /> */}</TabPane>
