@@ -38,14 +38,14 @@ class WeatherTab extends React.Component {
     } else if (~topic.indexOf("astronomy")) {
       this.setState({ astronomy: message });
     } else if (~topic.indexOf("hourly")) {
-      for (const hour of message) {
-        console.log(
-          "hourly",
-          new Date(hour.utcTime * 1000).toLocaleTimeString(),
-          hour.temperature,
-          hour
-        );
-      }
+//      for (const hour of message) {
+//        console.log(
+//          "hourly",
+//          new Date(hour.utcTime * 1000).toLocaleTimeString(),
+//          hour.temperature,
+//          hour
+//        );
+//      }
       this.setState({ hourly: message });
     }
   }
@@ -189,13 +189,11 @@ class WeatherTab extends React.Component {
                 <td>
                   <Temperature
                     value={parseInt(day.highTemperature, 10)}
-                    units={false}
                   />
                 </td>
                 <td>
                   <Temperature
                     value={parseInt(day.lowTemperature, 10)}
-                    units={false}
                   />
                 </td>
               </tr>
