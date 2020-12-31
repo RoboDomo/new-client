@@ -13,28 +13,28 @@
 */
 
 import React from "react";
-// import { Button } from "react-bootstrap";
+import { Row, Col, ButtonGroup, Button, Modal } from "react-bootstrap";
 
 import MQTT from "lib/MQTT";
 import { isOn, mangle } from "lib/Utils";
 
-// import TheaterMenu from "./TheaterMenu";
 import ActivitiesMenu from "./ActivitiesMenu";
 import DevicesMenu from "./DevicesMenu";
 
 // import Audio from "./Devices/Audio";
-// import TiVo from "./Devices/TiVo";
+import TiVo from "./Devices/TiVo";
 // import AppleTV from "./Devices/AppleTV";
 // import LGTVControl from "./Devices/LGTV";
 // import Harmony from "./Devices/Harmony";
 
 class TheaterTab extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.theater = props.theater;
     this.activities = this.theater.activities;
     this.devices = this.theater.devices;
     this.state = {
+      show: false,
       menu: false,
       currentActivity: { name: "All Off" },
       currentDevice: { name: "None" },
@@ -103,7 +103,6 @@ class TheaterTab extends React.Component {
       state.currentDevice = null;
       return;
     }
-    console.log("handleInputChange", state);
     const tvInput = mangle(state.tv.input),
       avrInput = mangle(state.avr.input);
 
@@ -121,7 +120,6 @@ class TheaterTab extends React.Component {
           return;
         }
       } else {
-        console.log("no inputs", activity);
         state.currentActivity = activity;
         state.currentDevice = null;
       }
@@ -249,28 +247,15 @@ class TheaterTab extends React.Component {
 
   handleActivityClick(activity) {
     console.log("Clicked activity", activity);
-    const state = Object.assign({}, this.state);
-    state.currentActivity = activity;
-    // if (state.tv) {
-    //   state.tv.input = activity.inputs.tv;
-    // }
-    // if (state.avr) {
-    //   state.avr.input = activity.inputs.avr;
-    // }
-    // if (state.currentActivity.name !== activity.name) {
-    //   state.currentDevice = this.findDevice(activity.defaultDevice);
-    // }
-    // this.handleInputChange(state);
-    this.setState(state);
-
     if (activity.macro) {
       MQTT.publish("macros/run", activity.macro);
     }
+    this.setState({ show: false, curentActivity: activity });
   }
 
   handleDeviceClick(device) {
     console.log("Clicked device", device);
-    this.setState({ currentDevice: this.findDevice(device) });
+    this.setState({ show: false, currentDevice: device });
   }
 
   handleSpeakersClick(speakers) {
@@ -404,11 +389,88 @@ class TheaterTab extends React.Component {
     });
   }
 
-  render() {
-    const renderDevice = () => {
-      //   switch (currentDevice) {
-      //     case "TiVo":
-      //       return <TiVo device={deviceMap.tivo.device} />;
+  renderActivities() {
+    return (
+      <>
+        <h4>Activities</h4>
+        <div style={{ textAlign: "center" }}>
+          <ActivitiesMenu
+            onSelect={this.handleActivityClick}
+            activities={this.activities}
+            currentActivity={this.state.currentActivity}
+          />
+        </div>
+      </>
+    );
+  }
+
+  renderDevices() {
+    return (
+      <>
+        <h4>Devices</h4>
+        <div style={{ textAlign: "center" }}>
+          <DevicesMenu
+            onSelect={this.handleDeviceClick}
+            devices={this.devices}
+            currentDevice={this.state.currentDevice}
+          />
+        </div>
+      </>
+    );
+  }
+
+  renderModal() {
+    const renderActivities = () => {
+      if (this.state.modal !== "activities") {
+        return null;
+      }
+      return this.renderActivities();
+    };
+
+    const renderDevices = () => {
+      if (this.state.modal !== "devices") {
+        return null;
+      }
+      return this.renderDevices();
+    };
+
+    return (
+      <Modal
+        show={this.state.show}
+        onHide={() => {
+          this.setState({ show: false });
+        }}
+      >
+        <Modal.Header>
+          <h1>
+            {this.state.modal === "activies"
+              ? "Choose Activity"
+              : "Choose Device"}
+          </h1>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ flex: 1, fontSize: 18, textAlign: "center" }}>
+            {renderActivities()}
+            {renderDevices()}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              this.setState({ show: false });
+            }}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
+  renderDevice() {
+    switch (this.state.currentDevice) {
+      //         case "TiVo":
+      //           return <TiVo device={deviceMap.tivo.device} />;
       //     case "Harmony Hub":
       //       return <Harmony hub={deviceMap.harmony} />;
       //     case "LG TV":
@@ -419,61 +481,70 @@ class TheaterTab extends React.Component {
       //       return <LGTVControl config={deviceMap.lgtv} />;
       //     case "Apple TV":
       //       return <AppleTV device={deviceMap.appletv.device} />;
-      //     default:
-      //       //        console.log("renderDevice unknown", currentDevice);
-      return null;
-      //   }
-    };
+      default:
+        console.log("renderDevice unknown", currentDevice);
+    }
+    return null;
+  }
 
-    console.log("currentActivity", this.state.currentActivity);
+  renderButtonBar() {
     return (
-      <div style={{ overflow: "scroll", height: "100vh", paddingBottom: 300 }}>
-        <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, fontSize: 18, textAlign: "center" }}>
-            Activity
-            <br />
-            <ActivitiesMenu
-              onSelect={this.handleActivityClick}
-              activities={this.activities}
-              currentActivity={this.state.currentActivity}
-            />
-          </div>
-          <div style={{ flex: 1, fontSize: 18, textAlign: "center" }}>
-            Device
-            <br />
-            <DevicesMenu
-              onSelect={this.handleDeviceClick}
-              devices={this.devices}
-              currentDevice={this.state.currentDevice}
-            />
-          </div>
-        </div>
-        {renderDevice()}
+      <>
+        <Row>
+          <Col>
+            <Button
+              onClick={() => {
+                this.setState({ show: true, modal: "activities" });
+              }}
+            >
+              Activity
+            </Button>
+            <span style={{ marginLeft: 20 }}>
+              {this.state.currentActivity.name}
+            </span>
+          </Col>
+          <Col>
+            <Button
+              onClick={() => {
+                this.setState({ show: true, modal: "devices" });
+              }}
+            >
+              Device
+            </Button>
+            <span style={{ marginLeft: 20 }}>
+              {this.state.currentDevice
+                ? this.state.currentDevice.name
+                : "Not Selected"}
+            </span>
+          </Col>
+        </Row>
+      </>
+    );
+  }
+
+  renderToolbar() {
+    if (!this.state.currentDevice) {
+      return (
+        <>
+          <h1>Choose Activity</h1>
+          {this.renderActivities()}
+        </>
+      );
+    }
+    return this.renderButtonBar();
+  }
+
+  render() {
+    return (
+      <div style={{ padding: 8 }}>
+        {this.renderToolbar()}
+        {this.renderModal()}
+        {this.renderDevice()}
 
         <div style={{ height: 10 }} />
         {/* <Audio avr={avr} /> */}
       </div>
     );
-
-    // return (
-    //   <div>
-    //     <Button
-    //       onClick={() => {
-    //         this.setState({ menu: true });
-    //       }}
-    //     >
-    //       Menu
-    //     </Button>
-    //     <TheaterMenu
-    //       show={this.state.menu}
-    //       activities={this.activities}
-    //       devices={this.devices}
-    //       onClose={() => {
-    //         this.setState({ menu: false });
-    //       }}
-    //     />
-    //   </div>
-    // );
   }
 }
 
