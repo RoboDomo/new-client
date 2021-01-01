@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Row, Col, ButtonGroup, Button, Modal, Card } from "react-bootstrap";
+import { ButtonGroup, Button, Modal, Card } from "react-bootstrap";
 import NumberInput from "Common/Form/NumberInput";
 
 import { TiAdjustBrightness } from "react-icons/ti";

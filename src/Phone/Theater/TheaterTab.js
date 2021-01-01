@@ -13,7 +13,7 @@
 */
 
 import React from "react";
-import { Row, Col, ButtonGroup, Button, Modal } from "react-bootstrap";
+import { Row, Col, Button, Modal } from "react-bootstrap";
 
 import MQTT from "lib/MQTT";
 import { isOn, mangle } from "lib/Utils";
@@ -468,9 +468,13 @@ class TheaterTab extends React.Component {
   }
 
   renderDevice() {
-    switch (this.state.currentDevice) {
-      //         case "TiVo":
-      //           return <TiVo device={deviceMap.tivo.device} />;
+    const currentDevice = this.state.currentDevice;
+    if (!currentDevice) {
+      return null;
+    }
+    switch (currentDevice.name) {
+      case "TiVo":
+        return <TiVo control={this.state.tivo} />;
       //     case "Harmony Hub":
       //       return <Harmony hub={deviceMap.harmony} />;
       //     case "LG TV":
@@ -539,7 +543,7 @@ class TheaterTab extends React.Component {
       <div style={{ padding: 8 }}>
         {this.renderToolbar()}
         {this.renderModal()}
-        {this.renderDevice()}
+        <div style={{ marginTop: 10 }}>{this.renderDevice()}</div>
 
         <div style={{ height: 10 }} />
         {/* <Audio avr={avr} /> */}

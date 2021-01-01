@@ -34,7 +34,7 @@ const style = {
 
 class TivoControls extends React.Component {
   constructor(props) {
-    super(props);
+    super();
 
     this.device = props.device;
     this.guide = this.device.guide;
@@ -59,6 +59,7 @@ class TivoControls extends React.Component {
   }
 
   handleGuideMessage(topic, message) {
+    debug("guide message topic", topic);
     try {
       this.setState({ guide: message });
     } catch (e) {

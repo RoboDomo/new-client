@@ -52,8 +52,7 @@ class FanTile extends React.Component {
   }
 
   renderDialog() {
-    const style = {},
-      {level, power} = this.state,
+    const {level, power} = this.state,
       l = Number(level);
 
     let value = "Off";

@@ -7,8 +7,8 @@ import {data as Config} from "lib/Config";
 const LOCALSTORAGE_KEY = "PHONE-DASHBOARD-TABS";
 
 class TheaterScreen extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || "1"
     };

@@ -12,14 +12,9 @@
   |_|  |_|\__,_|_|_| |_|____/ \___|_|  \___|\___|_| |_| 
 */
 
-import React  from "react";
+import React from "react";
 
-import {
-  Nav,
-  TabContainer,
-  TabContent,
-  TabPane,
-} from "react-bootstrap";
+import { Nav, TabContainer, TabContent, TabPane } from "react-bootstrap";
 
 import { FaSwimmingPool } from "react-icons/fa";
 import { MdDashboard, MdMenu } from "react-icons/md";
@@ -67,7 +62,7 @@ const style = {
  */
 class MainScreen extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     console.log("mainWindow", props);
     document.body.classList.add("phone");
     this.state = {
@@ -142,6 +137,7 @@ class MainScreen extends React.Component {
             <TabPane eventKey={1}>
               <DashboardScreen />
             </TabPane>
+            <TabPane eventKey={7}>{/* <SmartThings/> */}</TabPane>
             <TabPane eventKey={2}>{ <TheaterScreen /> }</TabPane>
             <TabPane eventKey={3}>{ <WeatherScreen />}</TabPane>
             <TabPane eventKey={4}>{/* <Nest /> */}</TabPane>
