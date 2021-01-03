@@ -27,7 +27,7 @@ import WeatherScreen from "Phone/Weather/WeatherScreen";
 // import Weather from "Phone/Weather/Weather";
 // import Nest from "Phone/Nest/Nest";
 // import Sensors from "Phone/Sensors/Sensors";
-// import Autelis from "Phone/Autelis/Autelis";
+ import AutelisScreen from "Phone/Autelis/AutelisScreen";
 // import SmartThings from "Phone/SmartThings/SmartThings";
 
 const LOCALSTORAGE_KEY = "phone_key";
@@ -142,7 +142,7 @@ class MainScreen extends React.Component {
             <TabPane eventKey={3}>{ <WeatherScreen />}</TabPane>
             <TabPane eventKey={4}>{/* <Nest /> */}</TabPane>
             <TabPane eventKey={5}>{/* <Sensors /> */}</TabPane>
-            <TabPane eventKey={6}>{/* <Autelis /> */}</TabPane>
+            <TabPane eventKey={6}>{ <AutelisScreen /> }</TabPane>
             <TabPane eventKey={7}>{/* <SmartThings/> */}</TabPane>
           </TabContent>
         </TabContainer>
