@@ -1,9 +1,4 @@
-import React from "react";
-import { Row, ButtonGroup } from "react-bootstrap";
-
-import MQTTButton from "Common/MQTTButton";
-import MQTT from "lib/MQTT";
-
+import React from "react"; import { Row, ButtonGroup } from "react-bootstrap"; import MQTTButton from "Common/MQTTButton"; import MQTT from "lib/MQTT"; 
 import {
   FaChevronUp,
   FaChevronDown,
@@ -261,7 +256,7 @@ class TiVo extends React.Component {
     return (
       <ButtonGroup
         className="fixed-bottom"
-        style={{ margin: 0, padding: 0, width: 1024 }}
+        style={{ margin: 0, padding: 0 }}
       >
         <MQTTButton transport topic={this.command_topic} message="REPLAY">
           <FaFastBackward />
@@ -301,7 +296,7 @@ class TiVo extends React.Component {
       return (
         <h4 style={{ textAlign: "center", marginBottom: 10, marginTop: 20 }}>
           <span style={{ marginRight: 20 }}>
-            Channel: {this.state.channel} {g.name}
+            {this.state.channel} {g.name}
           </span>
           <img
             style={{ height: 30, width: "auto", marginTop: -8 }}
