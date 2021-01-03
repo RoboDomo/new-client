@@ -27,7 +27,7 @@ const format = (n) => {
 
 class AudioControls extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.avr = props.avr;
     this.status_topic = `denon/${this.avr.device}/status`;
 

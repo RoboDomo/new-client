@@ -19,7 +19,7 @@ const rowStyle = {
 
 class DenonControls extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.device = props.device;
     this.command_topic = `denon/${this.device.device}/set/command`;
   }

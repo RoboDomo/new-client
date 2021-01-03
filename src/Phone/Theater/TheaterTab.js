@@ -526,6 +526,45 @@ class TheaterTab extends React.Component {
     return this.renderButtonBar();
   }
 
+  renderAudioControls() {
+    const { avr } = this.state;
+    if (!avr || !avr.power) {
+      return null;
+    }
+    console.log("avr", avr);
+
+    const format = (n) => {
+      if (n === null || n === undefined) {
+        return 0;
+      }
+      if (typeof n === "number") {
+        if (n > 99) {
+          return n / 10;
+        }
+        return n;
+      }
+      if (n.length === 3) {
+        return Number(n) / 10;
+      }
+      return Number(n);
+    };
+
+    return (
+      <div style={{ textAlign: "center" }}>
+        <h4 style={{marginBottom: 0}}>{avr.title}</h4>
+        <div style={{marginBottom: 4}}>{avr.input} / {avr.surroundMode}</div>
+        <div>
+          <Button>Mute</Button>
+          <Button>Vol-</Button>
+          <span style={{ marginLeft: 10, marginRight: 10 }}>
+            {format(avr.masterVolume)}
+          </span>
+          <Button>Vol+</Button>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div style={{ padding: 8 }}>
@@ -534,6 +573,7 @@ class TheaterTab extends React.Component {
         <div style={{ marginTop: 10 }}>{this.renderDevice()}</div>
 
         <div style={{ height: 10 }} />
+        <div>{this.renderAudioControls()}</div>
         {/* <Audio avr={avr} /> */}
       </div>
     );
