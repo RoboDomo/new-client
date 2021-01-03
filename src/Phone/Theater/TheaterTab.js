@@ -98,7 +98,7 @@ class TheaterTab extends React.Component {
       state.currentDevice = null;
       return;
     }
-    if (state.avr && state.tv.avr === false) {
+    if (state.avr && state.avr.power === false) {
       state.currentActivity = { name: "All Off" };
       state.currentDevice = null;
       return;
@@ -132,15 +132,11 @@ class TheaterTab extends React.Component {
     switch (t) {
       case "power":
         state.tv.power = isOn(message);
-        if (state.tv.power) {
-          this.handleInputChange(state);
-        }
+        this.handleInputChange(state);
         break;
       case "input":
         state.tv.input = message.toUpperCase();
-        if (state.tv.power) {
-          this.handleInputChange(state);
-        }
+        this.handleInputChange(state);
         break;
       default:
         return;
@@ -162,16 +158,12 @@ class TheaterTab extends React.Component {
         if (state.foregroundApp) {
           const foregroundApp = state.foregroundApp;
           const app = state.launchPoints[foregroundApp.appId];
-          console.log("app", app);
           const title = app.title;
-          console.log("title", title);
           const lp = title || "unknown";
           const inp = state.tv.power ? lp : "OFF";
 
           state.tv.input = inp;
-          console.log("foregroundApp", state.foregroundApp, title, lp, inp);
           state.tv.input = inp;
-          console.log("change", inp);
           this.handleInputChange(state);
         } else {
           state.tv.input = "OFF";
@@ -179,25 +171,20 @@ class TheaterTab extends React.Component {
         }
         break;
       case "foregroundApp":
-        console.log("foregroundApp", message);
         state.foregroundApp = message;
         if (!state.launchPoints) {
           state.tvInput = "OFF";
-          console.log("change OFF");
           this.handleInputChange(state);
         } else {
           const foregroundApp = state.foregroundApp;
           if (foregroundApp.appId !== "") {
             const app = state.launchPoints[foregroundApp.appId];
-            console.log("app", app);
             const title = app.title;
-            console.log("title", title);
             const lp = title || "unknown";
             const inp = state.tv.power ? lp : "OFF";
 
             state.tv.input = inp;
             // if (state.tv.power) {
-            console.log("change ", inp);
             // }
           }
           this.handleInputChange(state);
@@ -488,6 +475,7 @@ class TheaterTab extends React.Component {
       default:
         console.log("renderDevice unknown", currentDevice);
     }
+
     return null;
   }
 
