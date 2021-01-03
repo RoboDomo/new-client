@@ -15,6 +15,8 @@
 import React from "react";
 import { Row, Col, Button, Modal } from "react-bootstrap";
 
+import { FaVolumeMute, FaVolumeUp, FaVolumeDown } from "react-icons/fa";
+
 import MQTT from "lib/MQTT";
 import { isOn, mangle } from "lib/Utils";
 
@@ -23,7 +25,7 @@ import DevicesMenu from "./DevicesMenu";
 
 // import Audio from "./Devices/Audio";
 import TiVo from "./Devices/TiVo";
-// import AppleTV from "./Devices/AppleTV";
+ import AppleTV from "./Devices/AppleTV";
 // import LGTVControl from "./Devices/LGTV";
 // import Harmony from "./Devices/Harmony";
 
@@ -37,7 +39,7 @@ class TheaterTab extends React.Component {
       show: false,
       menu: false,
       currentActivity: { name: "All Off" },
-      currentDevice: { name: "None" },
+      currentDevice: null,
       avr: {
         power: false,
         input: "",
@@ -470,8 +472,8 @@ class TheaterTab extends React.Component {
       //         return null;
       //       }
       //       return <LGTVControl config={deviceMap.lgtv} />;
-      //     case "Apple TV":
-      //       return <AppleTV device={deviceMap.appletv.device} />;
+           case "Apple TV":
+             return <AppleTV control={this.state.appletv} />;
       default:
         console.log("renderDevice unknown", currentDevice);
     }
@@ -531,7 +533,6 @@ class TheaterTab extends React.Component {
     if (!avr || !avr.power) {
       return null;
     }
-    console.log("avr", avr);
 
     const format = (n) => {
       if (n === null || n === undefined) {
@@ -554,12 +555,12 @@ class TheaterTab extends React.Component {
         <h4 style={{marginBottom: 0}}>{avr.title}</h4>
         <div style={{marginBottom: 4}}>{avr.input} / {avr.surroundMode}</div>
         <div>
-          <Button>Mute</Button>
-          <Button>Vol-</Button>
+          <Button><FaVolumeMute/></Button>
+          <Button><FaVolumeDown/></Button>
           <span style={{ marginLeft: 10, marginRight: 10 }}>
             {format(avr.masterVolume)}
           </span>
-          <Button>Vol+</Button>
+          <Button><FaVolumeUp/></Button>
         </div>
       </div>
     );

@@ -36,7 +36,7 @@ const appName = (n) => {
 
 class AppleTVControls extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.device = props.device;
     this.title = this.device.title;
     this.info_topic = `appletv/${this.device.device}/status/info`;

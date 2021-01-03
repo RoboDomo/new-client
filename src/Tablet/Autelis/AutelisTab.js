@@ -15,7 +15,7 @@ import { ButtonGroup, Button, Row, Col } from "react-bootstrap";
 
 class AutelisTab extends React.Component {
   constructor(props) {
-    super(props);
+    super();
 
     this.topics = [
       "pump",

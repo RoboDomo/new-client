@@ -23,17 +23,32 @@ import PresenceTile from "./Tiles/PresenceTile";
 const LOCALSTORAGE_KEY = "PHONE-DASHBOARD-TABS";
 
 class DashboardScreen extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
     this.state = {
       activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || 1,
     };
+    console.log("activeTab", this.state.activeTab);
+  }
+
+  set activeTab(tab) {
+    localStorage.setItem(LOCALSTORAGE_KEY, tab);
+    this.setState({ activeTab: tab});
+  }
+
+  get activeTab() {
+    return this.state.activeTab;
   }
 
   renderListGroup(dashboard) {
     let key = 1;
     return (
-      <ListGroup style={{marginBottom: 100}}>
+      <ListGroup
+        style={{ marginBottom: 100 }}
+        onSelect={(eventKey) => {
+          this.activeTab = eventKey;
+        }}
+      >
         {dashboard.tiles.map((tile) => {
           switch (tile.type) {
             case "clock":
@@ -96,7 +111,7 @@ class DashboardScreen extends React.Component {
                   <PoolTile variant="success" tile={tile} />
                 </ListGroup.Item>
               );
-          case "spa":
+            case "spa":
               return (
                 <ListGroup.Item key={key++}>
                   <SpaTile tile={tile} />

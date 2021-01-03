@@ -4,7 +4,7 @@ import { Tabs, Tab } from "react-bootstrap";
 import TheaterTab from "./TheaterTab";
 
 import {data as Config} from "lib/Config";
-const LOCALSTORAGE_KEY = "PHONE-DASHBOARD-TABS";
+const LOCALSTORAGE_KEY = "PHONE-THEATER-TABS";
 
 class TheaterScreen extends React.Component {
   constructor() {
@@ -40,7 +40,6 @@ class TheaterScreen extends React.Component {
       >
         {Array.isArray(Config.theaters)
          ? Config.theaters.map(theater => {
-           console.log("theater", theater);
            return (
              <Tab
                title={theater.title}

@@ -141,7 +141,6 @@ class MQTT extends EventEmitter {
     const state = this.cache[topic]; // || localStorage.getItem(topic);
     if (state && handler) {
       setTimeout(() => {
-        console.log("handler", topic, state);
         try {
           handler(topic, JSON.parse(state));
         } catch (e) {
