@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
-import {data as config} from "lib/Config";
+import { data as config } from "lib/Config";
 
 // one of these per theater
-import DashboardTab from './DashboardTab';
+import DashboardTab from "./DashboardTab";
 
 const LOCALSTORAGE_KEY = "DASHBOARD_TAB_STATE";
 
@@ -14,7 +14,7 @@ class DashboardScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || "1"
+      activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || "1",
     };
   }
 
@@ -33,7 +33,7 @@ class DashboardScreen extends React.Component {
     return (
       <Tabs
         id="dashboard-tabs"
-        onSelect={eventKey => {
+        onSelect={(eventKey) => {
           this.activeTab = eventKey;
         }}
         activeKey={this.activeTab}
@@ -43,18 +43,18 @@ class DashboardScreen extends React.Component {
         transition={false}
       >
         {Array.isArray(config.dashboards)
-         ? config.dashboards.map(dashboard => {
-           return (
-             <Tab
-               title={dashboard.title}
-               eventKey={dashboard.key}
-               key={dashboard.key}
-             >
-               <DashboardTab dashboard={dashboard} />
-             </Tab>
-           );
-         })
-         : null}
+          ? config.dashboards.map((dashboard) => {
+              return (
+                <Tab
+                  title={dashboard.title}
+                  eventKey={dashboard.key}
+                  key={dashboard.key}
+                >
+                  <DashboardTab dashboard={dashboard} />
+                </Tab>
+              );
+            })
+          : null}
       </Tabs>
     );
   }

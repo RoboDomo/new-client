@@ -1,4 +1,6 @@
 import React, { lazy, Suspense } from "react";
+import ErrorBoundary from "Common/ErrorBoundary";
+
 import bowser from "bowser";
 import Alert from "Common/Alert";
 
@@ -27,20 +29,20 @@ const Phone = lazy(() =>
 const Platform = () => {
   if (platform.type === "mobile") {
     return (
-      <>
+      <ErrorBoundary>
         <Alert />
         <Phone />
-      </>
+      </ErrorBoundary>
     );
   }
   // if (window.orientation === 0) {
   //   return <Portrait />;
   // }
   return (
-    <>
+    <ErrorBoundary>
       <Alert />
       <Tablet />
-    </>
+    </ErrorBoundary>
   );
 };
 

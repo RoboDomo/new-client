@@ -332,12 +332,17 @@ class TheaterTab extends React.Component {
           break;
 
         case "lgtv":
+          this.tv = device;
           MQTT.unsubscribe(
             `lgtv/${device.device}/status/power`,
             this.handleLGTVMessage
           );
           MQTT.unsubscribe(
-            `lgtv/${device.device}/status/input`,
+            `lgtv/${device.device}/status/launchPoints`,
+            this.handleLGTVMessage
+          );
+          MQTT.unsubscribe(
+            `lgtv/${device.device}/status/foregroundApp`,
             this.handleLGTVMessage
           );
           break;

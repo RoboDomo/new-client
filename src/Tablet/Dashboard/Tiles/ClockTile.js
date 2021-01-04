@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./styles";
+
 import Clock from "Common/Clock";
 // import { data as Config} from "lib/Config";
 import MQTT from "lib/MQTT";
@@ -16,7 +17,7 @@ const dayNames = [
 
 class ClockTile extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.style = styles.tile(2, 2);
     this.tile = props.tile;
     this.state = {
@@ -40,11 +41,10 @@ class ClockTile extends React.Component {
   }
 
   renderWeather() {
-    if (!this.state.weather) {
+    const { weather } = this.state;
+    if (!weather) {
       return null;
     }
-
-    const weather = this.state.weather;
 
     const sunrise = new Date(weather.sunrise * 1000)
         .toLocaleTimeString()

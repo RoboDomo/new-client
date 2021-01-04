@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Row, Col, Button, ButtonGroup, Modal } from "react-bootstrap";
 import NumberInput from "Common/Form/NumberInput";
 import styles from "./styles";
@@ -12,7 +13,7 @@ import Ripples from "react-ripples";
 
 class DimmerTile extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.style = styles.tile(1, 1);
     this.tile = props.tile;
     this.device = props.tile.device;

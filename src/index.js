@@ -6,6 +6,7 @@ import "bootswatch/dist/slate/bootstrap.min.css";
 import "bootstrap-slider/dist/css/bootstrap-slider.css";
 import "react-bootstrap-toggle/dist/bootstrap2-toggle.css";
 import App from "./App";
+import Exception from "./Exception";
 import MQTT from "./lib/MQTT";
 import { enableAutoTTS} from "enable-auto-tts";
 
@@ -44,7 +45,7 @@ const main = async () => {
     });
   });
 
-  MQTT.on("error", () => {
+  MQTT.on("error", (e) => {
     debug("error");
     // ReactDOM.render(
     //   <React.StrictMode>
@@ -52,7 +53,7 @@ const main = async () => {
     //   </React.StrictMode>,
     //   document.getElementById("root")
     // );
-    ReactDOM.render(<App />, document.getElementById("root"));
+    ReactDOM.render(<Exception exception={e} />, document.getElementById("root"));
   });
 
   MQTT.connect();
