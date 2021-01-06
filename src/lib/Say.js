@@ -98,7 +98,7 @@ let interval = setInterval(async () => {
   } catch (e) {
     // console.log("Say retry");
   }
-});
+}, 1000);
 
 //
 export default say;

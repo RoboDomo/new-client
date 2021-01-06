@@ -19,9 +19,11 @@ class Alert extends React.Component {
   }
 
   handleAlertMessage(topic, message) {
+    if (message === null || message === "") {
+      return;
+    }
     const packet = message;
     packet.timestamp = Date.now();
-    // console.log("alert packet", packet, packet.type);
     switch (packet.type) {
       case "warn":
         Logger.log("warnings", packet);
