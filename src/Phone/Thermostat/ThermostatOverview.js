@@ -1,26 +1,9 @@
 import React from "react";
 
-import { Form, ListGroup, ButtonGroup, Button } from "react-bootstrap";
+import { ListGroup, ButtonGroup, Button } from "react-bootstrap";
 import Temperature from "Common/Temperature";
-import NumberField from "Common/Form/NumberField";
 import MQTT from "lib/MQTT";
 import { data as Config } from "lib/Config";
-
-const formatSystemMode = (mode) => {
-  const systemModes = [
-    /* 0 */ "A/C",
-    /* 1 */ "HEAT",
-    /* 2 */ "BOTH",
-    /* 3 */ "EMERGENCY",
-    /* 4 */ "OFF",
-    /* 5 */ "OFFLINE",
-    /* 6 */ "AUTO",
-  ];
-  if (systemModes[mode] !== undefined) {
-    return systemModes[mode];
-  }
-  return "Offline";
-};
 
 const variantHvacMode = (hvacMode) => {
   switch (hvacMode.toLowerCase()) {
@@ -253,15 +236,13 @@ class ThermostatOverview extends React.Component {
       return null;
     }
 
-    const ambient = zoneDetail.AmbientTemperature,
-      ambient_temperature = Number(ambient.Value);
-
-    const target = targetTemperature(zoneDetail),
-      hvac_mode = hvacMode(zoneDetail).toUpperCase();
+    const hvac_mode = hvacMode(zoneDetail).toUpperCase();
 
     return (
       <ListGroup style={{ marginBottom: 10 }}>
-        <ListGroup.Item style={{background: variantHvacMode(hvac_mode), color: "white" }}>
+        <ListGroup.Item
+          style={{ background: variantHvacMode(hvac_mode), color: "white" }}
+        >
           Zone {num}
           <span style={{ float: "right" }}>{zoneDetail.Name}</span>
         </ListGroup.Item>

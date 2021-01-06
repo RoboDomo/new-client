@@ -1,3 +1,7 @@
+// TODO: shows Spa is off when it's on
+// TODO: doesn't show red if heat is on
+
+
 import React from "react";
 
 import { FaSwimmingPool } from "react-icons/fa";

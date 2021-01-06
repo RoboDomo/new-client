@@ -32,7 +32,7 @@ class SpeakersListGroup extends React.Component {
     if (this.tv.type !== "bravia") {
       return;
     }
-    MQTT.subscribe(
+    MQTT.unsubscribe(
       `bravia/${this.tv.device}/status/speakers`,
       this.handleSpeakersMessage
     );

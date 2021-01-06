@@ -1,3 +1,5 @@
+// TODO shows on when spa is on
+
 import React from "react";
 
 import { FaSwimmingPool } from "react-icons/fa";

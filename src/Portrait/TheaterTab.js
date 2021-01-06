@@ -1,33 +1,23 @@
-/*
- ____  _                       
-|  _ \| |__   ___  _ __   ___  
-| |_) | '_ \ / _ \| '_ \ / _ \ 
-|  __/| | | | (_) | | | |  __/ 
-|_|   |_| |_|\___/|_| |_|\___| 
-                               
- _____ _                _           _____     _      
-|_   _| |__   ___  __ _| |_ ___ _ _|_   _|_ _| |__   
-  | | | '_ \ / _ \/ _` | __/ _ \ '__|| |/ _` | '_ \  
-  | | | | | |  __/ (_| | ||  __/ |   | | (_| | |_) | 
-  |_| |_| |_|\___|\__,_|\__\___|_|   |_|\__,_|_.__/  
-*/
-
 import React from "react";
-import { Row, Col, Button, Modal } from "react-bootstrap";
-
-import { FaVolumeMute, FaVolumeUp, FaVolumeDown } from "react-icons/fa";
+import { Row, Col } from "react-bootstrap";
 
 import MQTT from "lib/MQTT";
 import { isOn, mangle } from "lib/Utils";
+//import { data as Config } from "lib/Config";
 
-import ActivitiesMenu from "./ActivitiesMenu";
-import DevicesMenu from "./DevicesMenu";
+import AudioControls from "./Devices/AudioControls";
+//import ButtonList from "Tablet/Theater/ButtonList";
+import ActivitiesListGroup from "Tablet/Theater/ActivitiesListGroup";
+import DevicesListGroup from "Tablet/Theater/DevicesListGroup";
+import SpeakersListGroup from "Tablet/Theater/SpeakersListGroup";
 
-// import Audio from "./Devices/Audio";
-import TiVo from "./Devices/TiVo";
-import AppleTV from "./Devices/AppleTV";
-// import LGTVControl from "./Devices/LGTV";
-import Harmony from "./Devices/Harmony";
+import AppleTVControls from "Tablet/Theater/Devices/AppleTVControls";
+import RokuControls from "Tablet/Theater/Devices/RokuControls";
+import TivoControls from "Tablet/Theater/Devices/TivoControls";
+import BraviaControls from "Tablet/Theater/Devices/BraviaControls";
+import LGTVControls from "Tablet/Theater/Devices/LGTVControls";
+import DenonControls from "Tablet/Theater/Devices/DenonControls";
+import HarmonyControls from "Tablet/Theater/Devices/HarmonyControls";
 
 class TheaterTab extends React.Component {
   constructor(props) {
@@ -36,10 +26,9 @@ class TheaterTab extends React.Component {
     this.activities = this.theater.activities;
     this.devices = this.theater.devices;
     this.state = {
-      show: false,
-      menu: false,
       currentActivity: { name: "All Off" },
-      currentDevice: null,
+      currentDevice: { name: "None" },
+      devices: this.devices,
       avr: {
         power: false,
         input: "",
@@ -50,11 +39,11 @@ class TheaterTab extends React.Component {
         inputMode: "AUTO",
       },
       appletv: null,
+      roku: null,
       tv: { power: false },
     };
 
-    //
-    for (let device of this.devices) {
+    for (let device of this.theater.devices) {
       switch (device.type) {
         case "bravia":
           this.state.tv = device;
@@ -73,6 +62,10 @@ class TheaterTab extends React.Component {
           break;
         case "harmony":
           this.state.harmony = device;
+          break;
+        case "roku":
+          this.state.roku = device;
+          break;
         default:
           break;
       }
@@ -81,10 +74,10 @@ class TheaterTab extends React.Component {
     //
     this.handleActivityClick = this.handleActivityClick.bind(this);
     this.handleDeviceClick = this.handleDeviceClick.bind(this);
-    this.handleSpeakersClick = this.handleSpeakersClick.bind(this);
     this.handleBraviaMessage = this.handleBraviaMessage.bind(this);
     this.handleLGTVMessage = this.handleLGTVMessage.bind(this);
     this.handleDenonMessage = this.handleDenonMessage.bind(this);
+    this.handleRokuMessage = this.handleRokuMessage.bind(this);
   }
 
   findDevice(name) {
@@ -98,20 +91,22 @@ class TheaterTab extends React.Component {
 
   handleInputChange(state) {
     if (state.tv && state.tv.power === false) {
+      // state.tv.input = "OFF";
       state.currentActivity = { name: "All Off" };
-      state.currentDevice = null;
+      // state.currentDevice = null;
       return;
     }
-    if (state.avr && state.avr.power === false) {
+    if (state.avr && state.tv.avr === false) {
       state.currentActivity = { name: "All Off" };
-      state.currentDevice = null;
+      // state.currentDevice = null;
       return;
     }
+    // console.log("handleInputChange", state);
     const tvInput = mangle(state.tv.input),
       avrInput = mangle(state.avr.input);
 
     if (tvInput === undefined || avrInput === undefined) {
-      console.log("inputs undefined");
+      // console.log("inputs undefined");
       return;
     }
 
@@ -136,16 +131,21 @@ class TheaterTab extends React.Component {
     switch (t) {
       case "power":
         state.tv.power = isOn(message);
-        this.handleInputChange(state);
         break;
       case "input":
         state.tv.input = message.toUpperCase();
-        this.handleInputChange(state);
         break;
       default:
+        console.log("invalid", topic, message);
         return;
     }
+    this.handleInputChange(state);
     this.setState(state);
+  }
+
+  handleRokuMessage(topic, message) {
+    // console.log("ROKU", topic, message);
+    this.setState({ roku: message });
   }
 
   handleLGTVMessage(topic, message) {
@@ -162,12 +162,16 @@ class TheaterTab extends React.Component {
         if (state.foregroundApp) {
           const foregroundApp = state.foregroundApp;
           const app = state.launchPoints[foregroundApp.appId];
+          // console.log("app", app);
           const title = app.title;
+          // console.log("title", title);
           const lp = title || "unknown";
           const inp = state.tv.power ? lp : "OFF";
 
           state.tv.input = inp;
+          // console.log("foregroundApp", state.foregroundApp, title, lp, inp);
           state.tv.input = inp;
+          // console.log("change", inp);
           this.handleInputChange(state);
         } else {
           state.tv.input = "OFF";
@@ -175,20 +179,25 @@ class TheaterTab extends React.Component {
         }
         break;
       case "foregroundApp":
+        // console.log("foregroundApp", message);
         state.foregroundApp = message;
         if (!state.launchPoints) {
           state.tvInput = "OFF";
+          // console.log("change OFF");
           this.handleInputChange(state);
         } else {
           const foregroundApp = state.foregroundApp;
           if (foregroundApp.appId !== "") {
             const app = state.launchPoints[foregroundApp.appId];
+            // console.log("app", app);
             const title = app.title;
+            // console.log("title", title);
             const lp = title || "unknown";
             const inp = state.tv.power ? lp : "OFF";
 
             state.tv.input = inp;
             // if (state.tv.power) {
+            // console.log("change ", inp);
             // }
           }
           this.handleInputChange(state);
@@ -207,9 +216,13 @@ class TheaterTab extends React.Component {
     switch (t) {
       case "PW":
         state.avr.power = isOn(message);
+        if (!state.avr.power) {
+          this.avr.input = "OFF";
+        }
         this.handleInputChange(state);
         break;
       case "SI":
+        // console.log("SI", message);
         state.avr.input = message;
         this.handleInputChange(state);
         break;
@@ -237,20 +250,22 @@ class TheaterTab extends React.Component {
   }
 
   handleActivityClick(activity) {
-    console.log("Clicked activity", activity);
+    // console.log("Clicked activity", activity);
+    const state = Object.assign({}, this.state);
+    state.currentActivity = activity;
+    state.currentDevice = this.findDevice(activity.defaultDevice);
+    this.setState(state);
+
     if (activity.macro) {
       MQTT.publish("macros/run", activity.macro);
     }
-    this.setState({ show: false, curentActivity: activity });
   }
 
   handleDeviceClick(device) {
-    console.log("Clicked device", device);
-    this.setState({ show: false, currentDevice: device });
-  }
-
-  handleSpeakersClick(speakers) {
-    console.log("clicked speakers", speakers);
+    // console.log("Clicked device", device);
+    const state = Object.assign({}, this.state);
+    state.currentDevice = device;
+    this.setState(state);
   }
 
   componentDidMount() {
@@ -334,17 +349,12 @@ class TheaterTab extends React.Component {
           break;
 
         case "lgtv":
-          this.tv = device;
           MQTT.unsubscribe(
             `lgtv/${device.device}/status/power`,
             this.handleLGTVMessage
           );
           MQTT.unsubscribe(
-            `lgtv/${device.device}/status/launchPoints`,
-            this.handleLGTVMessage
-          );
-          MQTT.unsubscribe(
-            `lgtv/${device.device}/status/foregroundApp`,
+            `lgtv/${device.device}/status/input`,
             this.handleLGTVMessage
           );
           break;
@@ -385,213 +395,80 @@ class TheaterTab extends React.Component {
     });
   }
 
-  renderActivities() {
-    return (
-      <>
-        <h4>Activities</h4>
-        <div style={{ textAlign: "center" }}>
-          <ActivitiesMenu
-            onSelect={this.handleActivityClick}
-            activities={this.activities}
-            currentActivity={this.state.currentActivity}
-          />
-        </div>
-      </>
-    );
-  }
-
-  renderDevices() {
-    return (
-      <>
-        <h4>Devices</h4>
-        <div style={{ textAlign: "center" }}>
-          <DevicesMenu
-            onSelect={this.handleDeviceClick}
-            devices={this.devices}
-            currentDevice={this.state.currentDevice}
-          />
-        </div>
-      </>
-    );
-  }
-
-  renderModal() {
-    const renderActivities = () => {
-      if (this.state.modal !== "activities") {
-        return null;
-      }
-      return this.renderActivities();
-    };
-
-    const renderDevices = () => {
-      if (this.state.modal !== "devices") {
-        return null;
-      }
-      return this.renderDevices();
-    };
-
-    return (
-      <Modal
-        show={this.state.show}
-        onHide={() => {
-          this.setState({ show: false });
-        }}
-      >
-        <Modal.Header>
-          <h1>
-            {this.state.modal === "activies"
-              ? "Choose Activity"
-              : "Choose Device"}
-          </h1>
-        </Modal.Header>
-        <Modal.Body>
-          <div style={{ flex: 1, fontSize: 18, textAlign: "center" }}>
-            {renderActivities()}
-            {renderDevices()}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={() => {
-              this.setState({ show: false });
-            }}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-
   renderDevice() {
     const currentDevice = this.state.currentDevice;
-    if (!currentDevice) {
+    if (!currentDevice || !currentDevice.type) {
       return null;
     }
+
     switch (currentDevice.type) {
       case "tivo":
-        return <TiVo control={this.state.tivo} />;
+        return <TivoControls device={this.state.tivo} />;
+      case "bravia":
+        return <BraviaControls device={this.state.tv} />;
+      case "lgtv":
+        return (
+          <LGTVControls device={this.state.tv} input={this.state.tv.input} />
+        );
+      case "denon":
+        return <DenonControls device={this.state.avr} />;
       case "harmony":
-        return <Harmony hub={this.state.harmony} />;
-      //     case "LG TV":
-      //       console.log("deviceMap", deviceMap);
-      //       if (!deviceMap.lgtv) {
-      //         return null;
-      //       }
-      //       return <LGTVControl config={deviceMap.lgtv} />;
-      case "Apple TV":
-        return <AppleTV control={this.state.appletv} />;
+        return <HarmonyControls hub={this.state.harmony} />;
+      case "roku":
+        return <RokuControls device={this.state.roku} />;
       default:
-        console.log("renderDevice unknown", currentDevice);
+        return <AppleTVControls device={this.state.appletv} />;
     }
-
-    return null;
-  }
-
-  renderButtonBar() {
-    return (
-      <>
-        <Row>
-          <Col>
-            <Button
-              onClick={() => {
-                this.setState({ show: true, modal: "activities" });
-              }}
-            >
-              Activity
-            </Button>
-            <span style={{ marginLeft: 20 }}>
-              {this.state.currentActivity.name}
-            </span>
-          </Col>
-          <Col>
-            <Button
-              onClick={() => {
-                this.setState({ show: true, modal: "devices" });
-              }}
-            >
-              Device
-            </Button>
-            <span style={{ marginLeft: 20 }}>
-              {this.state.currentDevice
-               ? this.state.currentDevice.name.replace(" Hub", "")
-                : "Not Selected"}
-            </span>
-          </Col>
-        </Row>
-      </>
-    );
-  }
-
-  renderToolbar() {
-    if (!this.state.currentDevice) {
-      return (
-        <>
-          <h1>Choose Activity</h1>
-          {this.renderActivities()}
-        </>
-      );
-    }
-    return this.renderButtonBar();
-  }
-
-  renderAudioControls() {
-    const { avr } = this.state;
-    if (!avr || !avr.power) {
-      return null;
-    }
-
-    const format = (n) => {
-      if (n === null || n === undefined) {
-        return 0;
-      }
-      if (typeof n === "number") {
-        if (n > 99) {
-          return n / 10;
-        }
-        return n;
-      }
-      if (n.length === 3) {
-        return Number(n) / 10;
-      }
-      return Number(n);
-    };
-
-    return (
-      <div style={{ textAlign: "center" }}>
-        <h4 style={{ marginBottom: 0 }}>{avr.title}</h4>
-        <div style={{ marginBottom: 4 }}>
-          {avr.input} / {avr.surroundMode}
-        </div>
-        <div>
-          <Button>
-            <FaVolumeMute />
-          </Button>
-          <Button>
-            <FaVolumeDown />
-          </Button>
-          <span style={{ marginLeft: 10, marginRight: 10 }}>
-            {format(avr.masterVolume)}
-          </span>
-          <Button>
-            <FaVolumeUp />
-          </Button>
-        </div>
-      </div>
-    );
   }
 
   render() {
+    const state = Object.assign({}, this.state);
+    this.handleInputChange(state);
+    //     console.log(
+    //       "render",
+    //       "tv",
+    //       state.tv.power,
+    //       state.tv.input,
+    //       "avr",
+    //       state.avr.power,
+    //       state.avr.input
+    //     );
     return (
-      <div style={{ padding: 8 }}>
-        {this.renderToolbar()}
-        {this.renderModal()}
-        <div style={{ marginTop: 10 }}>{this.renderDevice()}</div>
+      <>
+        <Row style={{ marginTop: 12, padding: 8 }}>
+          <Col sm={3}>
+            <ActivitiesListGroup
+              activities={this.activities}
+              currentActivity={state.currentActivity.name}
+              onClick={this.handleActivityClick}
+            />
 
-        <div style={{ height: 10 }} />
-        <div>{this.renderAudioControls()}</div>
-        {/* <Audio avr={avr} /> */}
-      </div>
+            <div style={{ marginTop: 12 }} />
+
+            <DevicesListGroup
+              devices={this.devices}
+              tv={state.tv.input}
+              avr={state.avr.input}
+              /* state={this.state} */
+              currentDevice={state.currentDevice}
+              onClick={this.handleDeviceClick}
+            />
+
+            <div style={{ marginTop: 12 }} />
+
+            <SpeakersListGroup tv={state.tv} avr={state.avr} />
+          </Col>
+
+          <Col sm={9}>
+            <Row style={{ width: "100%", textAlign: "center", paddingLeft: 50 }}>
+              <Col sm={10}>
+                {this.renderDevice()}
+                <div style={{marginTop: 30}}><AudioControls avr={state.avr} /></div>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </>
     );
   }
 }

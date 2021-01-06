@@ -20,11 +20,11 @@ const Phone = lazy(() =>
   )
 );
 
-// const Portrait = lazy(() =>
-//   import(
-//     "./Portrait/MainScreen" /* webpackChunkName: "portrait", webpackPrefetch: true  */
-//   )
-// );
+ const Portrait = lazy(() =>
+   import(
+     "./Portrait/MainScreen" /* webpackChunkName: "portrait", webpackPrefetch: true  */
+   )
+ );
 
 const Platform = () => {
   if (platform.type === "mobile") {
@@ -35,9 +35,9 @@ const Platform = () => {
       </ErrorBoundary>
     );
   }
-  // if (window.orientation === 0) {
-  //   return <Portrait />;
-  // }
+   if (window.orientation === 0) {
+     return <Portrait />;
+   }
   return (
     <ErrorBoundary>
       <Alert />

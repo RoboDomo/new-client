@@ -1,4 +1,21 @@
-import React from "react"; import { ButtonGroup } from "react-bootstrap"; import MQTTButton from "Common/MQTTButton"; import MQTT from "lib/MQTT"; 
+/*
+ ****   *                                    *  *****         *   *
+ *   *  *                                   *     *      *    *   *
+ *   *  *                                  *      *           *   *
+ *   *  * ***    ****   * ***    ****      *      *     **     * *    ****
+ ****   **   *  *    *  **   *  *    *    *       *      *     * *   *    *
+ *      *    *  *    *  *    *  ******   *        *      *     * *   *    *
+ *      *    *  *    *  *    *  *        *        *      *      *    *    *
+ *      *    *  *    *  *    *  *    *  *         *      *      *    *    *
+ *      *    *   ****   *    *   ****   *         *    *****    *     ****
+ */
+
+import React from "react";
+import { ListGroup, Modal, ButtonGroup, Button } from "react-bootstrap";
+
+import MQTTButton from "Common/MQTTButton";
+import MQTT from "lib/MQTT";
+
 import {
   FaChevronUp,
   FaChevronDown,
@@ -41,6 +58,8 @@ class TiVo extends React.Component {
     this.status_topic = `tivo/${this.control.device}/status`;
     this.command_topic = `tivo/${this.control.device}/set/command`;
     this.guide_topic = `tvguide/${this.guide}/status/channels`;
+    //
+    this.state = { favorites: false };
     //
     this.handleTivoMessage = this.handleTivoMessage.bind(this);
     this.handleGuideMessage = this.handleGuideMessage.bind(this);
@@ -254,10 +273,7 @@ class TiVo extends React.Component {
 
   renderTransport() {
     return (
-      <ButtonGroup
-        className="fixed-bottom"
-        style={{ margin: 0, padding: 0 }}
-      >
+      <ButtonGroup className="fixed-bottom" style={{ margin: 0, padding: 0 }}>
         <MQTTButton transport topic={this.command_topic} message="REPLAY">
           <FaFastBackward />
         </MQTTButton>
@@ -289,21 +305,81 @@ class TiVo extends React.Component {
       </ButtonGroup>
     );
   }
+
+  renderModal() {
+    if (!this.control.favorites || !this.control.favorites.length) {
+      return null;
+    }
+
+    let key = 0;
+    return (
+      <Modal show={this.state.favorites}>
+        <Modal.Header>
+          <h1>Favorites</h1>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ overflow: "auto" }}>
+            <ListGroup>
+              {this.control.favorites.map((favorite) => {
+                const g = this.state.guide[favorite.channel];
+                return (
+                  <ListGroup.Item
+                    key={++key}
+                    variant={favorite.channel === this.state.channel ? "warning" : undefined}
+                    onClick={() => {
+                      MQTT.publish(this.command_topic, favorite.channel);
+                      this.setState({ favorites: false});
+                    }}
+                  >
+                    {favorite.channel} {g.name}
+                    <img
+                      style={{ float: "right", height: 30, width: "auto", marginTop: -8 }}
+                      src={g.logo.URL}
+                      alt={g.name}
+                    />
+                  </ListGroup.Item>
+                );
+              })}
+            </ListGroup>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick={() => {
+              this.setState({ favorites: false });
+            }}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
   renderGuide() {
     try {
       const channel = this.state.channel,
         g = this.state.guide[channel];
+
       return (
-        <h4 style={{ textAlign: "center", marginBottom: 10, marginTop: 20 }}>
-          <span style={{ marginRight: 20 }}>
-            {this.state.channel} {g.name}
-          </span>
-          <img
-            style={{ height: 30, width: "auto", marginTop: -8 }}
-            src={g.logo.URL}
-            alt={g.name}
-          />
-        </h4>
+        <>
+          {this.renderModal()}
+          <h4
+            onClick={() => {
+              this.setState({ favorites: true });
+            }}
+            style={{ textAlign: "center", marginBottom: 10, marginTop: 20 }}
+          >
+            <span style={{ marginRight: 20 }}>
+              {this.state.channel} {g.name}
+            </span>
+            <img
+              style={{ height: 30, width: "auto", marginTop: -8 }}
+              src={g.logo.URL}
+              alt={g.name}
+            />
+          </h4>
+        </>
       );
     } catch (e) {
       return null;
