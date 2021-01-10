@@ -79,7 +79,7 @@ class AppleTVControls extends React.Component {
       return null;
     }
     return (
-      <img style={{ width: 160, marginBottom: 10 }} src={`data:image;base64,${info.artwork}`} />
+      <img style={{ width: 160, marginBottom: 10 }} alt="artwork" src={`data:image;base64,${info.artwork}`} />
     );
   }
 

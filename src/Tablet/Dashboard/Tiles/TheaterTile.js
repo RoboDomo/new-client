@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, ButtonGroup } from "react-bootstrap";
 
+import Theater from "lib/Theater";
 import styles from "./styles";
 
 import {
@@ -22,8 +23,6 @@ import { BsFillChatSquareFill } from "react-icons/bs";
 
 import MQTT from "lib/MQTT";
 import { data as Config } from "lib/Config";
-
-import { mangle, isOn } from "lib/Utils";
 
 import MQTTButton from "Common/MQTTButton";
 
@@ -52,256 +51,34 @@ class TheaterTile extends React.Component {
     this.deviceMap = {};
     this.activitiesMap = {};
 
+    let theater = false;
     for (const t of Config.theaters) {
       if (t.title === this.title) {
-        this.theater = t;
+        theater = t;
         break;
       }
     }
-    if (!this.theater) {
+    if (!theater) {
       return;
     }
 
-    this.devices = this.theater.devices;
-    this.activities = this.theater.activities;
-
-    for (const device of this.devices) {
-      this.deviceMap[mangle(device.type)] = device;
-      switch (device.type.toLowerCase()) {
-        case "lgtv":
-        case "bravia":
-          this.tv = device;
-          break;
-        case "avr":
-        case "denon":
-          this.avr = device;
-          break;
-        case "appletv":
-          this.appletv = device;
-          break;
-        case "roku":
-          this.roku = device;
-          break;
-        case "tivo":
-          this.tivo = device;
-          break;
-        default:
-          break;
-      }
-    }
-
-    for (const activity of this.activities) {
-      this.activitiesMap[activity.type] = activity;
-    }
+    this.config = theater;
+    this.theater = new Theater(theater);
+    this.devices = theater.devices;
+    this.activities = theater.activities;
 
     this.state = {};
-
-    this.avr_command = `denon/${this.avr.device}/set/command`;
-    this.handleMessage = this.handleMessage.bind(this);
-  }
-
-  handleMessage(topic, message) {
-    console.log("handleMessage", topic, message);
-    if (message === undefined) {
-      return;
-    }
-    if (~topic.indexOf("input")) {
-      this.setState({ tvInput: message });
-    } else if (~topic.indexOf("SI")) {
-      this.setState({ avrInput: message });
-    } else if (~topic.indexOf("PW")) {
-      this.setState({ avrPower: isOn(message) });
-    } else if (~topic.indexOf("MU")) {
-      this.setState({ mute: isOn(message) });
-    } else if (~topic.indexOf("channels")) {
-      this.setState({ channels: message });
-    } else if (~topic.indexOf("channel")) {
-      this.setState({ channel: message });
-    } else if (~topic.indexOf("info")) {
-      this.setState({ info: message });
-    } else if (~topic.indexOf("power")) {
-      // console.log(topic, message);
-      this.setState({ tvPower: isOn(message) });
-    } else if (~topic.indexOf("active")) {
-      this.setState({ roku: message });
-    } else if (~topic.indexOf("launchPoints")) {
-      this.setState({ launchPoints: message });
-      if (this.state.foregroundApp) {
-        const foregroundApp = this.state.foregroundApp;
-        const app = this.state.launchPoints[foregroundApp.appId];
-        try {
-          this.setState({
-            tvInput: this.state.tvPower ? app.title || "unknown" : "OFF",
-          });
-        } catch (e) {}
-      }
-    } else if (~topic.indexOf("foregroundApp")) {
-      this.setState({ foregroundApp: message });
-      if (!this.state.launchPoints) {
-        this.setState({ tvInput: "OFF" });
-      } else {
-        const foregroundApp = this.state.foregroundApp;
-        if (foregroundApp.appId !== "") {
-          const app = this.state.launchPoints[foregroundApp.appId];
-          const title = app.title;
-          const lp = title || "unknown";
-          const inp = this.state.tvPower ? lp : "OFF";
-          this.setState({ tvInput: inp });
-        }
-      }
-    } else {
-      console.log("unknown ", topic, message);
-    }
   }
 
   componentDidMount() {
-    if (this.theater && this.theater.guide) {
-      MQTT.subscribe(
-        `tvguide/${this.theater.guide}/status/channels`,
-        this.handleMessage
-      );
-    }
-    if (this.tv) {
-      if (this.tv.type === "bravia") {
-        MQTT.subscribe(
-          `bravia/${this.tv.device}/status/power`,
-          this.handleMessage
-        );
-        MQTT.subscribe(
-          `bravia/${this.tv.device}/status/input`,
-          this.handleMessage
-        );
-      } else if (this.tv.type === "lgtv") {
-        MQTT.subscribe(
-          `lgtv/${this.tv.device}/status/power`,
-          this.handleMessage
-        );
-        MQTT.subscribe(
-          `lgtv/${this.tv.device}/status/launchPoints`,
-          this.handleMessage
-        );
-        MQTT.subscribe(
-          `lgtv/${this.tv.device}/status/foregroundApp`,
-          this.handleMessage
-        );
-      }
-    }
-
-    if (this.avr) {
-      MQTT.subscribe(`denon/${this.avr.device}/status/PW`, this.handleMessage);
-      MQTT.subscribe(`denon/${this.avr.device}/status/SI`, this.handleMessage);
-      MQTT.subscribe(`denon/${this.avr.device}/status/MU`, this.handleMessage);
-    }
-
-    if (this.tivo) {
-      MQTT.subscribe(
-        `tivo/${this.tivo.device}/status/channel`,
-        this.handleMessage
-      );
-    }
-
-    if (this.appletv) {
-      MQTT.subscribe(
-        `appletv/${this.appletv.device}/status/info`,
-        this.handleMessage
-      );
-    }
-
-    if (this.roku) {
-      MQTT.subscribe(
-        `roku/${this.roku.device}/status/active`,
-        this.handleMessage
-      );
-    }
+    this.theater.subscribe();
+    this.theater.on("statechange", (newState) => {
+      this.setState(newState);
+    });
   }
 
   componentWillUnmount() {
-    if (this.theater && this.theater.guide) {
-      MQTT.unsubscribe(
-        `tvguide/${this.theater.guide}/status/channels`,
-        this.handleMessage
-      );
-    }
-    if (this.tv) {
-      if (this.tv.type === "bravia") {
-        MQTT.unsubscribe(
-          `bravia/${this.tv.device}/status/power`,
-          this.handleMessage
-        );
-        MQTT.unsubscribe(
-          `bravia/${this.tv.device}/status/input`,
-          this.handleMessage
-        );
-      } else if (this.tv.type === "lgtv") {
-        MQTT.unsubscribe(
-          `lgtv/${this.tv.device}/status/power`,
-          this.handleMessage
-        );
-        MQTT.unsubscribe(
-          `lgtv/${this.tv.device}/status/launchPoints`,
-          this.handleMessage
-        );
-        MQTT.unsubscribe(
-          `lgtv/${this.tv.device}/status/foregroundApp`,
-          this.handleMessage
-        );
-      }
-    }
-
-    if (this.avr) {
-      MQTT.unsubscribe(`denon/${this.avr.device}/status/PW`, this.handleMessage);
-      MQTT.unsubscribe(`denon/${this.avr.device}/status/SI`, this.handleMessage);
-      MQTT.unsubscribe(`denon/${this.avr.device}/status/MU`, this.handleMessage);
-    }
-
-    if (this.tivo) {
-      MQTT.unsubscribe(
-        `tivo/${this.tivo.device}/status/channel`,
-        this.handleMessage
-      );
-    }
-
-    if (this.appletv) {
-      MQTT.unsubscribe(
-        `appletv/${this.appletv.device}/status/info`,
-        this.handleMessage
-      );
-    }
-
-    if (this.roku) {
-      MQTT.unsubscribe(
-        `roku/${this.roku.device}/status/active`,
-        this.handleMessage
-      );
-    }
-  }
-
-  //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\
-  //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\
-  //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\ //\\//\\
-
-  getActivityInfo() {
-    let currentActivity = null;
-
-    if (!this.state.tvPower || (this.avr && !this.state.avrPower)) {
-      return null;
-    }
-    const tvInput = mangle(this.state.tvInput),
-      avrInput = mangle(this.state.avrInput);
-
-    for (const activity of this.activities) {
-      if (activity.inputs) {
-        const tv = mangle(activity.inputs.tv);
-        const avr = mangle(activity.inputs.avr);
-        if (tv === tvInput && avr === avrInput) {
-          currentActivity = activity;
-        }
-      } else if (!currentActivity) {
-        currentActivity = activity;
-      }
-    }
-
-    return currentActivity;
+    this.theater.unsubscribe();
   }
 
   renderTivo(currentActivity) {
@@ -341,7 +118,7 @@ class TheaterTile extends React.Component {
             <div style={{ marginBottom: 10 }}>{renderGuide()}</div>
           </div>
         </div>
-        <TiVoTransport device={this.tivo} />
+        <TiVoTransport device={this.theater.tivo} />
       </>
     );
   }
@@ -408,16 +185,14 @@ class TheaterTile extends React.Component {
         {/*     <FaPlay /> */}
         {/*   </MQTTButton> */}
         {/* </div> */}
-        <AppleTVTransport device={this.appletv} />
+        <AppleTVTransport device={this.theater.appletv} />
       </div>
     );
   }
 
   renderRoku(currentActivity) {
-    console.log("roku", this.state);
     const roku = this.state.roku;
     const command_topic = `roku/${this.roku.device}/set/command`;
-    console.log("renderRoku", command_topic, roku, this.roku);
     const renderControls = () => {
       return (
         <>
@@ -463,7 +238,7 @@ class TheaterTile extends React.Component {
               <MQTTButton mini variant="none" />
             </ButtonGroup>
           </Row>
-          <RokuTransport device={this.roku.device} />
+          <RokuTransport device={this.theater.roku.device} />
         </>
       );
     };
@@ -502,7 +277,6 @@ class TheaterTile extends React.Component {
           if (activity.name === "All Off") {
             return null;
           }
-          // console.log("activity", activity);
           return (
             <div key={key++}>
               <MQTTButton topic="macros/run" message={activity.macro}>
@@ -517,34 +291,34 @@ class TheaterTile extends React.Component {
 
   renderAudioControls() {
     const mute = this.state.mute,
-      avr = this.avr;
+      avr = this.theater.avr;
 
-    if (!avr || (avr && !this.state.avrPower) || !this.state.tvPower) {
+    if (!avr || (avr && !this.state.avr.power) || !this.state.tv.power) {
       return null;
     }
 
     const dispatch = ({ type }) => {
-      console.log("dispatch", this.avr_command, type);
+      const avr_command = `denon/${avr.device}/set/command`;
       switch (type) {
         case "mute":
-          MQTT.publish(this.avr_command, "MUON");
+          MQTT.publish(avr_command, "MUON");
           this.setState({ mute: true });
           break;
         case "unmute":
-          MQTT.publish(this.avr_command, "MUOFF");
+          MQTT.publish(avr_command, "MUOFF");
           this.setState({ mute: false });
           break;
         case "masterup":
-          MQTT.publish(this.avr_command, "MVUP");
+          MQTT.publish(avr_command, "MVUP");
           break;
         case "masterdown":
-          MQTT.publish(this.avr_command, "MVDOWN");
+          MQTT.publish(avr_command, "MVDOWN");
           break;
         case "movie":
-          MQTT.publish(this.avr_command, "MSMOVIE");
+          MQTT.publish(avr_command, "MSMOVIE");
           break;
         case "centermax":
-          MQTT.publish(this.avr_command, "CVC 62");
+          MQTT.publish(avr_command, "CVC 62");
           break;
         default:
           console.log("invalid type!", type);
@@ -623,7 +397,7 @@ class TheaterTile extends React.Component {
       return null;
     }
 
-    const device = this.deviceMap[mangle(currentActivity.defaultDevice)];
+    const device = this.theater.findDevice(currentActivity.defaultDevice);
     if (!device) {
       return null;
     }
@@ -644,30 +418,37 @@ class TheaterTile extends React.Component {
   }
 
   render() {
-    if (
-      this.tv &&
-      (this.state.tvPower === undefined || this.state.tvInput === undefined)
-    ) {
-      return this.renderActivities();
+    const state = Object.assign({}, this.state);
+    this.theater.handleInputChange(state);
+
+    const { avr, tv, currentActivity } = this.state;
+    if (!tv || !avr) {
+      return null;
     }
-    if (
-      (this.avr && this.state.avrPower === undefined) ||
-      this.state.avrInput === undefined
-    ) {
-      return this.renderActivities();
-    }
-    if (this.theater.guide && (!this.state.channels || !this.state.channel)) {
+
+    if (tv && (state.tv.power === undefined || state.tv.input === undefined)) {
       return this.renderActivities();
     }
 
-    const currentActivity = this.getActivityInfo();
+    if (
+      (avr && state.avr.power === undefined) ||
+      state.avr.input === undefined
+    ) {
+      return this.renderActivities();
+    }
+
+    if (this.config.guide && (!state.channels || !state.channel)) {
+      return this.renderActivities();
+    }
+
     if (currentActivity === null) {
       return this.renderActivities();
     }
+
     return (
       <div style={this.style}>
         {this.renderActivity(currentActivity)}
-        {this.state.tvPower !== undefined
+        {state.tv.power !== undefined
           ? this.renderAudioControls(currentActivity)
           : null}
       </div>

@@ -2,6 +2,8 @@ import React from "react";
 
 import { Row, Col } from "react-bootstrap";
 
+import Theater from "lib/Theater";
+
 import ActivitiesListGroup from "Tablet/Theater/ActivitiesListGroup";
 import DevicesListGroup from "Tablet/Theater/DevicesListGroup";
 import SpeakersListGroup from "Tablet/Theater/SpeakersListGroup";
@@ -17,410 +19,39 @@ import LGTVControls from "Tablet/Theater/Devices/LGTVControls";
 import DenonControls from "Tablet/Theater/Devices/DenonControls";
 import HarmonyControls from "Tablet/Theater/Devices/HarmonyControls";
 
-import MQTT from "lib/MQTT";
-import { isOn, mangle } from "lib/Utils";
-
 class TheaterTab extends React.Component {
   constructor(props) {
     super(props);
-    this.theater = props.theater;
-    this.activities = this.theater.activities;
-    this.devices = this.theater.devices;
-    this.state = {
-      currentActivity: { name: "All Off" },
-      currentDevice: { name: "None" },
-      devices: this.devices,
-      avr: {
-        power: false,
-        input: "",
-        mute: false,
-        masterVolume: 0,
-        surroundMode: "",
-        centerVolume: 0,
-        inputMode: "AUTO",
-      },
-      appletv: null,
-      roku: null,
-      tv: { power: false },
-    };
 
-    for (const activity of this.activities) {
-        const inputs = activity.inputs;
-      if (inputs) {
-        if (inputs.tv) {
-	  if (!Array.isArray(inputs.tv)) {
-	    inputs.tv = [inputs.tv];
-	  }
-	  for (let i=0; i<inputs.tv.length; i++) {
-	    inputs.tv[i] = mangle(inputs.tv[i]);
-	  }
-        }
-        if (inputs.avr) {
-	  if (!Array.isArray(inputs.avr)) {
-	    inputs.avr = [inputs.avr];
-	  }
-	  for (let i=0; i<inputs.avr.length; i++) {
-	    inputs.avr[i] = mangle(inputs.avr[i]);
-	  }
-        }
-      }
-    }
-
-    for (const device of this.theater.devices) {
-      switch (device.type) {
-        case "bravia":
-          this.state.tv = device;
-          break;
-        case "lgtv":
-          this.state.tv = device;
-          break;
-        case "denon":
-          this.state.avr = device;
-          break;
-        case "appletv":
-          this.state.appletv = device;
-          break;
-        case "tivo":
-          this.state.tivo = device;
-          break;
-        case "harmony":
-          this.state.harmony = device;
-          break;
-        case "roku":
-          this.state.roku = device;
-          break;
-        default:
-          break;
-      }
-    }
+    this.theater = new Theater(props.theater);
+    this.config = props.theater;
+    this.activities = props.theater.activities;
+    this.devices = props.theater.devices;
+    
+    this.state = {};
 
     //
     this.handleActivityClick = this.handleActivityClick.bind(this);
     this.handleDeviceClick = this.handleDeviceClick.bind(this);
-    this.handleBraviaMessage = this.handleBraviaMessage.bind(this);
-    this.handleLGTVMessage = this.handleLGTVMessage.bind(this);
-    this.handleDenonMessage = this.handleDenonMessage.bind(this);
-    this.handleRokuMessage = this.handleRokuMessage.bind(this);
-  }
-
-  findDevice(name) {
-    for (const device of this.devices) {
-      if (mangle(device.name) === mangle(name)) {
-        return device;
-      }
-    }
-    return null;
-  }
-
-  handleInputChange(state) {
-    // console.log("change", state);
-    // if (state.avr && state.avr.power === false) {
-    //   state.avr.input = "OFF";
-    // }
-    if (state.tv && state.tv.power === false) {
-      // state.tv.input = "OFF";
-      state.currentActivity = { name: "All Off" };
-      // state.currentDevice = null;
-      return;
-    }
-    if (state.avr && state.tv.avr === false) {
-      state.currentActivity = { name: "All Off" };
-      // state.currentDevice = null;
-      return;
-    }
-
-    // console.log("handleInputChange", state);
-    const tvInput = mangle(state.tv.input),
-      avrInput = mangle(state.avr.input);
-
-    if (tvInput === undefined || avrInput === undefined) {
-      // console.log("inputs undefined");
-      return;
-    }
-
-    for (const activity of this.activities) {
-      const inputs = activity.inputs;
-      if (inputs) {
-        if (inputs.tv.indexOf(tvInput) !== -1 && inputs.avr.indexOf(avrInput) !== -1) {
-          state.currentActivity = activity;
-          state.currentDevice = this.findDevice(activity.defaultDevice);
-          return;
-        }
-      } else {
-        state.currentActivity = activity;
-        state.currentDevice = null;
-      }
-    }
-  }
-
-  handleBraviaMessage(topic, message) {
-    const t = topic.split("/").pop();
-    const state = Object.assign({}, this.state);
-    switch (t) {
-      case "power":
-        state.tv.power = isOn(message);
-        break;
-      case "input":
-        state.tv.input = message.toUpperCase();
-        break;
-      default:
-        console.log("invalid", topic, message);
-        return;
-    }
-    this.handleInputChange(state);
-    this.setState(state);
-  }
-
-  handleRokuMessage(topic, message) {
-    // console.log("ROKU", topic, message);
-    this.setState({ roku: message });
-  }
-
-  handleLGTVMessage(topic, message) {
-    const t = topic.split("/").pop(),
-      state = Object.assign({}, this.state);
-
-    switch (t) {
-      case "power":
-        state.tv.power = isOn(message);
-        this.handleInputChange(state);
-        break;
-      case "launchPoints":
-        state.launchPoints = message;
-        if (state.foregroundApp) {
-          const foregroundApp = state.foregroundApp;
-          const app = state.launchPoints[foregroundApp.appId];
-          // console.log("app", app);
-          const title = app.title;
-          // console.log("title", title);
-          const lp = title || "unknown";
-          const inp = state.tv.power ? lp : "OFF";
-
-          state.tv.input = inp;
-          // console.log("foregroundApp", state.foregroundApp, title, lp, inp);
-          state.tv.input = inp;
-          // console.log("change", inp);
-          this.handleInputChange(state);
-        } else {
-          state.tv.input = "OFF";
-          this.handleInputChange(state);
-        }
-        break;
-      case "foregroundApp":
-        // console.log("foregroundApp", message);
-        state.foregroundApp = message;
-        if (!state.launchPoints) {
-          state.tvInput = "OFF";
-          // console.log("change OFF");
-          this.handleInputChange(state);
-        } else {
-          const foregroundApp = state.foregroundApp;
-          if (foregroundApp.appId !== "") {
-            const app = state.launchPoints[foregroundApp.appId];
-            // console.log("app", app);
-            const title = app.title;
-            // console.log("title", title);
-            const lp = title || "unknown";
-            const inp = state.tv.power ? lp : "OFF";
-
-            state.tv.input = inp;
-            // if (state.tv.power) {
-            // console.log("change ", inp);
-            // }
-          }
-          this.handleInputChange(state);
-        }
-        break;
-      default:
-        return;
-    }
-    this.setState(state);
-  }
-
-  handleDenonMessage(topic, message) {
-    const t = topic.split("/").pop();
-    const state = Object.assign({}, this.state);
-
-    switch (t) {
-      case "PW":
-        state.avr.power = isOn(message);
-        if (!state.avr.power) {
-          this.avr.input = "OFF";
-        }
-        this.handleInputChange(state);
-        break;
-      case "SI":
-        // console.log("SI", message);
-        state.avr.input = message;
-        this.handleInputChange(state);
-        break;
-      case "MV":
-        state.avr.masterVolume = parseInt("" + message, 10);
-        break;
-      case "MS":
-        state.avr.surroundMode = message;
-        break;
-      case "CVC":
-        let m = "" + message,
-          v = parseInt(m, 10);
-        if (m.length === 2) {
-          v *= 10;
-        }
-        state.avr.centerVolume = v;
-        break;
-      case "DC":
-        state.avr.inputMode = message;
-        break;
-      default:
-        return;
-    }
-    this.setState(state);
   }
 
   handleActivityClick(activity) {
-    // console.log("Clicked activity", activity);
-    const state = Object.assign({}, this.state);
-    state.currentActivity = activity;
-    state.currentDevice = this.findDevice(activity.defaultDevice);
-    this.setState(state);
-
-    if (activity.macro) {
-      MQTT.publish("macros/run", activity.macro);
-    }
+    this.theater.startActivity(activity);
   }
 
   handleDeviceClick(device) {
-    // console.log("Clicked device", device);
-    const state = Object.assign({}, this.state);
-    state.currentDevice = device;
-    this.setState(state);
+    this.theater.startDevice(device);
   }
 
   componentDidMount() {
-    this.devices.map((device) => {
-      switch (device.type) {
-        case "bravia":
-          this.tv = device;
-          MQTT.subscribe(
-            `bravia/${device.device}/status/power`,
-            this.handleBraviaMessage
-          );
-          MQTT.subscribe(
-            `bravia/${device.device}/status/input`,
-            this.handleBraviaMessage
-          );
-          break;
-
-        case "lgtv":
-          this.tv = device;
-          MQTT.subscribe(
-            `lgtv/${device.device}/status/power`,
-            this.handleLGTVMessage
-          );
-          MQTT.subscribe(
-            `lgtv/${device.device}/status/launchPoints`,
-            this.handleLGTVMessage
-          );
-          MQTT.subscribe(
-            `lgtv/${device.device}/status/foregroundApp`,
-            this.handleLGTVMessage
-          );
-          break;
-
-        case "denon":
-          this.avr = device;
-          MQTT.subscribe(
-            `denon/${device.device}/status/SI`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/PW`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/MV`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/MS`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/CVC`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/DC`,
-            this.handleDenonMessage
-          );
-          break;
-
-        default:
-          break;
-      }
-      return false;
+    this.theater.on("statechange", (newState) => {
+      this.setState(newState);
     });
+    this.theater.subscribe();
   }
 
   componentWillUnmount() {
-    this.devices.map((device) => {
-      switch (device.type) {
-        case "bravia":
-          MQTT.unsubscribe(
-            `bravia/${device.device}/status/power`,
-            this.handleBraviaMessage
-          );
-          MQTT.unsubscribe(
-            `bravia/${device.device}/status/input`,
-            this.handleBraviaMessage
-          );
-          break;
-
-        case "lgtv":
-          MQTT.unsubscribe(
-            `lgtv/${device.device}/status/power`,
-            this.handleLGTVMessage
-          );
-          MQTT.unsubscribe(
-            `lgtv/${device.device}/status/input`,
-            this.handleLGTVMessage
-          );
-          break;
-
-        case "denon":
-          this.avr = device;
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/SI`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/PW`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/MV`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/MS`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/CVC`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/DC`,
-            this.handleDenonMessage
-          );
-          break;
-
-        default:
-          break;
-      }
-
-      return false;
-    });
+    this.theater.unsubscribe();
   }
 
   renderDevice() {
@@ -451,7 +82,10 @@ class TheaterTab extends React.Component {
 
   render() {
     const state = Object.assign({}, this.state);
-    this.handleInputChange(state);
+    if (!state.tv || !state.avr) {
+      return null;
+    }
+    this.theater.handleInputChange(state);
     // console.log(
     //   "render",
     //   "tv",
@@ -460,15 +94,6 @@ class TheaterTab extends React.Component {
     //   "avr",
     //   state.avr.power,
     //   state.avr.input
-    // );
-    // console.log(
-    //   "  render",
-    //   "tv",
-    //   this.state.tv.power,
-    //   this.state.tv.input,
-    //   "avr",
-    //   this.state.avr.power,
-    //   this.state.avr.input
     // );
     return (
       <Row style={{ marginTop: 12 }}>
@@ -504,7 +129,7 @@ class TheaterTab extends React.Component {
             <Col sm={7}>{this.renderDevice()}</Col>
 
             <Col sm={3}>
-              <ButtonList theater={this.theater} />
+              <ButtonList theater={this.config} />
             </Col>
           </Row>
         </Col>
