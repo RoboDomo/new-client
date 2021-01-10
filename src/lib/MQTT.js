@@ -80,7 +80,7 @@ class MQTT extends EventEmitter {
       this.mqtt.subscribe(topic);
     }
     if (handler) {
-      console.log("MQTT add handler", topic);
+      // console.log("MQTT add handler", topic);
       this.on(topic, handler);
     }
 

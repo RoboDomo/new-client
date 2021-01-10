@@ -18,6 +18,7 @@ import {
 class TiVoTransport extends React.Component {
   constructor(props) {
     super(props);
+    console.log("Transport props", props);
     this.device = props.device;
 
     this.command_topic = `tivo/${this.device.device}/set/command`;

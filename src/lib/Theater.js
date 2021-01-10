@@ -5,11 +5,13 @@
 
 import EventEmitter from "lib/EventEmitter";
 import MQTT from "lib/MQTT";
+import { mangle, isOn } from "lib/Utils";
 
 class Theater extends EventEmitter {
   constructor(theater) {
+    super();
     this.theater = theater;
-    
+
     this.activities = this.theater.activities;
     this.devices = this.theater.devices;
     this.state = {
@@ -27,27 +29,28 @@ class Theater extends EventEmitter {
       },
       appletv: null,
       roku: null,
+      tivo: null,
       tv: { power: false },
     };
 
     for (const activity of this.activities) {
-        const inputs = activity.inputs;
+      const inputs = activity.inputs;
       if (inputs) {
         if (inputs.tv) {
-	  if (!Array.isArray(inputs.tv)) {
-	    inputs.tv = [inputs.tv];
-	  }
-	  for (let i=0; i<inputs.tv.length; i++) {
-	    inputs.tv[i] = mangle(inputs.tv[i]);
-	  }
+          if (!Array.isArray(inputs.tv)) {
+            inputs.tv = [inputs.tv];
+          }
+          for (let i = 0; i < inputs.tv.length; i++) {
+            inputs.tv[i] = mangle(inputs.tv[i]);
+          }
         }
         if (inputs.avr) {
-	  if (!Array.isArray(inputs.avr)) {
-	    inputs.avr = [inputs.avr];
-	  }
-	  for (let i=0; i<inputs.avr.length; i++) {
-	    inputs.avr[i] = mangle(inputs.avr[i]);
-	  }
+          if (!Array.isArray(inputs.avr)) {
+            inputs.avr = [inputs.avr];
+          }
+          for (let i = 0; i < inputs.avr.length; i++) {
+            inputs.avr[i] = mangle(inputs.avr[i]);
+          }
         }
       }
     }
@@ -85,6 +88,8 @@ class Theater extends EventEmitter {
     this.handleLGTVMessage = this.handleLGTVMessage.bind(this);
     this.handleDenonMessage = this.handleDenonMessage.bind(this);
     this.handleRokuMessage = this.handleRokuMessage.bind(this);
+    this.handleTiVoMessage = this.handleTiVoMessage.bind(this);
+    this.handleGuideMessage = this.handleGuideMessage.bind(this);
   }
 
   setState(newState) {
@@ -106,23 +111,25 @@ class Theater extends EventEmitter {
   startActivity(activity) {
     this.setState({
       currentActivity: activity,
-      currentDevice: this.findDevice(activity.defaultDevice)
+      currentDevice: this.findDevice(activity.defaultDevice),
     });
-    
+
     if (activity.macro) {
       MQTT.publish("macros/run", activity.macro);
     }
   }
 
   startDevice(device) {
-    this.setState({ currentDevice: device});
+    this.setState({ currentDevice: device });
   }
 
   handleInputChange(state) {
-    // console.log("change", state);
-    // if (state.avr && state.avr.power === false) {
-    //   state.avr.input = "OFF";
-    // }
+    if (!state.tv) {
+      state = this.state;
+    }
+    if (state.avr && state.avr.power === false) {
+      state.avr.input = "OFF";
+    }
     if (state.tv && state.tv.power === false) {
       // state.tv.input = "OFF";
       state.currentActivity = { name: "All Off" };
@@ -135,19 +142,20 @@ class Theater extends EventEmitter {
       return;
     }
 
-    // console.log("handleInputChange", state);
     const tvInput = mangle(state.tv.input),
       avrInput = mangle(state.avr.input);
 
     if (tvInput === undefined || avrInput === undefined) {
-      // console.log("inputs undefined");
       return;
     }
 
     for (const activity of this.activities) {
       const inputs = activity.inputs;
       if (inputs) {
-        if (inputs.tv.indexOf(tvInput) !== -1 && inputs.avr.indexOf(avrInput) !== -1) {
+        if (
+          inputs.tv.indexOf(tvInput) !== -1 &&
+          inputs.avr.indexOf(avrInput) !== -1
+        ) {
           state.currentActivity = activity;
           state.currentDevice = this.findDevice(activity.defaultDevice);
           return;
@@ -156,6 +164,22 @@ class Theater extends EventEmitter {
         state.currentActivity = activity;
         state.currentDevice = null;
       }
+    }
+  }
+
+  handleTiVoMessage(topic, message) {
+    if (~topic.indexOf("channel")) {
+      this.setState({ channel: message });
+    } else if (~topic.indexOf("mode")) {
+      this.setState({ mode: message });
+    }
+  }
+
+  handleGuideMessage(topic, message) {
+    try {
+      this.setState({ channels: message });
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -314,6 +338,18 @@ class Theater extends EventEmitter {
           );
           break;
 
+        case "tivo":
+          this.tivo = device;
+          MQTT.subscribe(
+            `tivo/${device.device}/status/channel`,
+            this.handleTiVoMessage
+          );
+          MQTT.subscribe(
+            `tvguide/${device.guide}/status/channels`,
+            this.handleGuideMessage
+          );
+          break;
+
         case "denon":
           this.avr = device;
           MQTT.subscribe(
@@ -374,6 +410,18 @@ class Theater extends EventEmitter {
           );
           break;
 
+        case "tivo":
+          this.tivo = device;
+          MQTT.unsubscribe(
+            `tivo/${device.device}/status/channel`,
+            this.handleTiVoMessage
+          );
+          MQTT.unsubscribe(
+            `tvguide/${device.guide}/status/channels`,
+            this.handleGuideMessage
+          );
+          break;
+
         case "denon":
           this.avr = device;
           MQTT.unsubscribe(
@@ -408,6 +456,7 @@ class Theater extends EventEmitter {
       return false;
     });
   }
-  
 }
 
+//
+export default Theater;

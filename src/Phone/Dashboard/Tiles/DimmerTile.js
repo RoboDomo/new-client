@@ -12,7 +12,6 @@ class DimmerTile extends React.Component {
   constructor(props) {
     super();
     const tile = props.tile;
-    console.log("tile", tile);
     this.tile = tile;
     this.hub = tile.hub;
     this.device = tile.device;
