@@ -15,7 +15,7 @@ class SwitchTile extends React.Component {
     this.device = props.tile.device;
     this.hub = props.tile.hub;
     this.state = {};
-    this.pending = true;
+    this.pending = false;
 
     //
     this.handleClick = this.handleClick.bind(this);
@@ -44,6 +44,7 @@ class SwitchTile extends React.Component {
   handleClick() {
     console.log("CLICKED!", this.state);
     if (this.pending) {
+      console.log("pending!");
       return;
     }
     this.pending = true;

@@ -384,8 +384,8 @@ class IComfortTab extends React.Component {
               width="400px"
               height="400px"
               away={Boolean(zoneDetail.AwayModeEnabled)}
-              ambientTemperature={Locale.ftoc(ambient_temperature, metric)}
-              targetTemperature={Locale.ftoc(target, metric)}
+              ambientTemperature={Locale.ftoc(target, metric)}
+              targetTemperature={Locale.ftoc(ambient_temperature, metric)}
               hvacMode={hvacMode}
               leaf={zoneDetail.FeelsLikeEnabled}
             />

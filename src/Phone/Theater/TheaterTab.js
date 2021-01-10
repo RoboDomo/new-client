@@ -73,6 +73,7 @@ class TheaterTab extends React.Component {
           break;
         case "harmony":
           this.state.harmony = device;
+          break;
         default:
           break;
       }
@@ -514,7 +515,7 @@ class TheaterTab extends React.Component {
             </Button>
             <span style={{ marginLeft: 20 }}>
               {this.state.currentDevice
-               ? this.state.currentDevice.name.replace(" Hub", "")
+                ? this.state.currentDevice.name.replace(" Hub", "")
                 : "Not Selected"}
             </span>
           </Col>

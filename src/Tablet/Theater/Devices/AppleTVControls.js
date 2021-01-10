@@ -4,7 +4,7 @@ import MQTTButton from "Common/MQTTButton";
 
 import AppleTVTransport from "Tablet/Transport/AppleTVTransport";
 
-import { Row, ButtonGroup } from "react-bootstrap";
+import { Row, Col, ButtonGroup, ProgressBar } from "react-bootstrap";
 import {
   FaChevronUp,
   FaChevronDown,
@@ -27,11 +27,13 @@ const rowStyle = {
 const DEBUG = require("debug"),
   debug = DEBUG("AppleTVControls");
 
-const appName = (n) => {
-  if (n === "com.google.ios.youtube") {
-    return "YouTube";
-  }
-  return n;
+const formatTime = (time) => {
+  const hours = parseInt(time / 3600, 10);
+  const minutes = parseInt((time % 3600) / 60, 10);
+  const seconds = parseInt(time % 60, 10);
+  return `${hours ? hours + ":" : ""}${
+    minutes < 10 ? "0" + minutes : minutes
+  }:${seconds < 10 ? "0" + seconds : seconds}`;
 };
 
 class AppleTVControls extends React.Component {
@@ -58,11 +60,12 @@ class AppleTVControls extends React.Component {
       this.setState({
         info: JSON.parse(message),
       });
-    } catch (e) {}
+    } catch (e) {
+      this.setState({ info: message });
+    }
   }
 
   componentDidMount() {
-    debug(this.title, "Subscribe");
     MQTT.subscribe(this.info_topic, this.updateInfo);
   }
 
@@ -70,11 +73,29 @@ class AppleTVControls extends React.Component {
     MQTT.unsubscribe(this.info_topic, this.updateInfo);
   }
 
+  renderArtwork() {
+    const info = this.state.info;
+    if (!info.artwork) {
+      return null;
+    }
+    return (
+      <img style={{ width: 160, marginBottom: 10 }} src={`data:image;base64,${info.artwork}`} />
+    );
+  }
+
   renderNowPlaying() {
     const info = this.state.info;
-    if (!info) {
+    console.log("info", info);
+    if (!info || !info.title) {
       return (
-        <div>
+        <div
+          style={{
+            width: "100%",
+            textAlign: "center",
+            clear: "both",
+            marginBottom: 40,
+          }}
+        >
           <h1>Apple TV</h1>
           <h2>Not Playing</h2>
         </div>
@@ -83,9 +104,53 @@ class AppleTVControls extends React.Component {
     }
     return (
       <>
-        <h3>Apple TV</h3>
-        <h1>{appName(info.appDisplayName || info.appBundleIdentifier)}</h1>
-        <h2>{info.title}</h2>
+        <div
+          style={{
+            width: "100%",
+            textAlign: "center",
+            clear: "both",
+            marginBottom: 40,
+          }}
+        >
+          <h1>Apple TV</h1>
+          <h2>{info.app}</h2>
+          {this.renderArtwork()}
+          <h3>{info.title}</h3>
+          <h4>{info.deviceState}</h4>
+          <Row style={{ marginTop: 20 }}>
+            <Col sm={2}>
+              <div
+                style={{
+                  marginLeft: 20,
+                  width: "100%",
+                  marginTop: -4,
+                  textAlign: "right",
+                }}
+              >
+                {formatTime(info.position)}
+              </div>
+            </Col>
+            <Col sm={8}>
+              <ProgressBar
+                variant="success"
+                style={{ width: "100%" }}
+                now={(info.position / info.total_time) * 100}
+              />
+            </Col>
+            <Col sm={2}>
+              <div
+                style={{
+                  marginLeft: -16,
+                  width: "100%",
+                  marginTop: -4,
+                  textAlign: "left",
+                }}
+              >
+                {formatTime(info.total_time)}
+              </div>
+            </Col>
+          </Row>
+        </div>
       </>
     );
   }
@@ -93,7 +158,7 @@ class AppleTVControls extends React.Component {
   render() {
     return (
       <>
-        <Row style={{ ...rowStyle, marginTop: 4 }}>
+        <Row style={{ marginTop: 4, textAlign: "center" }}>
           {this.renderNowPlaying()}
         </Row>
 

@@ -7,7 +7,7 @@ class MQTT extends EventEmitter {
   constructor() {
     super();
     this.connect = this.connect.bind(this);
-    // this.cache = {};
+    this.cache = {};
     this.setMaxListeners(500);
   }
 
@@ -16,7 +16,7 @@ class MQTT extends EventEmitter {
     this.host = "nuc1";
     this.port = 1883;
     this.url = `ws://${this.host}`;
-    debug("... connecting", this.host, this.port, this.url);
+    console.log("... connecting", this.host, this.port, this.url);
     const mqtt = (this.mqtt = connect(this.url));
     // const mqtt = (this.mqtt = connect({ host: this.host, port: this.port }));
 
@@ -55,7 +55,7 @@ class MQTT extends EventEmitter {
       "color:blue; font-weight: bold"
     );
     // localStorage.setItem(topic, message);
-    // this.cache[topic] = message;
+    this.cache[topic] = message;
     if (this.listenerCount(topic)) {
       // console.log(
       //   "%cmessage <<< %c" + topic + " %c" + message.substr(0, 20),
@@ -83,8 +83,18 @@ class MQTT extends EventEmitter {
       console.log("MQTT add handler", topic);
       this.on(topic, handler);
     }
-    return true;
 
+    if (this.cache[topic]) {
+      const state = this.cache[topic];
+      setTimeout(() => {
+        try {
+          handler(topic, JSON.parse(state));
+        } catch (e) {
+          handler(topic, state);
+        }
+      }, 1);
+    }
+    return true;
     // const state = this.cache[topic] || localStorage.getItem(topic);
     // if (state && handler) {
     //   setTimeout(() => {

@@ -44,10 +44,12 @@ class AppleTV extends React.Component {
       info: null,
     };
 
+    //
     this.updateInfo = this.updateInfo.bind(this);
   }
 
   updateInfo(topic, message) {
+    console.log("updateInfo", message);
     try {
       debug(JSON.parse(message));
       debug("type", typeof message);
@@ -58,6 +60,7 @@ class AppleTV extends React.Component {
   }
 
   componentDidMount() {
+    console.log("mount subscribe", this.info_topic);
     MQTT.subscribe(this.info_topic, this.updateInfo);
   }
 

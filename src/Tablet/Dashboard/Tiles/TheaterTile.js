@@ -101,6 +101,7 @@ class TheaterTile extends React.Component {
   }
 
   handleMessage(topic, message) {
+    console.log("handleMessage", topic, message);
     if (message === undefined) {
       return;
     }

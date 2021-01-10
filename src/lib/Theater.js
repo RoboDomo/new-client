@@ -1,29 +1,15 @@
-import React from "react";
+// Common routines for dealing with theaters
+// 1. MQTT Subscribe/Unsubscribe
+// 2. Devices management and control
+// 3. Activities management and control
 
-import { Row, Col } from "react-bootstrap";
-
-import ActivitiesListGroup from "Tablet/Theater/ActivitiesListGroup";
-import DevicesListGroup from "Tablet/Theater/DevicesListGroup";
-import SpeakersListGroup from "Tablet/Theater/SpeakersListGroup";
-
-import AudioControls from "Tablet/Theater/AudioControls";
-import ButtonList from "Tablet/Theater/ButtonList";
-
-import AppleTVControls from "Tablet/Theater/Devices/AppleTVControls";
-import RokuControls from "Tablet/Theater/Devices/RokuControls";
-import TivoControls from "Tablet/Theater/Devices/TivoControls";
-import BraviaControls from "Tablet/Theater/Devices/BraviaControls";
-import LGTVControls from "Tablet/Theater/Devices/LGTVControls";
-import DenonControls from "Tablet/Theater/Devices/DenonControls";
-import HarmonyControls from "Tablet/Theater/Devices/HarmonyControls";
-
+import EventEmitter from "lib/EventEmitter";
 import MQTT from "lib/MQTT";
-import { isOn, mangle } from "lib/Utils";
 
-class TheaterTab extends React.Component {
-  constructor(props) {
-    super(props);
-    this.theater = props.theater;
+class Theater extends EventEmitter {
+  constructor(theater) {
+    this.theater = theater;
+    
     this.activities = this.theater.activities;
     this.devices = this.theater.devices;
     this.state = {
@@ -95,12 +81,17 @@ class TheaterTab extends React.Component {
     }
 
     //
-    this.handleActivityClick = this.handleActivityClick.bind(this);
-    this.handleDeviceClick = this.handleDeviceClick.bind(this);
     this.handleBraviaMessage = this.handleBraviaMessage.bind(this);
     this.handleLGTVMessage = this.handleLGTVMessage.bind(this);
     this.handleDenonMessage = this.handleDenonMessage.bind(this);
     this.handleRokuMessage = this.handleRokuMessage.bind(this);
+  }
+
+  setState(newState) {
+    for (const key of Object.keys(newState)) {
+      this.state[key] = newState[key];
+    }
+    this.emit("statechange", this.state);
   }
 
   findDevice(name) {
@@ -110,6 +101,21 @@ class TheaterTab extends React.Component {
       }
     }
     return null;
+  }
+
+  startActivity(activity) {
+    this.setState({
+      currentActivity: activity,
+      currentDevice: this.findDevice(activity.defaultDevice)
+    });
+    
+    if (activity.macro) {
+      MQTT.publish("macros/run", activity.macro);
+    }
+  }
+
+  startDevice(device) {
+    this.setState({ currentDevice: device});
   }
 
   handleInputChange(state) {
@@ -277,26 +283,7 @@ class TheaterTab extends React.Component {
     this.setState(state);
   }
 
-  handleActivityClick(activity) {
-    // console.log("Clicked activity", activity);
-    const state = Object.assign({}, this.state);
-    state.currentActivity = activity;
-    state.currentDevice = this.findDevice(activity.defaultDevice);
-    this.setState(state);
-
-    if (activity.macro) {
-      MQTT.publish("macros/run", activity.macro);
-    }
-  }
-
-  handleDeviceClick(device) {
-    // console.log("Clicked device", device);
-    const state = Object.assign({}, this.state);
-    state.currentDevice = device;
-    this.setState(state);
-  }
-
-  componentDidMount() {
+  subscribe() {
     this.devices.map((device) => {
       switch (device.type) {
         case "bravia":
@@ -362,7 +349,7 @@ class TheaterTab extends React.Component {
     });
   }
 
-  componentWillUnmount() {
+  unsubscribe() {
     this.devices.map((device) => {
       switch (device.type) {
         case "bravia":
@@ -418,116 +405,9 @@ class TheaterTab extends React.Component {
         default:
           break;
       }
-
       return false;
     });
   }
-
-  renderDevice() {
-    const currentDevice = this.state.currentDevice;
-    if (!currentDevice || !currentDevice.type) {
-      return null;
-    }
-
-    switch (currentDevice.type) {
-      case "tivo":
-        return <TivoControls device={this.state.tivo} />;
-      case "bravia":
-        return <BraviaControls device={this.state.tv} />;
-      case "lgtv":
-        return (
-          <LGTVControls device={this.state.tv} input={this.state.tv.input} />
-        );
-      case "denon":
-        return <DenonControls device={this.state.avr} />;
-      case "harmony":
-        return <HarmonyControls hub={this.state.harmony} />;
-      case "roku":
-        return <RokuControls device={this.state.roku} />;
-      default:
-        return <AppleTVControls device={this.state.appletv} />;
-    }
-  }
-
-  render() {
-    const state = Object.assign({}, this.state);
-    this.handleInputChange(state);
-    // console.log(
-    //   "render",
-    //   "tv",
-    //   state.tv.power,
-    //   state.tv.input,
-    //   "avr",
-    //   state.avr.power,
-    //   state.avr.input
-    // );
-    // console.log(
-    //   "  render",
-    //   "tv",
-    //   this.state.tv.power,
-    //   this.state.tv.input,
-    //   "avr",
-    //   this.state.avr.power,
-    //   this.state.avr.input
-    // );
-    return (
-      <Row style={{ marginTop: 12 }}>
-        <Col sm={2}>
-          <ActivitiesListGroup
-            activities={this.activities}
-            currentActivity={state.currentActivity.name}
-            onClick={this.handleActivityClick}
-          />
-
-          <div style={{ marginTop: 12 }} />
-
-          <DevicesListGroup
-            devices={this.devices}
-            tv={state.tv.input}
-            avr={state.avr.input}
-            /* state={this.state} */
-            currentDevice={state.currentDevice}
-            onClick={this.handleDeviceClick}
-          />
-
-          <div style={{ marginTop: 12 }} />
-
-          <SpeakersListGroup tv={state.tv} avr={state.avr} />
-        </Col>
-
-        <Col sm={10}>
-          <Row style={{ width: "100%", textAlign: "center" }}>
-            <Col sm={2}>
-              <AudioControls avr={state.avr} />
-            </Col>
-
-            <Col sm={7}>{this.renderDevice()}</Col>
-
-            <Col sm={3}>
-              <ButtonList theater={this.theater} />
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    );
-  }
-
-  set currentActivity(activity) {
-    this.setState({ currentActivity: activity });
-  }
-
-  get currentActivity() {
-    return this.state.currentActivity;
-  }
-
-  set currentDevice(device) {
-    this.setState({ currentDevice: device });
-  }
-
-  get currentDevice() {
-    return this.state.currentDevice;
-  }
+  
 }
 
-//
-export default TheaterTab;

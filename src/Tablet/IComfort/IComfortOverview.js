@@ -241,7 +241,7 @@ class IComfortOverview extends React.Component {
         mode === zone2.zoneDetail.SystemMode &&
         mode === zone3.zoneDetail.SystemMode;
 
-    console.log("ALL", all, mode, zone1);
+    // console.log("ALL", all, mode, zone1);
     return (
       <ButtonGroup type="radio" size="lg" name="hvac">
         <Button

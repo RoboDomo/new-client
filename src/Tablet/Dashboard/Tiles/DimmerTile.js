@@ -18,7 +18,7 @@ class DimmerTile extends React.Component {
     this.tile = props.tile;
     this.device = props.tile.device;
     this.hub = props.tile.hub;
-    this.state = { show: false };
+    this.state = { level: 0, show: false };
 
     //
     this.handleLevelMessage = this.handleLevelMessage.bind(this);
@@ -37,9 +37,7 @@ class DimmerTile extends React.Component {
   }
 
   async handleClick() {
-    if (this.state.level !== undefined) {
-      this.setState({ show: true });
-    }
+    this.setState({ show: true });
     return;
   }
 
