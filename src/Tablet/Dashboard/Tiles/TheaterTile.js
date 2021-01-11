@@ -130,8 +130,12 @@ class TheaterTile extends React.Component {
       // }
     };
 
-    const topic = `appletv/${this.appletv.device}/set/command`;
-    const device = this.appletv;
+    if (!this.state.appletv) {
+      return null;
+    }
+    console.log("here", this.theater.appletv);
+    const topic = `appletv/${this.state.appletv.device}/set/command`;
+    const device = this.state.appletv;
     return (
       <div>
         <div style={{ fontWeight: "bold" }}>{device.title}</div>
@@ -185,7 +189,7 @@ class TheaterTile extends React.Component {
         {/*     <FaPlay /> */}
         {/*   </MQTTButton> */}
         {/* </div> */}
-        <AppleTVTransport device={this.theater.appletv} />
+        <AppleTVTransport device={this.state.appletv} />
       </div>
     );
   }
