@@ -2,6 +2,7 @@ import React from "react";
 import { Tabs, Tab } from "react-bootstrap";
 
 import SystemsTab from "./SystemsTab";
+import MicroservicesTab from "./MicroservicesTab";
 
 import { data as Config } from "lib/Config";
 // import MQTT from "lib/MQTT";
@@ -29,7 +30,7 @@ class SystemsScreen extends React.Component {
   }
 
   render() {
-    let key = 0;
+    let key = 1;
     return (
       <Tabs
         id="systems-tabs"
@@ -42,13 +43,24 @@ class SystemsScreen extends React.Component {
         unmountOnExit
         transition={false}
       >
-        {this.state.systems.map((system, ndx) => {
+        <Tab
+          style-={{ padding: 10 }}
+          title="Microservices"
+          eventKey={key}
+          key={key}
+        >
+          <div style={{ overflow: "auto", height: "85vh" }}>
+            <MicroservicesTab type="table" />
+          </div>
+        </Tab>
+        {this.state.systems.map((system) => {
+          key++;
           return (
             <Tab
               style={{ padding: 10 }}
               title={system}
-              eventKey={ndx}
-              key={++key}
+              eventKey={key}
+              key={key}
             >
               <SystemsTab system={system} />
             </Tab>

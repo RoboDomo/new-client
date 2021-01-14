@@ -137,10 +137,14 @@ class TheaterTile extends React.Component {
 
   renderAppleTV(currentActivity) {
     const renderTitle = (title) => {
-            // {title}              ...            {title}
+      // {title}              ...            {title}
       if (title.length > 30) {
         return (
-          <marquee scrolldelay="200" behavior="alternate" style={{ fontSize: 12 }}>
+          <marquee
+            scrolldelay="200"
+            behavior="alternate"
+            style={{ fontSize: 14 }}
+          >
             {title}
           </marquee>
         );
@@ -156,7 +160,9 @@ class TheaterTile extends React.Component {
           return (
             <>
               {renderTitle(info.title)}
-              <div style={{ fontSize: 10, marginTop: -2 }}>{info.deviceState}</div>
+              <div style={{ fontSize: 10, marginTop: -2 }}>
+                {info.deviceState}
+              </div>
               <Row style={{ marginTop: 2, fontSize: 12 }}>
                 <Col sm={3}>
                   <div
@@ -196,17 +202,19 @@ class TheaterTile extends React.Component {
         }
         // if (!info.playbackState) {
       } catch (e) {}
-      return <div>Not Playing</div>;
+      const device = this.state.appletv;
+      return <div>
+        <div style={{ fontWeight: "bold" }}>{device.title}</div>
+        <div>Not Playing</div>
+      </div>;
     };
 
     if (!this.state.appletv) {
       return null;
     }
     const topic = `appletv/${this.state.appletv.device}/set/command`;
-    const device = this.state.appletv;
     return (
       <div>
-        {/* <div style={{ fontWeight: "bold" }}>{device.title}</div> */}
         {renderPlaybackState()}
 
         <Row style={{ ...rowStyle, marginTop: 6 }}>

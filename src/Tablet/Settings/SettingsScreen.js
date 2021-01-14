@@ -9,16 +9,16 @@ import WeatherSettings from "./WeatherSettings";
 import AutelisSettings from "./AutelisSettings";
 import ThingsSettings from "./ThingsSettings";
 import SensorsSettings from "./SensorsSettings";
-import MicroservicesSettings from "./MicroservicesSettings";
+// import MicroservicesSettings from "./MicroservicesSettings";
 // import VoicesSettings from "./VoicesSettings";
 
 const LOCALSTORAGE_KEY = "settingstab";
 
 const tabConfig = [
-  {
-    title: "Microservices",
-    content: <MicroservicesSettings type="table" />,
-  },
+  // {
+  //   title: "Microservices",
+  //   content: <MicroservicesSettings type="table" />,
+  // },
   { title: "Alerts", content: <AlertsSettings /> },
   // { title: "Voices", content: <VoicesSettings /> },
   { title: "Dashboards", content: <DashboardsSettings /> },

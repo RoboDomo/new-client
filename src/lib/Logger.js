@@ -1,7 +1,8 @@
 import EventEmitter from "lib/EventEmitter";
 const debug = require("debug")("Logger"),
   os = require("os"),
-  LOCALSTORAGE_KEY = "LOGGER";
+  LOCALSTORAGE_KEY = "LOGGER",
+  MAX_LOG = 50;
 
 class Logger extends EventEmitter {
   constructor() {
@@ -36,6 +37,9 @@ class Logger extends EventEmitter {
       console.log("LOG", which, message);
       this.buffer[which] = this.buffer[which] || [];
       this.buffer[which].push(message);
+      while (this.buffer[which].length > MAX_LOG) {
+        this.buffer[which].unshift();
+      }
       this.store();
       this.emit("change", which, this.buffer[which]);
     };
@@ -55,8 +59,7 @@ class Logger extends EventEmitter {
           timestamp: Date.now(),
           host: os.hostname(),
         });
-      }
-      else {
+      } else {
         message.timestamp = message.timestamp || Date.now();
         message.type = message.type || "alert";
         this.log("alerts", message);
