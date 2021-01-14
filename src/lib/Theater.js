@@ -84,6 +84,7 @@ class Theater extends EventEmitter {
     }
 
     //
+    this.handleAppleTVMessage = this.handleAppleTVMessage.bind(this);
     this.handleBraviaMessage = this.handleBraviaMessage.bind(this);
     this.handleLGTVMessage = this.handleLGTVMessage.bind(this);
     this.handleDenonMessage = this.handleDenonMessage.bind(this);
@@ -181,6 +182,13 @@ class Theater extends EventEmitter {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  handleAppleTVMessage(topic, message) {
+    const state = Object.assign({}, this.state);
+    state.appletv.info = message;
+
+    this.setState(state);
   }
 
   handleBraviaMessage(topic, message) {
@@ -310,6 +318,14 @@ class Theater extends EventEmitter {
   subscribe() {
     this.devices.map((device) => {
       switch (device.type) {
+      case "appletv":
+        this.appletv = device;
+          MQTT.subscribe(
+            `appletv/${device.device}/status/info`,
+            this.handleAppleTVMessage
+          );
+        break;
+        
         case "bravia":
           this.tv = device;
           MQTT.subscribe(
@@ -388,6 +404,12 @@ class Theater extends EventEmitter {
   unsubscribe() {
     this.devices.map((device) => {
       switch (device.type) {
+      case "appletv":
+          MQTT.unsubscribe(
+            `appletv/${device.device}/status/info`,
+            this.handleAppleTVMessage
+          );
+        break;
         case "bravia":
           MQTT.unsubscribe(
             `bravia/${device.device}/status/power`,

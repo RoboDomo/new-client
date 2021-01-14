@@ -149,6 +149,7 @@ class TheaterTile extends React.Component {
       return renderTiVo();
     };
 
+    console.log("theater tile", this.state, this.theater);
     return (
       <span>
         <CgScreen

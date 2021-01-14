@@ -56,6 +56,7 @@ class TheaterTab extends React.Component {
 
   renderDevice() {
     const currentDevice = this.state.currentDevice;
+    console.log("currentDevice", currentDevice);
     if (!currentDevice || !currentDevice.type) {
       return null;
     }

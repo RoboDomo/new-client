@@ -69,7 +69,7 @@ class AppleTV extends React.Component {
   }
 
   renderNowPlaying() {
-    const info = this.state.info;
+    const info = this.state.appletv.info;
     if (!info) {
       return (
         <div style={{ textAlign: "center" }}>

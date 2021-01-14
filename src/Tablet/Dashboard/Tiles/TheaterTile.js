@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, ButtonGroup } from "react-bootstrap";
+import { Row, Col, ButtonGroup, ProgressBar } from "react-bootstrap";
 
 import Theater from "lib/Theater";
 import styles from "./styles";
@@ -30,6 +30,14 @@ import TiVoTransport from "Tablet/Transport/TiVoTransport";
 import AppleTVTransport from "Tablet/Transport/AppleTVTransport";
 import RokuTransport from "Tablet/Transport/RokuTransport";
 
+const formatTime = (time) => {
+  const hours = parseInt(time / 3600, 10);
+  const minutes = parseInt((time % 3600) / 60, 10);
+  const seconds = parseInt(time % 60, 10);
+  return `${hours ? hours + ":" : ""}${
+    minutes < 10 ? "0" + minutes : minutes
+  }:${seconds < 10 ? "0" + seconds : seconds}`;
+};
 const rowStyle = {
   display: "flex",
   alignItems: "center",
@@ -68,10 +76,13 @@ class TheaterTile extends React.Component {
     this.activities = theater.activities;
 
     this.state = {};
+    //
+    // this.handleAppleTV = this.handleAppleTV.bind(this);
   }
 
   componentDidMount() {
     this.theater.subscribe();
+    // MQTT.subscribe(`appletv/${this.theater.appletv}/status/info`, this.handleAppleTV);
     this.theater.on("statechange", (newState) => {
       this.setState(newState);
     });
@@ -79,6 +90,7 @@ class TheaterTile extends React.Component {
 
   componentWillUnmount() {
     this.theater.unsubscribe();
+    // MQTT.unsubscribe(`appletv/${this.theater.appletv}/status/info`, this.handleAppleTV);
   }
 
   renderTivo(currentActivity) {
@@ -124,24 +136,80 @@ class TheaterTile extends React.Component {
   }
 
   renderAppleTV(currentActivity) {
+    const renderTitle = (title) => {
+            // {title}              ...            {title}
+      if (title.length > 30) {
+        return (
+          <marquee scrolldelay="200" behavior="alternate" style={{ fontSize: 12 }}>
+            {title}
+          </marquee>
+        );
+      } else {
+        return <div style={{ fontSize: 12 }}>{title}</div>;
+      }
+    };
+
     const renderPlaybackState = () => {
-      // if (!info.playbackState) {
+      try {
+        const info = this.state.appletv.info;
+        if (info) {
+          return (
+            <>
+              {renderTitle(info.title)}
+              <div style={{ fontSize: 10, marginTop: -2 }}>{info.deviceState}</div>
+              <Row style={{ marginTop: 2, fontSize: 12 }}>
+                <Col sm={3}>
+                  <div
+                    style={{
+                      marginLeft: 20,
+                      width: "100%",
+                      marginTop: -1,
+                      textAlign: "right",
+                    }}
+                  >
+                    {formatTime(info.position)}
+                  </div>
+                </Col>
+                <Col sm={6}>
+                  <ProgressBar
+                    animated
+                    variant="success"
+                    style={{ width: "100%" }}
+                    now={(info.position / info.total_time) * 100}
+                  />
+                </Col>
+                <Col sm={3}>
+                  <div
+                    style={{
+                      marginLeft: -16,
+                      width: "100%",
+                      marginTop: -1,
+                      textAlign: "left",
+                    }}
+                  >
+                    {formatTime(info.total_time)}
+                  </div>
+                </Col>
+              </Row>
+            </>
+          );
+        }
+        // if (!info.playbackState) {
+      } catch (e) {}
       return <div>Not Playing</div>;
-      // }
     };
 
     if (!this.state.appletv) {
       return null;
     }
-    console.log("here", this.theater.appletv);
     const topic = `appletv/${this.state.appletv.device}/set/command`;
     const device = this.state.appletv;
     return (
       <div>
-        <div style={{ fontWeight: "bold" }}>{device.title}</div>
+        {/* <div style={{ fontWeight: "bold" }}>{device.title}</div> */}
         {renderPlaybackState()}
 
-        <Row style={{ ...rowStyle, marginTop: 8 }}>
+        <Row style={{ ...rowStyle, marginTop: 6 }}>
           <ButtonGroup>
             <MQTTButton mini topic={topic} message="Suspend">
               <FiMonitor />
@@ -178,17 +246,7 @@ class TheaterTile extends React.Component {
             <MQTTButton mini variant="none" />
           </ButtonGroup>
         </Row>
-        {/* <div style={{ marginTop: 8 }}> */}
-        {/*   <MQTTButton topic={topic} message="Pause" mini> */}
-        {/*     <FaPause /> */}
-        {/*   </MQTTButton> */}
-        {/*   <MQTTButton topic={topic} message="Select"> */}
-        {/*     Select */}
-        {/*   </MQTTButton> */}
-        {/*   <MQTTButton topic={topic} message="Play" mini> */}
-        {/*     <FaPlay /> */}
-        {/*   </MQTTButton> */}
-        {/* </div> */}
+
         <AppleTVTransport device={this.state.appletv} />
       </div>
     );
@@ -196,7 +254,7 @@ class TheaterTile extends React.Component {
 
   renderRoku(currentActivity) {
     const roku = this.state.roku;
-    const command_topic = `roku/${this.roku.device}/set/command`;
+    const command_topic = `roku/${this.theater.roku.device}/set/command`;
     const renderControls = () => {
       return (
         <>
@@ -332,7 +390,7 @@ class TheaterTile extends React.Component {
 
     return (
       <div>
-        <ButtonGroup style={{ marginTop: 10 }}>
+        <ButtonGroup style={{ marginTop: 8 }}>
           <MQTTButton
             mini
             variant={mute ? "danger" : undefined}
@@ -425,12 +483,13 @@ class TheaterTile extends React.Component {
     const state = Object.assign({}, this.state);
     this.theater.handleInputChange(state);
 
+    console.log("render", state);
     const { avr, tv, currentActivity } = this.state;
     if (!tv || !avr) {
       return null;
     }
 
-    if (tv && (state.tv.power === undefined || state.tv.input === undefined)) {
+    if (tv && (tv.power === false || tv.input === undefined)) {
       return this.renderActivities();
     }
 
