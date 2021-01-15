@@ -7,9 +7,15 @@ export let data = null;
 class Config extends EventEmitter {
   constructor() {
     super();
+    this.flag = false;
+    
     MQTT.subscribe('settings/status/config', (topic, message) => {
       data = message;
+      // console.log("config", data.dashboards[0].tiles);
       // console.log("emit subscribe");
+      if (this.flag) {
+        window.location.reload();
+      }
       this.emit('change', data);
     });
     window.addEventListener("orientationchange", () => {
