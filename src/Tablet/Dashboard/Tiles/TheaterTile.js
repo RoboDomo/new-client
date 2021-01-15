@@ -106,7 +106,7 @@ class TheaterTile extends React.Component {
                 console.log("SELECTED ", selection);
                 if (favorite) {
                   const topic = `tivo/${this.state.tivo.device}/set/command`;
-                  MQTT.publish(topic, "0" + selection.channel);
+                  MQTT.publish(topic, "0" + favorite.channel);
                   this.setState({ show: false });
                 }
                 else if (activity) {
