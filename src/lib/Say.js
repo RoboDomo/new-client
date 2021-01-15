@@ -15,6 +15,7 @@ class Speak {
   }
 
   async sayit(message) {
+    return;
     // honor mute button on the top bar
     const muteSpeech = localStorage.getItem("mute-speech") || "false";
     if (muteSpeech === "false") {
