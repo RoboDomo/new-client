@@ -49,7 +49,6 @@ class RingTile extends React.Component {
 
     this.state = {};
 
-    console.log("Ring", props, this.device, this.location);
     //
     this.handleMessage = this.handleMessage.bind(this);
   }

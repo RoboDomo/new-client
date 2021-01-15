@@ -5,10 +5,11 @@ class BlankTile extends React.Component {
     super();
     this.size = props.size;
     this.tile = props.tile;
+    console.log("BlankTile")
   }
 
   render() {
-    return <div style={{ width: 128, height: 128 }}>{this.tile.device}</div>;
+    return <div style={{ width: 128, height: 128 }}>{" "}</div>;
   }
 }
 

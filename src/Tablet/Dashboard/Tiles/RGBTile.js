@@ -17,7 +17,7 @@ class RGBTile extends React.Component {
     // this.hub = props.tile.hub;
     //
     this.rgb = this.tile;
-    console.log("rgb", this.rgb);
+    // console.log("rgb", this.rgb);
     this.hub = this.rgb.hub;
     this.name = this.rgb.name;
     this.form = localStorage.getItem(`rgb-${this.rgb.label}`);
@@ -34,7 +34,7 @@ class RGBTile extends React.Component {
         hex: "ff00ff",
       };
     }
-    console.log("construct RGB", props);
+    // console.log("construct RGB", props);
     this.state = { show: false };
     //
     this.handlePowerMessage = this.handlePowerMessage.bind(this);

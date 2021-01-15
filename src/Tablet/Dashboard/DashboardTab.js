@@ -23,6 +23,7 @@ class DashboardTab extends React.Component {
     super(props);
     this.dashboard = props.dashboard;
     let key = 0;
+    // console.log("dashboard", this.dashboard.tiles);
     this.tiles = this.dashboard.tiles.map((tile) => {
       key++;
       const xkey = "tile-" + key;
@@ -41,10 +42,7 @@ class DashboardTab extends React.Component {
         case "icomfort":
         case "thermostat":
         case "nest":
-          // console.log("icomfort", tile);
           return <IComfortTile key={xkey} tile={tile} />;
-        // case "thermostat":
-        //   return <ThermostatTile key={key} />;
         case "theater":
           return <TheaterTile key={xkey} tile={tile} />;
         case "pool":
@@ -62,9 +60,9 @@ class DashboardTab extends React.Component {
         case "fan":
           return <FanTile key={xkey} tile={tile} />;
         case "dimmer":
-        return <DimmerTile key={xkey} tile={tile} />;
-      case "blank":
-        return <BlankTile tile={tile}/>;
+          return <DimmerTile key={xkey} tile={tile} />;
+        case "blank":
+          return <BlankTile tile={tile} />;
         default:
           console.log(tile);
           return (

@@ -41,7 +41,7 @@ const main = async () => {
         //   </React.StrictMode>,
         //   document.getElementById("root")
         // );
-        console.log("render dom");
+        console.log("render dom using config ", data);
         ReactDOM.render(<App />, document.getElementById("root"));
       }
     });
@@ -66,7 +66,7 @@ const main = async () => {
 
 setTimeout(() => {
   main();
-}, 10);
+}, 2);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
