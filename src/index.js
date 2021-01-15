@@ -8,7 +8,7 @@ import "react-bootstrap-toggle/dist/bootstrap2-toggle.css";
 import App from "./App";
 import Exception from "./Exception";
 import MQTT from "./lib/MQTT";
-import { enableAutoTTS} from "enable-auto-tts";
+import { enableAutoTTS } from "enable-auto-tts";
 
 import Say from "./lib/Say";
 import Config from "./lib/Config";
@@ -19,6 +19,7 @@ const DEBUG = require("debug"),
 DEBUG.enable("MQTT");
 
 localStorage.debug = "MQTT*";
+// localStorage.clear();
 
 enableAutoTTS();
 
@@ -54,13 +55,18 @@ const main = async () => {
     //   </React.StrictMode>,
     //   document.getElementById("root")
     // );
-    ReactDOM.render(<Exception exception={e} />, document.getElementById("root"));
+    ReactDOM.render(
+      <Exception exception={e} />,
+      document.getElementById("root")
+    );
   });
 
   MQTT.connect();
 };
 
-main();
+setTimeout(() => {
+  main();
+}, 10);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

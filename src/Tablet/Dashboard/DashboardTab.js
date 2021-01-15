@@ -16,6 +16,7 @@ import FanTile from "./Tiles/FanTile";
 import PresenceTile from "./Tiles/PresenceTile";
 import RGBTile from "./Tiles/RGBTile";
 import RingTile from "./Tiles/RingTile";
+import BlankTile from "./Tiles/BlankTile";
 
 class DashboardTab extends React.Component {
   constructor(props) {
@@ -61,7 +62,9 @@ class DashboardTab extends React.Component {
         case "fan":
           return <FanTile key={xkey} tile={tile} />;
         case "dimmer":
-          return <DimmerTile key={xkey} tile={tile} />;
+        return <DimmerTile key={xkey} tile={tile} />;
+      case "blank":
+        return <BlankTile tile={tile}/>;
         default:
           console.log(tile);
           return (

@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col, ButtonGroup, ProgressBar } from "react-bootstrap";
 
+import TiVoFavorites from "Common/Modals/TiVoFavorites";
 import Theater from "lib/Theater";
 import styles from "./styles";
 
@@ -43,12 +44,6 @@ const rowStyle = {
   alignItems: "center",
   justifyContent: "center",
 };
-// const appName = (n) => {
-//   if (n === "com.google.ios.youtube") {
-//     return "YouTube";
-//   }
-//   return n;
-// };
 
 class TheaterTile extends React.Component {
   constructor(props) {
@@ -66,6 +61,7 @@ class TheaterTile extends React.Component {
         break;
       }
     }
+
     if (!theater) {
       return;
     }
@@ -75,14 +71,11 @@ class TheaterTile extends React.Component {
     this.devices = theater.devices;
     this.activities = theater.activities;
 
-    this.state = {};
-    //
-    // this.handleAppleTV = this.handleAppleTV.bind(this);
+    this.state = { show: false };
   }
 
   componentDidMount() {
     this.theater.subscribe();
-    // MQTT.subscribe(`appletv/${this.theater.appletv}/status/info`, this.handleAppleTV);
     this.theater.on("statechange", (newState) => {
       this.setState(newState);
     });
@@ -90,7 +83,6 @@ class TheaterTile extends React.Component {
 
   componentWillUnmount() {
     this.theater.unsubscribe();
-    // MQTT.unsubscribe(`appletv/${this.theater.appletv}/status/info`, this.handleAppleTV);
   }
 
   renderTivo(currentActivity) {
@@ -103,13 +95,43 @@ class TheaterTile extends React.Component {
         const guide = this.state.channels[this.state.channel];
         return (
           <>
-            <img
-              src={guide.logo.URL}
-              alt={guide.name}
-              style={{ width: 64, height: "auto" }}
+            <TiVoFavorites
+              activities={this.activities}
+              currentActivity={this.state.currentActivity}
+              tivo={this.state.tivo}
+              channels={this.state.channels}
+              select={(selection) => {
+                const favorite = selection.favorite,
+                  activity = selection.activity;
+                console.log("SELECTED ", selection);
+                if (favorite) {
+                  const topic = `tivo/${this.state.tivo.device}/set/command`;
+                  MQTT.publish(topic, "0" + selection.channel);
+                  this.setState({ show: false });
+                }
+                else if (activity) {
+                  /* console.log("ACTIVITY", activity.macro); */
+                  MQTT.publish("macros/run", activity.macro);
+                }
+              }}
+              show={this.state.show}
+              hide={() => {
+                this.setState({ show: false });
+              }}
             />
-            <div>
-              {this.state.channel} {guide.name}
+            <div
+              onClick={() => {
+                this.setState({ show: true });
+              }}
+            >
+              <img
+                src={guide.logo.URL}
+                alt={guide.name}
+                style={{ width: 128, margin: 0, padding: 0 }}
+              />
+              <div style={{ marginTop: 0 }}>
+                {this.state.channel} {guide.name}
+              </div>
             </div>
           </>
         );
@@ -126,8 +148,8 @@ class TheaterTile extends React.Component {
           }}
         >
           <div>
-            <h1 style={{ marginBottom: 10 }}>TiVo</h1>
-            <div style={{ marginBottom: 10 }}>{renderGuide()}</div>
+            <h1 style={{ marginBottom: 10 }}>{this.state.tivo.title}</h1>
+            <div style={{ marginBottom: 1 }}>{renderGuide()}</div>
           </div>
         </div>
         <TiVoTransport device={this.theater.tivo} />
@@ -137,19 +159,18 @@ class TheaterTile extends React.Component {
 
   renderAppleTV(currentActivity) {
     const renderTitle = (title) => {
-      // {title}              ...            {title}
-      if (title.length > 30) {
+      if (title.length > 34) {
         return (
           <marquee
             scrolldelay="200"
             behavior="alternate"
-            style={{ fontSize: 14 }}
+            style={{ fontWeight: "bold", fontSize: 14 }}
           >
             {title}
           </marquee>
         );
       } else {
-        return <div style={{ fontSize: 12 }}>{title}</div>;
+        return <div style={{ fontWeight: "bold", fontSize: 14 }}>{title}</div>;
       }
     };
 
@@ -203,10 +224,12 @@ class TheaterTile extends React.Component {
         // if (!info.playbackState) {
       } catch (e) {}
       const device = this.state.appletv;
-      return <div>
-        <div style={{ fontWeight: "bold" }}>{device.title}</div>
-        <div>Not Playing</div>
-      </div>;
+      return (
+        <div>
+          <div style={{ fontWeight: "bold" }}>{device.title}</div>
+          <div>Not Playing</div>
+        </div>
+      );
     };
 
     if (!this.state.appletv) {
@@ -219,13 +242,13 @@ class TheaterTile extends React.Component {
 
         <Row style={{ ...rowStyle, marginTop: 6 }}>
           <ButtonGroup>
-            <MQTTButton mini topic={topic} message="Suspend">
+            <MQTTButton mini variant="info" topic={topic} message="Suspend">
               <FiMonitor />
             </MQTTButton>
             <MQTTButton mini topic={topic} message="Up">
               <FaChevronUp />
             </MQTTButton>
-            <MQTTButton mini topic={topic} message="Menu">
+            <MQTTButton mini variant="info" topic={topic} message="Menu">
               <HiOutlineMenu />
             </MQTTButton>
           </ButtonGroup>
@@ -236,7 +259,7 @@ class TheaterTile extends React.Component {
             <MQTTButton mini topic={topic} message="Left">
               <FaChevronLeft />
             </MQTTButton>
-            <MQTTButton mini variant="primary" topic={topic} message="Select">
+            <MQTTButton mini variant="info" topic={topic} message="Select">
               <FaCheckCircle />
             </MQTTButton>
             <MQTTButton mini topic={topic} message="Right">
@@ -491,7 +514,7 @@ class TheaterTile extends React.Component {
     const state = Object.assign({}, this.state);
     this.theater.handleInputChange(state);
 
-    console.log("render", state);
+    // console.log("render", state);
     const { avr, tv, currentActivity } = this.state;
     if (!tv || !avr) {
       return null;
@@ -518,7 +541,9 @@ class TheaterTile extends React.Component {
 
     return (
       <div style={this.style}>
-        {this.renderActivity(currentActivity)}
+        <div style={{ height: 180 }}>
+          {this.renderActivity(currentActivity)}
+        </div>
         {state.tv.power !== undefined
           ? this.renderAudioControls(currentActivity)
           : null}

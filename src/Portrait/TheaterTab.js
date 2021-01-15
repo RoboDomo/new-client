@@ -3,8 +3,8 @@ import { Row, Col } from "react-bootstrap";
 
 import Theater from "lib/Theater";
 
-import MQTT from "lib/MQTT";
-import { isOn, mangle } from "lib/Utils";
+// import MQTT from "lib/MQTT";
+// import { isOn, mangle } from "lib/Utils";
 //import { data as Config } from "lib/Config";
 
 import AudioControls from "./Devices/AudioControls";

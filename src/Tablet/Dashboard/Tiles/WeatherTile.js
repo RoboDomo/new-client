@@ -65,7 +65,7 @@ class WeatherTile extends React.Component {
       // return null;
       return <div style={this.style} />;
     }
-    const when = new Date(Number(now.utcTime) * 1000).toLocaleTimeString();
+    // const when = new Date(Number(now.utcTime) * 1000).toLocaleTimeString();
     return (
       <div style={this.style}>
         <div
@@ -117,7 +117,7 @@ class WeatherTile extends React.Component {
             <FaFlag style={{ fontSize: 32 }} /> {now.windDescShort}{" "}
             <Speed value={now.windSpeed} />
           </div>
-          <div>{when}</div>
+          {/* <div>{when}</div> */}
         </div>
       </div>
     );

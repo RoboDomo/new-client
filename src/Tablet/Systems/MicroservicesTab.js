@@ -63,46 +63,66 @@ class MicroservicesSettings extends React.Component {
   renderTable() {
     let key = 1;
     return (
-      <Table striped>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
-            {/* <th>Docker Name</th> */}
-            <th>Type</th>
-            <th>Restart</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Config.microservices.services.map((service) => {
-            /* console.log("service", service); */
-            return (
-              <tr key={++key}>
-                <td style={{ verticalAlign: "middle" }}>{service.title}</td>
-                <td style={{ verticalAlign: "middle" }}>
-                  {service.description}
-                </td>
-                {/* <td style={{verticalAlign: "middle"}}>{service.name}</td> */}
-                <td style={{ verticalAlign: "middle" }}>{service.type}</td>
-                <td>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => {
-                      MQTT.publish(
-                        `${service.mqtt}/reset/set/command`,
-                        "__RESTART__"
-                      );
-                    }}
-                  >
-                    <VscDebugRestart style={{ marginRight: 10 }} />
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+      <>
+        <div style={{ textAlign: "center" }}>
+          <Button
+            style={{
+              marginRight: "auto",
+              marginLeft: "auto",
+              marginTop: 8,
+              marginBottom: 8,
+            }}
+            variant="danger"
+            size="sm"
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+          >
+            Clear localStorage
+          </Button>
+        </div>
+        <Table striped>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              {/* <th>Docker Name</th> */}
+              <th>Type</th>
+              <th>Restart</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Config.microservices.services.map((service) => {
+              /* console.log("service", service); */
+              return (
+                <tr key={++key}>
+                  <td style={{ verticalAlign: "middle" }}>{service.title}</td>
+                  <td style={{ verticalAlign: "middle" }}>
+                    {service.description}
+                  </td>
+                  {/* <td style={{verticalAlign: "middle"}}>{service.name}</td> */}
+                  <td style={{ verticalAlign: "middle" }}>{service.type}</td>
+                  <td>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      onClick={() => {
+                        MQTT.publish(
+                          `${service.mqtt}/reset/set/command`,
+                          "__RESTART__"
+                        );
+                      }}
+                    >
+                      <VscDebugRestart style={{ marginRight: 10 }} />
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </>
     );
   }
 }
