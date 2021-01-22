@@ -1,10 +1,10 @@
 import React from "react";
 
-import { Row, Col, Button, ButtonGroup, Modal } from "react-bootstrap";
-import NumberInput from "Common/Form/NumberInput";
 import styles from "./styles";
 
 import { TiAdjustBrightness } from "react-icons/ti";
+
+import DimmerModal from "Common/Modals/DimmerModal";
 
 import MQTT from "lib/MQTT";
 import { isOn } from "lib/Utils";
@@ -81,99 +81,16 @@ class DimmerTile extends React.Component {
 
     return (
       <>
-        <Modal
+        <DimmerModal
           show={this.state.show}
+          hub={this.hub}
+          device={this.device}
+          level={this.state.level}
+          power={this.state.power}
           onHide={() => {
             this.setState({ show: false });
           }}
-          /* backdrop="static" */
-          centered
-          size="lg"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Adjust {this.device}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body style={{ margin: "auto" }}>
-            <Row>
-              <Col sm={4} style={{ marginTop: 10 }}>
-                <ButtonGroup size="lg">
-                  <Button
-                    variant={this.state.power ? undefined : "dark"}
-                    style={{ marginLeft: 0 }}
-                    onClick={async () => {
-                      await MQTT.publish(
-                        `${this.hub}/${this.device}/set/switch`,
-                        "off"
-                      );
-                      this.setState({ show: false });
-                    }}
-                  >
-                    Off
-                  </Button>
-                  <Button
-                    variant={this.state.power ? "dark" : undefined}
-                    onClick={async () => {
-                      await MQTT.publish(
-                        `${this.hub}/${this.device}/set/switch`,
-                        "on"
-                      );
-                      this.setState({ show: false });
-                    }}
-                  >
-                    On
-                  </Button>
-                </ButtonGroup>
-              </Col>
-              <Col sm={2} style={{ marginTop: 11 }}>
-                <Button
-                  onClick={async () => {
-                    await MQTT.publish(
-                      `${this.hub}/${this.device}/set/level`,
-                      5
-                    );
-                    this.setState({ show: false });
-                  }}
-                >
-                  Dim
-                </Button>
-              </Col>
-              <Col sm={4}>
-                <NumberInput
-                  value={this.state.level}
-                  onValueChange={async (value) => {
-                    await MQTT.publish(
-                      `${this.hub}/${this.device}/set/level`,
-                      value
-                    );
-                  }}
-                />
-              </Col>
-              <Col sm={2} style={{ marginTop: 11 }}>
-                <Button
-                  onClick={async () => {
-                    await MQTT.publish(
-                      `${this.hub}/${this.device}/set/level`,
-                      100
-                    );
-                    this.setState({ show: false });
-                  }}
-                >
-                  Max
-                </Button>
-              </Col>
-            </Row>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                this.setState({ show: false });
-              }}
-            >
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        />
 
         <div style={{ overflow: "none" }}>
           <Ripples color="#ffffff">

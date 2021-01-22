@@ -30,7 +30,7 @@ const Platform = () => {
   if (platform.type === "mobile") {
     return (
       <ErrorBoundary>
-        {/* <Alert /> */}
+        <Alert />
         <Phone />
       </ErrorBoundary>
     );
@@ -40,7 +40,7 @@ const Platform = () => {
    }
   return (
     <ErrorBoundary>
-      {/* <Alert /> */}
+      <Alert />
       <Tablet />
     </ErrorBoundary>
   );

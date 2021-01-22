@@ -25,6 +25,8 @@ import DevicesMenu from "./DevicesMenu";
 // import Audio from "./Devices/Audio";
 import TiVo from "./Devices/TiVo";
 import AppleTV from "./Devices/AppleTV";
+import Bravia from "./Devices/Bravia";
+import Roku from "./Devices/Roku";
 // import LGTVControl from "./Devices/LGTV";
 import Harmony from "./Devices/Harmony";
 
@@ -46,10 +48,12 @@ class TheaterTab extends React.Component {
 
   handleActivityClick(activity) {
     this.theater.startActivity(activity);
+    this.setState({ show: false});
   }
 
   handleDeviceClick(device) {
     this.theater.startDevice(device);
+    this.setState({ show: false});
   }
 
   handleSpeakersClick(speakers) {
@@ -153,6 +157,10 @@ class TheaterTab extends React.Component {
     switch (currentDevice.type) {
       case "tivo":
         return <TiVo control={this.state.tivo} />;
+      case "bravia":
+        return <Bravia control={this.state.tv} />;
+      case "roku":
+        return <Roku control={this.state.tv} />;
       case "harmony":
         return <Harmony hub={this.state.harmony} />;
       //     case "LG TV":
@@ -161,7 +169,7 @@ class TheaterTab extends React.Component {
       //         return null;
       //       }
       //       return <LGTVControl config={deviceMap.lgtv} />;
-      case "Apple TV":
+      case "appletv":
         return <AppleTV control={this.state.appletv} />;
       default:
         console.log("renderDevice unknown", currentDevice);
@@ -182,7 +190,7 @@ class TheaterTab extends React.Component {
             >
               Activity
             </Button>
-            <span style={{ marginLeft: 20 }}>
+            <span style={{ marginLeft: 10 }}>
               {this.state.currentActivity.name}
             </span>
           </Col>
@@ -194,7 +202,7 @@ class TheaterTab extends React.Component {
             >
               Device
             </Button>
-            <span style={{ marginLeft: 20 }}>
+            <span style={{ marginLeft: 10 }}>
               {this.state.currentDevice
                 ? this.state.currentDevice.name.replace(" Hub", "")
                 : "Not Selected"}

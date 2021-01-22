@@ -38,7 +38,8 @@ class Logger extends EventEmitter {
       this.buffer[which] = this.buffer[which] || [];
       this.buffer[which].push(message);
       while (this.buffer[which].length > MAX_LOG) {
-        this.buffer[which].unshift();
+        console.log("length", this.buffer[which].length, MAX_LOG);
+        this.buffer[which].shift();
       }
       this.store();
       this.emit("change", which, this.buffer[which]);

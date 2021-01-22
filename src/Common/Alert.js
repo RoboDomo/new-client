@@ -37,9 +37,9 @@ class Alert extends React.Component {
       default:
         Logger.log("alerts", packet);
         this.setState({ show: true, packet: packet });
-        try {
-          say(packet.message.join(" "));
-        } catch (e) {}
+        // try {
+        //   say(packet.message.join(" "));
+        // } catch (e) {}
         if (this.timeout) {
           if (this.delayedTask) {
             this.delayedTask.defer(TIMEOUT);

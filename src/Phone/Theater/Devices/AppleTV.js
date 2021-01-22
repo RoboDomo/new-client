@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, ButtonGroup } from "react-bootstrap";
+import { Row, Col, ProgressBar, ButtonGroup } from "react-bootstrap";
 
 import MQTT from "lib/MQTT";
 import MQTTButton from "Common/MQTTButton";
@@ -10,10 +10,10 @@ import {
   FaChevronLeft,
   FaChevronRight,
   // FaFastBackward,
-   FaBackward,
-   FaPause,
-   FaPlay,
-   FaForward,
+  FaBackward,
+  FaPause,
+  FaPlay,
+  FaForward,
   // FaFastForward,
 } from "react-icons/fa";
 
@@ -33,6 +33,14 @@ const rowStyle = {
   justifyContent: "center",
 };
 
+const formatTime = (time) => {
+  const hours = parseInt(time / 3600, 10);
+  const minutes = parseInt((time % 3600) / 60, 10);
+  const seconds = parseInt(time % 60, 10);
+  return `${hours ? hours + ":" : ""}${
+    minutes < 10 ? "0" + minutes : minutes
+  }:${seconds < 10 ? "0" + seconds : seconds}`;
+};
 class AppleTV extends React.Component {
   constructor(props) {
     super();
@@ -49,14 +57,15 @@ class AppleTV extends React.Component {
   }
 
   updateInfo(topic, message) {
-    console.log("updateInfo", message);
     try {
       debug(JSON.parse(message));
       debug("type", typeof message);
       this.setState({
         info: JSON.parse(message),
       });
-    } catch (e) {}
+    } catch (e) {
+      this.setState({ info: message });
+    }
   }
 
   componentDidMount() {
@@ -68,8 +77,22 @@ class AppleTV extends React.Component {
     MQTT.unsubscribe(this.info_topic, this.updateInfo);
   }
 
+  renderArtwork() {
+    const info = this.state.info;
+    if (!info.artwork) {
+      return null;
+    }
+    return (
+      <img
+        style={{ height: 64, marginBottom: 10 }}
+        alt="artwork"
+        src={`data:image;base64,${info.artwork}`}
+      />
+    );
+  }
+
   renderNowPlaying() {
-    const info = this.state.appletv.info;
+    const info = this.state.info;
     if (!info) {
       return (
         <div style={{ textAlign: "center" }}>
@@ -80,18 +103,63 @@ class AppleTV extends React.Component {
     }
     return (
       <>
-        <h3>Apple TV</h3>
-        <h1>{appName(info.appDisplayName || info.appBundleIdentifier)}</h1>
-        <h2>{info.title}</h2>
+        <div
+          style={{
+            width: "100%",
+            textAlign: "center",
+            clear: "both",
+            marginBottom: 10,
+          }}
+        >
+          <h1>Apple TV</h1>
+          <h2>{info.app}</h2>
+          {this.renderArtwork()}
+          <h3>{info.title}</h3>
+          <div>{info.deviceState}</div>
+
+          <div style={{ marginTop: 1 }}>
+            <table>
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      width: "25%",
+                      textAlign: "right",
+                      paddingRight: 10,
+                    }}
+                  >
+                    {formatTime(info.position)}
+                  </td>
+
+                  <td style={{ width: "70%" }}>
+                    <ProgressBar
+                      variant="success"
+                      style={{ width: "100%" }}
+                      now={(info.position / info.total_time) * 100}
+                    />
+                  </td>
+
+                  <td
+                    style={{
+                      width: "25%",
+                      paddingRight: 20,
+                      paddingLeft: 10,
+                      textAlign: "right",
+                    }}
+                  >
+                    -{formatTime(info.total_time - info.position)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </>
     );
   }
   renderTransport() {
     return (
-      <ButtonGroup
-        className="fixed-bottom"
-        style={{ margin: 0, padding: 0 }}
-      >
+      <ButtonGroup className="fixed-bottom" style={{ margin: 0, padding: 0 }}>
         {/* <MQTTButton transport topic={this.command_topic} message="SkipBackward"> */}
         {/*   <FaFastBackward /> */}
         {/* </MQTTButton> */}
@@ -113,6 +181,7 @@ class AppleTV extends React.Component {
       </ButtonGroup>
     );
   }
+
   render() {
     return (
       <>
@@ -120,7 +189,7 @@ class AppleTV extends React.Component {
           {this.renderNowPlaying()}
         </Row>
 
-        <Row style={{ ...rowStyle, marginTop: 24 }}>
+        <Row style={{ ...rowStyle, marginTop: 0 }}>
           <ButtonGroup>
             <MQTTButton topic={this.command_topic} message="Menu">
               Menu
@@ -135,7 +204,7 @@ class AppleTV extends React.Component {
           </ButtonGroup>
         </Row>
 
-        <Row style={{ ...rowStyle, marginTop: 24 }}>
+        <Row style={{ ...rowStyle, marginTop: 14 }}>
           <ButtonGroup>
             <MQTTButton variant="none" />
             <MQTTButton topic={this.command_topic} message="Up">
@@ -173,7 +242,7 @@ class AppleTV extends React.Component {
           </ButtonGroup>
         </Row>
 
-        <Row style={{ ...rowStyle, marginTop: 24, marginBottom: 40 }}>
+        <Row style={{ ...rowStyle, marginTop: 14, marginBottom: 4 }}>
           <ButtonGroup>
             <MQTTButton
               variant="danger"

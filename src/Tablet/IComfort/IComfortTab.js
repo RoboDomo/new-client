@@ -51,8 +51,8 @@ class IComfortTab extends React.Component {
       return;
     }
 
-    const coolSetPoint = Number(zoneDetail.CoolSetPoint.Value),
-      heatSetPoint = Number(zoneDetail.HeatSetPoint.Value);
+    const coolSetPoint = Number(zoneDetail.CoolSetPoint),
+      heatSetPoint = Number(zoneDetail.HeatSetPoint);
 
     let systemMode = "off",
       hvacMode = "off";
@@ -199,7 +199,7 @@ class IComfortTab extends React.Component {
       return null;
     }
 
-    const ambient_temperature = Number(zoneDetail.AmbientTemperature.Value);
+    const ambient_temperature = Number(zoneDetail.AmbientTemperature);
     let target = coolSetPoint;
     if (systemMode === "heating") {
       target = heatSetPoint;

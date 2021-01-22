@@ -3,6 +3,8 @@
 import Logger from "lib/Logger";
 import MQTT from "lib/MQTT";
 
+const ENABLED = true;
+
 class Speak {
   constructor() {
     this.lastMessage = null;
@@ -15,7 +17,9 @@ class Speak {
   }
 
   async sayit(message) {
-    return;
+    if (!ENABLED) {
+      return;
+    }
     // honor mute button on the top bar
     const muteSpeech = localStorage.getItem("mute-speech") || "false";
     if (muteSpeech === "false") {
@@ -60,7 +64,9 @@ class Speak {
   }
 
   async say(message) {
-    return;
+    if (!ENABLED) {
+      return;
+    }
     this.queue.unshift(message);
   }
 
@@ -81,27 +87,31 @@ class Speak {
 const speaker = new Speak();
 
 const say = async (message) => {
-  return;
+  if (!ENABLED) {
+    return;
+  }
   await speaker.say(message);
 };
 
-// let interval = setInterval(async () => {
-//   try {
-//     if (
-//       MQTT.subscribe(
-//         "say",
-//         async (topic, message) => {
-//           await say(message);
-//         },
-//         10
-//       )
-//     ) {
-//       clearInterval(interval);
-//     }
-//   } catch (e) {
-//     // console.log("Say retry");
-//   }
-// }, 1000);
+if (ENABLED) {
+  let interval = setInterval(async () => {
+    try {
+      if (
+        MQTT.subscribe(
+          "say",
+          async (topic, message) => {
+            await say(message);
+          },
+          10
+        )
+      ) {
+        clearInterval(interval);
+      }
+    } catch (e) {
+      console.log("Say retry");
+    }
+  }, 1000);
+}
 
 //
 export default say;

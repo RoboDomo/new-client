@@ -1,9 +1,10 @@
 import React from "react";
-import { Button, ButtonGroup, Modal } from "react-bootstrap";
 import styles from "./styles";
 import Ripples from "react-ripples";
 
 import { BiWind } from "react-icons/bi";
+
+import FanModal from "Common/Modals/FanModal";
 
 import MQTT from "lib/MQTT";
 import { isOn } from "lib/Utils";
@@ -88,80 +89,15 @@ class FanTile extends React.Component {
 
     return (
       <>
-        <Modal
+        <FanModal
           show={this.state.show}
           onHide={() => {
             this.setState({ show: false });
           }}
-          centered
-          /* size="lg" */
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Adjust {this.device}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body style={{ margin: "auto" }}>
-            <ButtonGroup>
-              <Button
-                variant={value === "Off" ? "dark" : undefined}
-                onClick={async () => {
-                  await MQTT.publish(
-                    `${this.hub}/${this.device}/set/switch`,
-                    "off"
-                  );
-                  this.setState({ show: false });
-                }}
-              >
-                Off
-              </Button>
-              <Button
-                variant={value === "Low" ? "dark" : undefined}
-                onClick={async () => {
-                  await MQTT.publish(
-                    `${this.hub}/${this.device}/set/level`,
-                    25
-                  );
-                  this.setState({ show: false });
-                }}
-              >
-                Low
-              </Button>
-              <Button
-                variant={value === "Medium" ? "dark" : undefined}
-                onClick={async () => {
-                  await MQTT.publish(
-                    `${this.hub}/${this.device}/set/level`,
-                    50
-                  );
-                  this.setState({ show: false });
-                }}
-              >
-                Medium
-              </Button>
-              <Button
-                variant={value === "High" ? "dark" : undefined}
-                onClick={async () => {
-                  await MQTT.publish(
-                    `${this.hub}/${this.device}/set/level`,
-                    75
-                  );
-                  this.setState({ show: false });
-                }}
-              >
-                High
-              </Button>
-            </ButtonGroup>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                this.setState({ show: false });
-              }}
-            >
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+          hub={this.hub}
+          device={this.device}
+          value={value}
+        />
         <div style={{ overflow: "none" }}>
           <Ripples color="#ffffff">
             <div style={style}>

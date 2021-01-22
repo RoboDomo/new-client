@@ -78,10 +78,10 @@ const targetTemperature = (zoneDetail) => {
 
   switch (zoneDetail.SystemMode) {
     case 0:
-      target = zoneDetail.CoolSetPoint.Value;
+      target = zoneDetail.CoolSetPoint;
       break;
     case 1:
-      target = zoneDetail.HeatSetPoint.Value;
+      target = zoneDetail.HeatSetPoint;
       break;
     case 2:
       break;
@@ -89,7 +89,7 @@ const targetTemperature = (zoneDetail) => {
       break;
     case 4:
     default:
-      target = zoneDetail.AmbientTemperature.Value;
+      target = zoneDetail.AmbientTemperature;
       break;
     case 5:
       break;
@@ -148,7 +148,7 @@ class IComfortOverview extends React.Component {
     }
 
     const ambient = zoneDetail.AmbientTemperature,
-      ambient_temperature = Number(ambient.Value);
+      ambient_temperature = Number(ambient);
     const metric = Config.metric;
     const target = targetTemperature(zoneDetail),
       system_mode = formatSystemMode(zoneDetail.SystemMode),
@@ -188,7 +188,7 @@ class IComfortOverview extends React.Component {
         <ListGroupItem>
           Cool Set Point
           <span style={{ float: "right" }}>
-            <Temperature value={Number(zoneDetail.CoolSetPoint.Value)} />
+            <Temperature value={Number(zoneDetail.CoolSetPoint)} />
           </span>
         </ListGroupItem>
 
@@ -202,7 +202,7 @@ class IComfortOverview extends React.Component {
         <ListGroupItem>
           Heat Set Point
           <span style={{ float: "right" }}>
-            <Temperature value={Number(zoneDetail.HeatSetPoint.Value)} />
+            <Temperature value={Number(zoneDetail.HeatSetPoint)} />
           </span>
         </ListGroupItem>
 
@@ -216,7 +216,7 @@ class IComfortOverview extends React.Component {
         <ListGroupItem>
           Feels Like
           <span style={{ float: "right" }}>
-            <Temperature value={Number(zoneDetail.AmbientTemperature.Value)} />
+            <Temperature value={Number(zoneDetail.AmbientTemperature)} />
           </span>
         </ListGroupItem>
       </ListGroup>
