@@ -42,7 +42,7 @@ class RGBTile extends React.Component {
   }
 
   handlePowerMessage(topic, message) {
-    this.setState({ active: isOn(message) });
+    this.setState({ active: isOn(message), show: false });
   }
 
   handleColorMessage(topic, message) {

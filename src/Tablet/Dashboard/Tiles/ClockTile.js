@@ -81,7 +81,7 @@ class ClockTile extends React.Component {
     );
   }
   render() {
-    const date = this.state.date;
+    const date = new Date();
 
     return (
       <div style={this.style}>

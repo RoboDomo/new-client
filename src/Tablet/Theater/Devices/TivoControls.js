@@ -20,6 +20,8 @@ import {
   FaDotCircle,
 } from "react-icons/fa";
 
+import TiVoFavorites from "Common/Modals/TiVoFavorites";
+
 const DEBUG = require("debug"),
   debug = DEBUG("TivoControls");
 
@@ -47,7 +49,7 @@ class TivoControls extends React.Component {
     this.handleTivoMessage = this.handleTivoMessage.bind(this);
     this.handleGuideMessage = this.handleGuideMessage.bind(this);
 
-    this.state = {};
+    this.state = { show: false };
   }
 
   handleTivoMessage(topic, message) {
@@ -304,14 +306,41 @@ class TivoControls extends React.Component {
       const channel = this.state.channel,
         g = this.state.guide[channel];
       return (
-        <h4>
-          Channel: {this.state.channel} {g.name}{" "}
-          <img
-            style={{ width: 30, height: 30 }}
-            src={g.logo.URL}
-            alt={g.name}
+        <>
+          <TiVoFavorites
+            activities={this.activities}
+            currentActivity={this.state.currentActivity}
+            tivo={this.device}
+            channels={this.state.guide}
+            select={(selection) => {
+              const favorite = selection.favorite,
+                activity = selection.activity;
+              if (favorite) {
+                const topic = `tivo/${this.state.tivo.device}/set/command`;
+                MQTT.publish(topic, "0" + favorite.channel);
+                this.setState({ show: false });
+              } else if (activity) {
+                /* console.log("ACTIVITY", activity.macro); */
+                MQTT.publish("macros/run", activity.macro);
+              }
+            }}
+            show={this.state.show}
+            hide={() => {
+              this.setState({ show: false });
+            }}
           />
-        </h4>
+          <div
+            style={{ marginBottom: 10 }}
+            onClick={() => {
+              this.setState({ show: true });
+            }}
+          >
+            <img style={{ height: 80 }} src={g.logo.URL} alt={g.name} />
+            <h4>
+              Channel: {this.state.channel} {g.name}{" "}
+            </h4>
+          </div>
+        </>
       );
     } catch (e) {
       return null;

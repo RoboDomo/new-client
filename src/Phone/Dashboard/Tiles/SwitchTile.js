@@ -41,7 +41,7 @@ class SwitchTile extends React.Component {
       return (
         <div
           onClick={() => {
-            MQTT.publish(`${this.hub}/${this.name}/set/switch`, "off")
+            MQTT.publish(`${this.hub}/${this.name}/set/switch`, "off");
           }}
           style={{ color: "yellow", fontSize: 18 }}
         >
@@ -63,7 +63,7 @@ class SwitchTile extends React.Component {
         <div
           style={{ fontSize: 18 }}
           onClick={() => {
-            MQTT.publish(`${this.hub}/${this.name}/set/switch`, "on")
+            MQTT.publish(`${this.hub}/${this.name}/set/switch`, "on");
           }}
         >
           <TiLightbulb

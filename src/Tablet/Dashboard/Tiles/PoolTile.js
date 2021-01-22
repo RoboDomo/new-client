@@ -21,7 +21,7 @@ class PoolTile extends React.Component {
     const backward = Config.autelis.deviceMap.backward;
     const thing = backward[topic.split("/").pop()];
     const newState = {};
-    if (message === "on" || message === "off") {
+    if (message=== "enabled" || message === "on" || message === "off") {
       newState[thing] = isOn(message);
     } else {
       newState[thing] = Number(message);
@@ -74,7 +74,7 @@ class PoolTile extends React.Component {
       const renderControl = (ndx, text, big) => {
         const thingState = this.state[ndx];
 
-        if (!thingState) {
+        if (!isOn(thingState)) {
           return null;
         }
 

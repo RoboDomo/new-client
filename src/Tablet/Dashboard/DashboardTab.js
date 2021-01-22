@@ -62,7 +62,7 @@ class DashboardTab extends React.Component {
         case "dimmer":
           return <DimmerTile key={xkey} tile={tile} />;
         case "blank":
-          return <BlankTile tile={tile} />;
+          return <BlankTile key={xkey} tile={tile} />;
         default:
           console.log(tile);
           return (

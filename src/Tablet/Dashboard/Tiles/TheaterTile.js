@@ -103,13 +103,11 @@ class TheaterTile extends React.Component {
               select={(selection) => {
                 const favorite = selection.favorite,
                   activity = selection.activity;
-                console.log("SELECTED ", selection);
                 if (favorite) {
                   const topic = `tivo/${this.state.tivo.device}/set/command`;
                   MQTT.publish(topic, "0" + favorite.channel);
                   this.setState({ show: false });
-                }
-                else if (activity) {
+                } else if (activity) {
                   /* console.log("ACTIVITY", activity.macro); */
                   MQTT.publish("macros/run", activity.macro);
                 }
@@ -148,7 +146,7 @@ class TheaterTile extends React.Component {
           }}
         >
           <div>
-            <h1 style={{ marginBottom: 10 }}>{this.state.tivo.title}</h1>
+            <h4 style={{ marginBottom: 16 }}>{this.state.tivo.title}</h4>
             <div style={{ marginBottom: 1 }}>{renderGuide()}</div>
           </div>
         </div>
@@ -184,7 +182,7 @@ class TheaterTile extends React.Component {
               <div style={{ fontSize: 10, marginTop: -2 }}>
                 {info.deviceState}
               </div>
-              <Row style={{ marginTop: 2, fontSize: 12 }}>
+              <Row style={{ marginTop: 2, fontSize: 14 }}>
                 <Col sm={3}>
                   <div
                     style={{
@@ -214,7 +212,7 @@ class TheaterTile extends React.Component {
                       textAlign: "left",
                     }}
                   >
-                    {formatTime(info.total_time)}
+                    -{formatTime(info.total_time - info.position)}
                   </div>
                 </Col>
               </Row>
@@ -226,8 +224,8 @@ class TheaterTile extends React.Component {
       const device = this.state.appletv;
       return (
         <div>
-          <div style={{ fontWeight: "bold" }}>{device.title}</div>
-          <div>Not Playing</div>
+          <div style={{ fontSize: 18, fontWeight: "bold" }}>{device.title}</div>
+          <div style={{ fontSize: 16 }}>Not Playing</div>
         </div>
       );
     };
@@ -240,15 +238,20 @@ class TheaterTile extends React.Component {
       <div>
         {renderPlaybackState()}
 
-        <Row style={{ ...rowStyle, marginTop: 6 }}>
+        <Row style={{ ...rowStyle, marginTop: 12 }}>
           <ButtonGroup>
-            <MQTTButton mini variant="info" topic={topic} message="Suspend">
+            <MQTTButton
+              mini
+              variant="secondary"
+              topic={topic}
+              message="Suspend"
+            >
               <FiMonitor />
             </MQTTButton>
             <MQTTButton mini topic={topic} message="Up">
               <FaChevronUp />
             </MQTTButton>
-            <MQTTButton mini variant="info" topic={topic} message="Menu">
+            <MQTTButton mini variant="secondary" topic={topic} message="Menu">
               <HiOutlineMenu />
             </MQTTButton>
           </ButtonGroup>
@@ -259,7 +262,7 @@ class TheaterTile extends React.Component {
             <MQTTButton mini topic={topic} message="Left">
               <FaChevronLeft />
             </MQTTButton>
-            <MQTTButton mini variant="info" topic={topic} message="Select">
+            <MQTTButton mini variant="secondary" topic={topic} message="Select">
               <FaCheckCircle />
             </MQTTButton>
             <MQTTButton mini topic={topic} message="Right">
@@ -515,7 +518,7 @@ class TheaterTile extends React.Component {
     this.theater.handleInputChange(state);
 
     // console.log("render", state);
-    const { avr, tv, currentActivity } = this.state;
+    const { avr, tv, currentDevice, currentActivity } = this.state;
     if (!tv || !avr) {
       return null;
     }
@@ -535,7 +538,7 @@ class TheaterTile extends React.Component {
       return this.renderActivities();
     }
 
-    if (currentActivity === null) {
+    if (currentDevice === null || currentActivity === null) {
       return this.renderActivities();
     }
 

@@ -79,7 +79,7 @@ class AppleTVControls extends React.Component {
       return null;
     }
     return (
-      <img style={{ width: 160, marginBottom: 10 }} alt="artwork" src={`data:image;base64,${info.artwork}`} />
+      <img style={{ height: 120, marginBottom: 10 }} alt="artwork" src={`data:image;base64,${info.artwork}`} />
     );
   }
 
@@ -146,7 +146,7 @@ class AppleTVControls extends React.Component {
                   textAlign: "left",
                 }}
               >
-                {formatTime(info.total_time)}
+                -{formatTime(info.total_time - info.position)}
               </div>
             </Col>
           </Row>

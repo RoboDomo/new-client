@@ -60,6 +60,7 @@ class Speak {
   }
 
   async say(message) {
+    return;
     this.queue.unshift(message);
   }
 
@@ -80,26 +81,27 @@ class Speak {
 const speaker = new Speak();
 
 const say = async (message) => {
+  return;
   await speaker.say(message);
 };
 
-let interval = setInterval(async () => {
-  try {
-    if (
-      MQTT.subscribe(
-        "say",
-        async (topic, message) => {
-          await say(message);
-        },
-        10
-      )
-    ) {
-      clearInterval(interval);
-    }
-  } catch (e) {
-    // console.log("Say retry");
-  }
-}, 1000);
+// let interval = setInterval(async () => {
+//   try {
+//     if (
+//       MQTT.subscribe(
+//         "say",
+//         async (topic, message) => {
+//           await say(message);
+//         },
+//         10
+//       )
+//     ) {
+//       clearInterval(interval);
+//     }
+//   } catch (e) {
+//     // console.log("Say retry");
+//   }
+// }, 1000);
 
 //
 export default say;

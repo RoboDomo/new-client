@@ -22,7 +22,6 @@ class IComfortButton extends React.Component {
     super(props);
 
     this.metric = Config.metric || false;
-    console.log(props);
 
     this.zone = props.zone;
     this.weather = props.weather;
@@ -93,7 +92,6 @@ class IComfortButton extends React.Component {
   }
 
   handleWeatherMessage(topic, message) {
-    console.log("Weather", topic, message);
     this.setState({
       weather: {
         iconLink: message.iconLink,
