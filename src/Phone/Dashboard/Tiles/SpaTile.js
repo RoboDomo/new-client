@@ -184,6 +184,9 @@ class SpaTile extends React.Component {
 
     return (
       <div
+        onClick={() => {
+          window.location.hash = "autelis";
+        }}
         style={{
           marginLeft: -20,
           marginRight: -20,

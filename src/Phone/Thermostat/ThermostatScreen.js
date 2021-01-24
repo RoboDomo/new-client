@@ -54,7 +54,7 @@ class ThermostatScreen extends React.Component {
               key++;
               return (
                 <Tab
-                  title= {"Zone " + thermostat.zone}
+                  title= {"Zone" + thermostat.zone}
                   eventKey={key}
                   key={key}
                 >

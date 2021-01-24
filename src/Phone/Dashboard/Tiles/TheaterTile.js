@@ -2,6 +2,8 @@ import React from "react";
 
 import { CgScreen } from "react-icons/cg";
 
+import TiVoFavorites from "Common/Modals/TiVoFavorites";
+import MQTT from "lib/MQTT";
 import Theater from "lib/Theater";
 
 import { data as Config } from "lib/Config";
@@ -44,8 +46,7 @@ class TheaterTile extends React.Component {
     this.devices = this.theater.devices;
     this.activities = this.theater.activities;
 
-
-    this.state = {};
+    this.state = { show: false };
   }
 
   componentDidMount() {
@@ -99,20 +100,48 @@ class TheaterTile extends React.Component {
       const channel = this.state.channels[this.state.channel];
       return (
         <>
-          <span style={{ marginLeft: 4 }}>{device.name}</span>
-          <br />
-          <div style={{ float: "right", marginTop: 2 }}>
-            {this.state.channel} {channel.name}
-            <img
-              style={{
-                marginLeft: 10,
-                marginRight: 10,
-                height: 24,
-                width: "auto",
-              }}
-              src={channel.logo.URL}
-              alt={channel.afffiliate}
-            />
+          <TiVoFavorites
+            activities={this.activities}
+            currentActivity={this.state.currentActivity}
+            tivo={device}
+            channels={this.state.channels}
+            select={(selection) => {
+              const favorite = selection.favorite,
+                activity = selection.activity;
+              if (favorite) {
+                const topic = `tivo/${this.state.tivo.device}/set/command`;
+                MQTT.publish(topic, "0" + favorite.channel);
+                this.setState({ show: false });
+              } else if (activity) {
+                /* console.log("ACTIVITY", activity.macro); */
+                MQTT.publish("macros/run", activity.macro);
+              }
+            }}
+            show={this.state.show}
+            hide={() => {
+              this.setState({ show: false });
+            }}
+          />
+          <div
+            onClick={() => {
+              this.setState({ show: true });
+            }}
+          >
+            <span style={{ marginLeft: 4 }}>{device.name}</span>
+            <br />
+            <div style={{ float: "right", marginTop: 2 }}>
+              {this.state.channel} {channel.name}
+              <img
+                style={{
+                  marginLeft: 10,
+                  marginRight: 10,
+                  height: 24,
+                  width: "auto",
+                }}
+                src={channel.logo.URL}
+                alt={channel.afffiliate}
+              />
+            </div>
           </div>
         </>
       );
@@ -149,7 +178,7 @@ class TheaterTile extends React.Component {
       return renderTiVo();
     };
 
-    console.log("theater tile", this.state, this.theater);
+    // console.log("theater tile", this.state, this.theater);
     return (
       <span>
         <CgScreen

@@ -11,6 +11,9 @@ import {
 class TiVoFavorites extends React.Component {
   constructor(props) {
     super();
+
+    console.log("favorites props", props);
+
     this.hide = props.hide;
     this.select = props.select;
     this.tivo = props.tivo;
@@ -60,7 +63,7 @@ class TiVoFavorites extends React.Component {
   }
 
   renderFavorites() {
-    if (this.state.display !== "Favorites") {
+    if (this.state.display !== "Favorites" || !this.tivo.favorites) {
       return null;
     }
     let key = 0;

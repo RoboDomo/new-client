@@ -38,14 +38,14 @@ class WeatherTab extends React.Component {
     } else if (~topic.indexOf("astronomy")) {
       this.setState({ astronomy: message });
     } else if (~topic.indexOf("hourly")) {
-//      for (const hour of message) {
-//        console.log(
-//          "hourly",
-//          new Date(hour.utcTime * 1000).toLocaleTimeString(),
-//          hour.temperature,
-//          hour
-//        );
-//      }
+      //      for (const hour of message) {
+      //        console.log(
+      //          "hourly",
+      //          new Date(hour.utcTime * 1000).toLocaleTimeString(),
+      //          hour.temperature,
+      //          hour
+      //        );
+      //      }
       this.setState({ hourly: message });
     }
   }
@@ -151,15 +151,28 @@ class WeatherTab extends React.Component {
         </div>
 
         <div style={{ float: "right", marginTop: 4 }}>
-          <div style={{ fontSize: iconSize }}>
-            <FaUmbrella style={{marginTop: -4}}/> {thisHour.precipitationProbability} %
+          <div style={{ fontSize: iconSize, textShadow: "2px 2px black" }}>
+            <FaUmbrella style={{ marginTop: -4 }} />{" "}
+            {thisHour.precipitationProbability} %
           </div>
-          <div style={{ fontSize: iconSize, marginTop: marginTop }}>
-            <FaWind style={{marginTop: -4}}/> {thisHour.windDescShort}{" "}
+          <div
+            style={{
+              fontSize: iconSize,
+              textShadow: "2px 2px black",
+              marginTop: marginTop,
+            }}
+          >
+            <FaWind style={{ marginTop: -4 }} /> {thisHour.windDescShort}{" "}
             <Speed value={thisHour.windSpeed} />
           </div>
-          <div style={{ fontSize: iconSize, marginTop: marginTop }}>
-            <BsDropletHalf style={{marginTop: -4}}/> {thisHour.humidity}%
+          <div
+            style={{
+              fontSize: iconSize,
+              textShadow: "2px 2px black",
+              marginTop: marginTop,
+            }}
+          >
+            <BsDropletHalf style={{ marginTop: -4 }} /> {thisHour.humidity}%
           </div>
         </div>
         <div style={{ clear: "both" }} />
@@ -187,14 +200,10 @@ class WeatherTab extends React.Component {
                   />
                 </td>
                 <td>
-                  <Temperature
-                    value={parseInt(day.highTemperature, 10)}
-                  />
+                  <Temperature value={parseInt(day.highTemperature, 10)} />
                 </td>
                 <td>
-                  <Temperature
-                    value={parseInt(day.lowTemperature, 10)}
-                  />
+                  <Temperature value={parseInt(day.lowTemperature, 10)} />
                 </td>
               </tr>
             );

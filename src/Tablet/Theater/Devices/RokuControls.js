@@ -36,7 +36,6 @@ class RokuControls extends React.Component {
 
     this.updateInfo = this.updateInfo.bind(this);
 
-    console.log("roku", props);
     debug("RokuControls", this.device, `(${this.info_topic})`);
   }
 

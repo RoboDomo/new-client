@@ -57,16 +57,13 @@ class ThermostatTile extends React.Component {
             <div style={{ fontSize: 18 }}>
               <span>
                 A/C set to{" "}
-                <Temperature
-                  metric={metric}
-                  value={zoneDetail.CoolSetPoint.Value}
-                />
+                <Temperature metric={metric} value={zoneDetail.CoolSetPoint} />
               </span>
               <div className="float-right">
                 Feels like{" "}
                 <Temperature
                   metric={metric}
-                  value={zoneDetail.AmbientTemperature.Value}
+                  value={zoneDetail.AmbientTemperature}
                 />
               </div>
             </div>
@@ -76,16 +73,13 @@ class ThermostatTile extends React.Component {
             <div style={{ fontSize: 18 }}>
               <span>
                 Heat set to{" "}
-                <Temperature
-                  metric={metric}
-                  value={zoneDetail.HeatSetPoint.Value}
-                />
+                <Temperature metric={metric} value={zoneDetail.HeatSetPoint} />
               </span>
               <div className="float-right">
                 Feels like{" "}
                 <Temperature
                   metric={metric}
-                  value={zoneDetail.AmbientTemperature.Value}
+                  value={zoneDetail.AmbientTemperature}
                 />
               </div>
             </div>
@@ -93,6 +87,13 @@ class ThermostatTile extends React.Component {
         default:
           return (
             <div style={{ fontSize: 18 }}>
+              <div className="float-right">
+                Feels like{" "}
+                <Temperature
+                  metric={metric}
+                  value={zoneDetail.AmbientTemperature}
+                />
+              </div>
               <div>System Off</div>
             </div>
           );
@@ -108,6 +109,11 @@ class ThermostatTile extends React.Component {
 
     return (
       <div
+        onClick={() => {
+          const LOCALSTORAGE_KEY = "ICOMFORT_TAB_STATE";
+          localStorage.setItem(LOCALSTORAGE_KEY, this.zone + 1);
+          window.location.hash = "nest";
+        }}
         style={{
           marginLeft: -20,
           marginRight: -20,
@@ -134,7 +140,7 @@ class ThermostatTile extends React.Component {
               fontSize: 24,
             }}
           />
-          <span>{zoneDetail.Name} Thermostat</span>
+          <span>{zoneDetail.Name.toUpperCase()} THERMOSTAT</span>
           <div style={{ marginLeft: 12 }}>{renderSystemMode()}</div>
         </div>
       </div>

@@ -45,15 +45,14 @@ class TheaterTab extends React.Component {
     this.handleSpeakersClick = this.handleSpeakersClick.bind(this);
   }
 
-
   handleActivityClick(activity) {
     this.theater.startActivity(activity);
-    this.setState({ show: false});
+    this.setState({ show: false });
   }
 
   handleDeviceClick(device) {
     this.theater.startDevice(device);
-    this.setState({ show: false});
+    this.setState({ show: false });
   }
 
   handleSpeakersClick(speakers) {
@@ -155,22 +154,63 @@ class TheaterTab extends React.Component {
       return null;
     }
     switch (currentDevice.type) {
+      
       case "tivo":
-        return <TiVo control={this.state.tivo} />;
+        return (
+          <TiVo
+            currentDevice={this.state.currentDevice}
+            currentActivity={this.state.currentActivity}
+            activities={this.activities}
+            control={this.state.tivo}
+          />
+        );
+
       case "bravia":
-        return <Bravia control={this.state.tv} />;
+        return (
+          <Bravia
+            currentDevice={this.state.currentDevice}
+            currentActivity={this.state.currentActivity}
+            activities={this.activities}
+            control={this.state.tv}
+          />
+        );
+
       case "roku":
-        return <Roku control={this.state.tv} />;
+        return (
+          <Roku
+            currentDevice={this.state.currentDevice}
+            currentActivity={this.state.currentActivity}
+            activities={this.activities}
+            control={this.state.tv}
+          />
+        );
+
       case "harmony":
-        return <Harmony hub={this.state.harmony} />;
+        return (
+          <Harmony
+            currentDevice={this.state.currentDevice}
+            currentActivity={this.state.currentActivity}
+            activities={this.activities}
+            hub={this.state.harmony}
+          />
+        );
       //     case "LG TV":
       //       console.log("deviceMap", deviceMap);
       //       if (!deviceMap.lgtv) {
       //         return null;
       //       }
       //       return <LGTVControl config={deviceMap.lgtv} />;
+
       case "appletv":
-        return <AppleTV control={this.state.appletv} />;
+        return (
+          <AppleTV
+            currentDevice={this.state.currentDevice}
+            currentActivity={this.state.currentActivity}
+            activities={this.activities}
+            control={this.state.appletv}
+          />
+        );
+
       default:
         console.log("renderDevice unknown", currentDevice);
     }

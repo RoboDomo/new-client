@@ -11,8 +11,8 @@
  */
 
 import React from "react";
-import { ListGroup, Modal, ButtonGroup, Button } from "react-bootstrap";
-
+import { ButtonGroup } from "react-bootstrap";
+import TiVoFavorites from "Common/Modals/TiVoFavorites";
 import MQTTButton from "Common/MQTTButton";
 import MQTT from "lib/MQTT";
 
@@ -53,13 +53,18 @@ class TiVo extends React.Component {
   constructor(props) {
     super();
     this.control = props.control;
+    this.favorites = this.control.favorites;
+    this.activities = props.activities;
     this.guide = this.control.guide;
+
     //
     this.status_topic = `tivo/${this.control.device}/status`;
     this.command_topic = `tivo/${this.control.device}/set/command`;
     this.guide_topic = `tvguide/${this.guide}/status/channels`;
+
     //
-    this.state = { favorites: false };
+    this.state = { show: false };
+
     //
     this.handleTivoMessage = this.handleTivoMessage.bind(this);
     this.handleGuideMessage = this.handleGuideMessage.bind(this);
@@ -307,52 +312,29 @@ class TiVo extends React.Component {
   }
 
   renderModal() {
-    if (!this.control.favorites || !this.control.favorites.length) {
-      return null;
-    }
-
-    let key = 0;
     return (
-      <Modal show={this.state.favorites}>
-        <Modal.Header>
-          <h1>Favorites</h1>
-        </Modal.Header>
-        <Modal.Body>
-          <div style={{ overflow: "auto" }}>
-            <ListGroup>
-              {this.control.favorites.map((favorite) => {
-                const g = this.state.guide[favorite.channel];
-                return (
-                  <ListGroup.Item
-                    key={++key}
-                    variant={favorite.channel === this.state.channel ? "warning" : undefined}
-                    onClick={() => {
-                      MQTT.publish(this.command_topic, favorite.channel);
-                      this.setState({ favorites: false});
-                    }}
-                  >
-                    {favorite.channel} {g.name}
-                    <img
-                      style={{ float: "right", height: 30, width: "auto", marginTop: -8 }}
-                      src={g.logo.URL}
-                      alt={g.name}
-                    />
-                  </ListGroup.Item>
-                );
-              })}
-            </ListGroup>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={() => {
-              this.setState({ favorites: false });
-            }}
-          >
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <TiVoFavorites
+        activities={this.activities}
+        currentActivity={this.props.currentActivity}
+        tivo={this.control}
+        channels={this.state.guide}
+        select={(selection) => {
+          const favorite = selection.favorite,
+            activity = selection.activity;
+          if (favorite) {
+            const topic = `tivo/${this.state.tivo.device}/set/command`;
+            MQTT.publish(topic, "0" + favorite.channel);
+            this.setState({ show: false });
+          } else if (activity) {
+            /* console.log("ACTIVITY", activity.macro); */
+            MQTT.publish("macros/run", activity.macro);
+          }
+        }}
+        show={this.state.show}
+        hide={() => {
+          this.setState({ show: false });
+        }}
+      />
     );
   }
 
@@ -366,7 +348,7 @@ class TiVo extends React.Component {
           {this.renderModal()}
           <h4
             onClick={() => {
-              this.setState({ favorites: true });
+              this.setState({ show: true });
             }}
             style={{ textAlign: "center", marginBottom: 10, marginTop: 20 }}
           >

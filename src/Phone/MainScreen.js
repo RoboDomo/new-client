@@ -18,7 +18,10 @@ import { Nav, TabContainer, TabContent, TabPane } from "react-bootstrap";
 
 import { FaSwimmingPool } from "react-icons/fa";
 import { MdDashboard, MdMenu } from "react-icons/md";
-import { IoIosTv, IoIosAnalytics } from "react-icons/io";
+import {
+  IoIosTv,
+  // IoIosAnalytics
+} from "react-icons/io";
 import { TiWeatherCloudy, TiThermometer } from "react-icons/ti";
 
 import DashboardScreen from "Phone/Dashboard/DashboardScreen";
@@ -29,7 +32,7 @@ import ThermostatScreen from "Phone/Thermostat/ThermostatScreen";
 // import Nest from "Phone/Nest/Nest";
 // import Sensors from "Phone/Sensors/Sensors";
 import AutelisScreen from "Phone/Autelis/AutelisScreen";
-// import SmartThings from "Phone/SmartThings/SmartThings";
+import ThingsScreen from "Phone/Things/ThingsScreen";
 
 const LOCALSTORAGE_KEY = "phone_key";
 
@@ -42,14 +45,10 @@ const tabInfo = {
   3: "weather",
   nest: 4,
   4: "nest",
-  sensors: 5,
-  5: "sensors",
-  autelis: 6,
-  6: "autelis",
-  things: 7,
-  7: "things",
-  RGB: 8,
-  8: "RGB",
+  autelis: 5,
+  5: "autelis",
+  things: 6,
+  6: "things",
 };
 
 const style = {
@@ -64,11 +63,28 @@ const style = {
 class MainScreen extends React.Component {
   constructor(props) {
     super();
-    console.log("mainWindow", props);
     document.body.classList.add("phone");
     this.state = {
       activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || 1,
     };
+  }
+
+  componentDidMount() {
+    console.log("Phone did mount");
+    window.addEventListener(
+      "hashchange",
+      () => {
+        const hash = window.location.hash.substr(1),
+          info = tabInfo[hash];
+        localStorage.setItem(LOCALSTORAGE_KEY, info);
+        this.setState({ activeTab: info });
+      },
+      false
+    );
+  }
+
+  componentWillUnmount() {
+    // debug("componentWillUnmount");
   }
 
   render() {
@@ -102,51 +118,63 @@ class MainScreen extends React.Component {
                 <MdDashboard />
               </Nav.Link>
             </Nav.Item>
+
             <Nav.Item style={style.nav}>
               <Nav.Link eventKey={2} style={{ margin: 0 }}>
                 <IoIosTv />
               </Nav.Link>
             </Nav.Item>
+
             <Nav.Item style={style.nav}>
               <Nav.Link eventKey={3} style={{ margin: 0 }}>
                 <TiWeatherCloudy />
               </Nav.Link>
             </Nav.Item>
+
             <Nav.Item style={style.nav}>
               <Nav.Link eventKey={4} style={{ margin: 0 }}>
                 <TiThermometer />
               </Nav.Link>
             </Nav.Item>
+
             <Nav.Item style={style.nav}>
               <Nav.Link eventKey={5} style={{ margin: 0 }}>
-                <IoIosAnalytics />
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item style={style.nav}>
-              <Nav.Link eventKey={6} style={{ margin: 0 }}>
                 <FaSwimmingPool />
               </Nav.Link>
             </Nav.Item>
+
             <Nav.Item style={style.nav}>
-              <Nav.Link eventKey={7} style={{ margin: 0 }}>
+              <Nav.Link eventKey={6} style={{ margin: 0 }}>
                 <MdMenu />
               </Nav.Link>
             </Nav.Item>
           </Nav>
+
           {/* </Navbar> */}
           <TabContent style={{ marginTop: 46 }}>
             <TabPane eventKey={1}>
               <DashboardScreen />
             </TabPane>
-            <TabPane eventKey={7}>{/* <SmartThings/> */}</TabPane>
-            <TabPane eventKey={2}>{<TheaterScreen />}</TabPane>
-            <TabPane eventKey={3}>{<WeatherScreen />}</TabPane>
+
+            <TabPane eventKey={2}>
+              <TheaterScreen />
+            </TabPane>
+
+            <TabPane eventKey={3}>
+              <WeatherScreen />
+            </TabPane>
+
             <TabPane eventKey={4}>
               <ThermostatScreen />
             </TabPane>
-            <TabPane eventKey={5}>{/* <Sensors /> */}</TabPane>
-            <TabPane eventKey={6}>{<AutelisScreen />}</TabPane>
-            <TabPane eventKey={7}>{/* <SmartThings/> */}</TabPane>
+
+            <TabPane eventKey={5}>
+              <AutelisScreen />
+            </TabPane>
+
+            <TabPane eventKey={6}>
+              <ThingsScreen />
+            </TabPane>
           </TabContent>
         </TabContainer>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, ProgressBar, ButtonGroup } from "react-bootstrap";
+import { Row, ProgressBar, ButtonGroup } from "react-bootstrap";
 
 import MQTT from "lib/MQTT";
 import MQTTButton from "Common/MQTTButton";
@@ -19,13 +19,6 @@ import {
 
 const DEBUG = require("debug"),
   debug = DEBUG("AppleTVControls");
-
-const appName = (n) => {
-  if (n === "com.google.ios.youtube") {
-    return "YouTube";
-  }
-  return n;
-};
 
 const rowStyle = {
   display: "flex",
@@ -69,7 +62,6 @@ class AppleTV extends React.Component {
   }
 
   componentDidMount() {
-    console.log("mount subscribe", this.info_topic);
     MQTT.subscribe(this.info_topic, this.updateInfo);
   }
 

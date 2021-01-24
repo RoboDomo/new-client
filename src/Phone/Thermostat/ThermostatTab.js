@@ -18,7 +18,6 @@ import Thermostat from "react-nest-thermostat";
 
 import { data as Config } from "lib/Config";
 
-
 class ThermostatTab extends React.Component {
   constructor(props) {
     super(props);
@@ -50,8 +49,8 @@ class ThermostatTab extends React.Component {
       return;
     }
 
-    const coolSetPoint = Number(zoneDetail.CoolSetPoint.Value),
-      heatSetPoint = Number(zoneDetail.HeatSetPoint.Value);
+    const coolSetPoint = Number(zoneDetail.CoolSetPoint),
+      heatSetPoint = Number(zoneDetail.HeatSetPoint);
 
     let systemMode = "off",
       hvacMode = "off";
@@ -188,7 +187,7 @@ class ThermostatTab extends React.Component {
     // if (this.state.systemMode === undefined) {
     //   return null;
     // }
-    
+
     switch (mode) {
       case "cooling": // cool only
       case "cool": // cool only
@@ -228,45 +227,43 @@ class ThermostatTab extends React.Component {
         );
       case "emergency": // emergency
       case "off": // Off
-//        return (
-//          <ButtonGroup size="sm" style={{ marginTop: 10 }}>
-//            <Button variant="danger" disabled>
-//              Off
-//            </Button>
-//            <Button
-//              onClick={() => {
-//                setSystemMode("cool");
-//              }}
-//            >
-//              Cool
-//            </Button>
-//            <Button
-//              onClick={() => {
-//                setSystemMode("heat");
-//              }}
-//            >
-//              Heat
-//            </Button>
-//            <Button
-//              onClick={() => {
-//                setSystemMode("both");
-//              }}
-//            >
-//              Both
-//            </Button>
-//          </ButtonGroup>
-//        );
+        //        return (
+        //          <ButtonGroup size="sm" style={{ marginTop: 10 }}>
+        //            <Button variant="danger" disabled>
+        //              Off
+        //            </Button>
+        //            <Button
+        //              onClick={() => {
+        //                setSystemMode("cool");
+        //              }}
+        //            >
+        //              Cool
+        //            </Button>
+        //            <Button
+        //              onClick={() => {
+        //                setSystemMode("heat");
+        //              }}
+        //            >
+        //              Heat
+        //            </Button>
+        //            <Button
+        //              onClick={() => {
+        //                setSystemMode("both");
+        //              }}
+        //            >
+        //              Both
+        //            </Button>
+        //          </ButtonGroup>
+        //        );
         break;
       case 5: // Offline
-        return (
-          <div>Offline</div>
-        );
+        return <div>Offline</div>;
       case 6: // Auto
         break;
       default:
         break;
     }
-    return null;
+    return <div style={{ height: 35 }} />;
   }
 
   render() {
@@ -283,7 +280,7 @@ class ThermostatTab extends React.Component {
       return null;
     }
 
-    const ambient_temperature = Number(zoneDetail.AmbientTemperature.Value);
+    const ambient_temperature = Number(zoneDetail.AmbientTemperature);
     let target = coolSetPoint;
     if (systemMode === "heating") {
       target = heatSetPoint;
@@ -308,8 +305,8 @@ class ThermostatTab extends React.Component {
         <div style={{ textAlign: "center" }}>
           <Thermostat
             style={{ textAlign: "center " }}
-            width="250px"
-            height="250px"
+            width="200px"
+            height="200px"
             away={Boolean(zoneDetail.AwayModeEnabled)}
             ambientTemperature={Locale.ftoc(target, metric)}
             targetTemperature={Locale.ftoc(ambient_temperature, metric)}

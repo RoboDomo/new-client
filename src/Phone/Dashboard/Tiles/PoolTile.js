@@ -83,6 +83,10 @@ class PoolTile extends React.Component {
     MQTT.unsubscribe(this.topic + forward.cleaner, this.handleAutelisMessage);
     MQTT.unsubscribe(this.topic + forward.waterfall, this.handleAutelisMessage);
     MQTT.unsubscribe(this.topic + forward.poolHeat, this.handleAutelisMessage);
+    MQTT.unsubscribe(
+      this.topic + forward.poolSetpoint,
+      this.handleAutelisMessage
+    );
     MQTT.unsubscribe(this.topic + forward.solarHeat, this.handleAutelisMessage);
     MQTT.unsubscribe(this.topic + forward.solarTemp, this.handleAutelisMessage);
     MQTT.unsubscribe(this.topic + forward.poolLight, this.handleAutelisMessage);
@@ -220,6 +224,9 @@ class PoolTile extends React.Component {
 
     return (
       <div
+        onClick={() => {
+          window.location.hash = "autelis";
+        }}
         style={{
           marginLeft: -20,
           marginRight: -20,

@@ -21,10 +21,10 @@ const targetTemperature = (zoneDetail) => {
 
   switch (zoneDetail.SystemMode) {
     case 0:
-      target = zoneDetail.CoolSetPoint.Value;
+      target = zoneDetail.CoolSetPoint;
       break;
     case 1:
-      target = zoneDetail.HeatSetPoint.Value;
+      target = zoneDetail.HeatSetPoint;
       break;
     case 2:
       break;
@@ -32,7 +32,7 @@ const targetTemperature = (zoneDetail) => {
       break;
     case 4:
     default:
-      target = zoneDetail.AmbientTemperature.Value;
+      target = zoneDetail.AmbientTemperature;
       break;
     case 5:
       break;
@@ -250,7 +250,7 @@ class ThermostatOverview extends React.Component {
           Feels Like
           <span style={{ float: "right" }}>
             <Temperature
-              value={zoneDetail.AmbientTemperature.Value}
+              value={zoneDetail.AmbientTemperature}
               metric={metric}
             />
           </span>
