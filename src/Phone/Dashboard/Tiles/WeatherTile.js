@@ -163,15 +163,15 @@ class WeatherTile extends React.Component {
         </div>
 
         <div style={{ float: "right", marginLeft: 10, marginTop: 4 }}>
-          <div style={{ fontSize: iconSize }}>
+          <div style={{ fontSize: iconSize, textShadow: "2px 2px black" }}>
             <FaUmbrella style={{ marginTop: -4 }} />{" "}
             {thisHour.precipitationProbability} %
           </div>
-          <div style={{ fontSize: iconSize, marginTop: marginTop }}>
+          <div style={{ fontSize: iconSize, textShadow: "2px 2px black", marginTop: marginTop }}>
             <FaWind style={{ marginTop: -4 }} /> {thisHour.windDescShort}{" "}
             <Speed value={thisHour.windSpeed} />
           </div>
-          <div style={{ fontSize: iconSize, marginTop: marginTop }}>
+          <div style={{ fontSize: iconSize, marginTop: marginTop, textShadow: "2px 2px black" }}>
             <BsDropletHalf style={{ marginTop: -4 }} /> {thisHour.humidity}%
           </div>
         </div>
