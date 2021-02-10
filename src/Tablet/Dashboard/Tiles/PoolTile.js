@@ -21,7 +21,7 @@ class PoolTile extends React.Component {
     const backward = Config.autelis.deviceMap.backward;
     const thing = backward[topic.split("/").pop()];
     const newState = {};
-    if (message=== "enabled" || message === "on" || message === "off") {
+    if (message === "enabled" || message === "on" || message === "off") {
       newState[thing] = isOn(message);
     } else {
       newState[thing] = Number(message);
@@ -87,17 +87,26 @@ class PoolTile extends React.Component {
 
       if (on) {
         return (
-          <div>
-            {renderControl("pump", `Pool ${this.state.poolTemp}°F`, true)}
-            {renderControl("pump", "Filter On")}
-            {renderControl("cleaner", "Cleaner On")}
-            {renderControl("waterfall", "Waterfall On")}
-            {renderControl("poolHeat", "Pool Heat " + this.state.poolSetpoint)}
-            {renderControl(
-              "solarHeat",
-              "Solar Heat " +
-                (this.state.solarHeat ? this.state.solarTemp : "off")
-            )}
+          <div style={{ padding: 8 }}>
+            <div style={{ marginBottom: 8}}>Pool</div>
+            <div style={{ fontSize: 44, fontWeight: "bold", marginTop: -18, float: "left" }}>
+              {renderControl("pump", `${this.state.poolTemp}°F`)}
+              {/* {renderControl("pump", `${100}°F`)} */}
+            </div>
+            <div style={{fontSize: 16,  textAlign: "right", marginTop: 0, float: "right"}}>
+              {renderControl("pump", "Filter On")}
+              {renderControl("cleaner", "Cleaner On")}
+              {renderControl("waterfall", "Waterfall On")}
+              {renderControl(
+                "poolHeat",
+                "Pool Heat " + this.state.poolSetpoint
+              )}
+              {renderControl(
+                "solarHeat",
+                "Solar Heat " +
+                  (this.state.solarHeat ? this.state.solarTemp : "off")
+              )}
+            </div>
           </div>
         );
       } else {

@@ -386,7 +386,7 @@ class TheaterTile extends React.Component {
   }
 
   renderAudioControls() {
-    const mute = this.state.mute,
+    const mute = this.state.avr.mute,
       avr = this.theater.avr;
 
     if (!avr || (avr && !this.state.avr.power) || !this.state.tv.power) {

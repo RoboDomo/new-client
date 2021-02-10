@@ -86,7 +86,8 @@ class WeatherTile extends React.Component {
             <img
               alt={now.iconName}
               style={{
-                verticalAlign: "bottom",
+                marginTop: -6,
+                verticalAlign: "middle",
                 width: 80,
                 height: 80,
               }}
@@ -95,6 +96,7 @@ class WeatherTile extends React.Component {
             <div style={{ display: "inline" }}>
               <span
                 style={{
+                  paddingTop: 10,
                   fontSize: 44,
                 }}
               >
@@ -102,7 +104,7 @@ class WeatherTile extends React.Component {
               </span>
             </div>
           </div>
-          <div style={{ textAlign: "right" }}>
+          <div style={{ marginTop: -20, textAlign: "right" }}>
             <Temperature value={now.highTemperature} /> /{" "}
             <Temperature value={now.lowTemperature} />
           </div>

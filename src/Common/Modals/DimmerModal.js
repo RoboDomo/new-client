@@ -18,7 +18,6 @@ class DimmerModal extends React.Component {
   }
 
   render() {
-    console.log("render", this.props);
     return (
       <Modal
         show={this.props.show}

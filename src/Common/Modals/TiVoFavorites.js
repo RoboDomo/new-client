@@ -12,8 +12,6 @@ class TiVoFavorites extends React.Component {
   constructor(props) {
     super();
 
-    console.log("favorites props", props);
-
     this.hide = props.hide;
     this.select = props.select;
     this.tivo = props.tivo;
@@ -29,7 +27,6 @@ class TiVoFavorites extends React.Component {
       return false;
     }
     const re = new RegExp(this.state.filter.toUpperCase());
-    console.log("isFiltered", filter, re, ...args);
 
     for (const arg of args) {
       if (re.test(arg.toUpperCase())) {
@@ -55,7 +52,6 @@ class TiVoFavorites extends React.Component {
           type="text"
           onChange={(...args) => {
             this.setState({ filter: this.filterRef.current.value });
-            /* console.log("CHANGE", this.filterRef.current.value, ...args); */
           }}
         />
       </Form>

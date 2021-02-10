@@ -305,6 +305,11 @@ class Theater extends EventEmitter {
           state.avr.input = message;
           this.handleInputChange(state);
           break;
+        case "MU":
+          // console.log("SI", message);
+          state.avr.mute = message === "ON";
+          this.handleInputChange(state);
+          break;
         case "MV":
           state.avr.masterVolume = parseInt("" + message, 10);
           break;
@@ -387,6 +392,10 @@ class Theater extends EventEmitter {
             this.handleDenonMessage
           );
           MQTT.subscribe(
+            `denon/${device.device}/status/MU`,
+            this.handleDenonMessage
+          );
+          MQTT.subscribe(
             `denon/${device.device}/status/PW`,
             this.handleDenonMessage
           );
@@ -465,6 +474,10 @@ class Theater extends EventEmitter {
             this.handleDenonMessage
           );
           MQTT.unsubscribe(
+            `denon/${device.device}/status/MU`,
+            this.handleDenonMessage
+          );
+          MQTT.unsubscribe(
             `denon/${device.device}/status/PW`,
             this.handleDenonMessage
           );
@@ -489,6 +502,7 @@ class Theater extends EventEmitter {
         default:
           break;
       }
+
       return false;
     });
   }

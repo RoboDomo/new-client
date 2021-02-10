@@ -104,9 +104,8 @@ class SpaTile extends React.Component {
 
     const renderControl = (ndx, text, big) => {
       const thing = this.state[ndx];
-      //        if (thing && state.spa !== 'on' ||  thing.toLowerCase() === 'off' ) {
       if (!thing) {
-        return null; // <div style={this.style}/>;
+        return null;
       }
       if (big) {
         return <div style={{ fontSize: 30 }}>{text}</div>;
@@ -116,29 +115,29 @@ class SpaTile extends React.Component {
     };
 
     const renderSpa = () => {
-      if (isOn("spa")) {
-        return (
-          <div>
-            {renderControl("spa", `Spa ${this.state.spaTemp}°F`, true)}
-            {renderControl("spaHeat", "Heat On")}
-            {renderControl("jet", "Jets On")}
-            {renderControl("blower", "Blower On")}
-            {renderControl("spaLight", "Light On")}
+      return (
+        <div style={{ padding: 8 }}>
+          {renderControl("spa", `Spa ${this.state.spaTemp}°F`)}
+          <div
+            style={{
+              fontSize: 44,
+              fontWeight: "bold",
+              marginTop: -18,
+              float: "left",
+            }}
+          >
+            {/* {`${this.state.spaTemp}°F`} */}
+            {isOn("spa") ? this.state.spaTemp : "OFF"}
+            {/* {this.state.spaTemp} */}
           </div>
-        );
-      } else {
-        return (
-          <div>
-            <div style={{ fontSize: 60 }}>{"Spa Off"}</div>
-            <div>
-              {isOn("jet") ? "JETS ON" : null}
-              {isOn("spaHeat") ? "HEAT ON" : null}
-              {isOn("blower") ? "BLOWER ON" : null}
-              {isOn("spaLight") ? "LIGHT ON" : null}
-            </div>
+          <div style={{ fontSize: 16, float: "right" }}>
+            {isOn("jet") ? <div style={{marginTop: -4}}>JETS ON</div> : null}
+            {isOn("spaHeat") ? <div style={{marginTop: -4}}>HEAT ON</div> : null}
+            {isOn("blower") ? <div style={{marginTop: -4}}>BLOWER ON</div> : null}
+            {isOn("spaLight") ? <div style={{marginTop: -4}}>LIGHT ON</div> : null}
           </div>
-        );
-      }
+        </div>
+      );
     };
 
     return (
@@ -155,6 +154,7 @@ class SpaTile extends React.Component {
             window.location.hash = "autelis";
           }}
         >
+          <div>Spa</div>
           <div style={{ textAlign: "center" }}>{renderSpa()}</div>
         </div>
       </div>
