@@ -17,7 +17,6 @@ class RGBTile extends React.Component {
     // this.hub = props.tile.hub;
     //
     this.rgb = this.tile;
-    // console.log("rgb", this.rgb);
     this.hub = this.rgb.hub;
     this.name = this.rgb.name;
     this.form = localStorage.getItem(`rgb-${this.rgb.label}`);
@@ -34,7 +33,6 @@ class RGBTile extends React.Component {
         hex: "ff00ff",
       };
     }
-    // console.log("construct RGB", props);
     this.state = { show: false };
     //
     this.handlePowerMessage = this.handlePowerMessage.bind(this);
@@ -148,7 +146,6 @@ class RGBTile extends React.Component {
           <Picker
             active={this.state.active}
             config={this.rgb}
-            /* controller={controller} */
             form={f}
             power={(newState) => {
               MQTT.publish(`${this.hub}/${this.device}/set/switch`, newState);
@@ -157,9 +154,6 @@ class RGBTile extends React.Component {
               this.setState({ show: false });
             }}
             update={() => {
-              console.log("update", this.form);
-              /* const h = this.form.hsv; */
-              /* MQTT.publish(`${this.hub}/${this.name}/set/color`,{hue: h.h, saturation: h.s, level: h.v}); */
               MQTT.publish(`${this.hub}/${this.name}/set/red`, this.form.rgb.r);
               MQTT.publish(
                 `${this.hub}/${this.name}/set/green`,
@@ -171,8 +165,6 @@ class RGBTile extends React.Component {
               );
             }}
             onChange={(v) => {
-              //          this.hex = v;
-              console.log("change v", v);
               if (v.hex) {
                 f.hex = v.hex;
                 f.changed = true;

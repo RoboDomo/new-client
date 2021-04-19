@@ -36,9 +36,6 @@ class SystemsTab extends React.Component {
     const newState = {};
     newState[what] = message;
     this.setState(newState);
-    // if (what === "cpus") {
-    //   console.log("cpus", message[0].times);
-    // }
   }
 
   componentDidMount() {
@@ -108,8 +105,6 @@ class SystemsTab extends React.Component {
       this.cpus = cpus;
     }
 
-    // console.log("xcpu0", cpus[0].times);
-    // console.log("cpu0", this.cpus[0].times);
     let key = 0;
     const ret = (
       <>
@@ -154,7 +149,6 @@ class SystemsTab extends React.Component {
       </>
     );
 
-    // this.cpus = cpus;
     return ret;
   }
 

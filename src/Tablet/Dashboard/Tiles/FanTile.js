@@ -33,7 +33,6 @@ class FanTile extends React.Component {
   }
 
   async handleClick() {
-    console.log("CLICKED!", this.state);
     if (this.state.level !== undefined) {
       this.setState({ show: true });
     }

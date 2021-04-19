@@ -10,7 +10,6 @@ class LockTile extends React.Component {
   constructor(props) {
     super(props);
     this.style = styles.tile(1, 1);
-    // console.log("props", props)A
     this.tile = props.tile;
     this.locks = this.tile.locks;
     this.devices = this.tile.devices;
@@ -22,12 +21,9 @@ class LockTile extends React.Component {
   }
 
   handleClick() {
-    console.log("state", this.state.locked);
     if (this.state.locked) {
-      console.log("unlock");
       MQTT.publish(`${this.tile.hub}/${this.tile.device}/set/unlock`, "unlock");
     } else {
-      console.log("lock");
       MQTT.publish(`${this.tile.hub}/${this.tile.device}/set/lock`, "lock");
     }
   }

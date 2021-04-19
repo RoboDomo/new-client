@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import { ButtonGroup } from "react-bootstrap";
@@ -13,6 +12,7 @@ import {
   FaForward,
   FaFastForward,
   FaDotCircle,
+  FaUndo,
 } from "react-icons/fa";
 
 class LGTVTransport extends React.Component {
@@ -28,6 +28,14 @@ class LGTVTransport extends React.Component {
         className="fixed-bottom"
         style={{ margin: 0, padding: 0, width: 1024 }}
       >
+        <MQTTButton
+          transport
+          variant="danger"
+          topic="lgtv/reset/set/command"
+          message="__RESTART__"
+        >
+          <FaUndo/>
+        </MQTTButton>
         <MQTTButton transport topic={this.command_topic} message="replay">
           <FaFastBackward />
         </MQTTButton>
@@ -49,7 +57,12 @@ class LGTVTransport extends React.Component {
         <MQTTButton transport topic={this.command_topic} message="advance">
           <FaFastForward />
         </MQTTButton>
-        <MQTTButton variant="danger" transport topic={this.command_topic} message="record">
+        <MQTTButton
+          variant="danger"
+          transport
+          topic={this.command_topic}
+          message="record"
+        >
           <FaDotCircle />
         </MQTTButton>
       </ButtonGroup>

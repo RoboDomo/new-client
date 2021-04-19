@@ -35,14 +35,10 @@ class WeatherTab extends React.Component {
     if (~topic.indexOf("weekly")) {
       this.setState({ weekly: message });
     } else if (~topic.indexOf("observation")) {
-      console.log("observation", message);
       this.setState({ now: message });
     } else if (~topic.indexOf("astronomy")) {
       this.setState({ astronomy: message });
     } else if (~topic.indexOf("hourly")) {
-      for (const hour of message) {
-        console.log("hourly",  new Date(hour.utcTime*1000).toLocaleTimeString(), hour.temperature, hour);
-      }
       this.setState({ hourly: message });
     }
   }
@@ -140,7 +136,11 @@ class WeatherTab extends React.Component {
         hour -= 12;
         ampm = "PM";
       }
-
+      
+      if (hour === 0) {
+	hour = 12;
+        ampm = "AM";
+      }
       return (
         <Col style={{ textAlign: "center" }}>
           <div>

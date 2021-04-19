@@ -120,6 +120,15 @@ class AudioControls extends React.Component {
           {this.button("MSMOVIE", "Movie")}
           {this.button("MSMUSIC", "Music")}
         </ButtonGroup>
+      <ButtonGroup vertical style={{marginTop: 28}}>
+          <MQTTButton
+            variant="danger"
+            topic="denon/reset/set/command"
+            message="__RESTART__"
+          >
+            Restart
+          </MQTTButton>
+        </ButtonGroup>
       </div>
     );
   }

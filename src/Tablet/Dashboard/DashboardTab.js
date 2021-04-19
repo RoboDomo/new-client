@@ -23,11 +23,9 @@ class DashboardTab extends React.Component {
     super(props);
     this.dashboard = props.dashboard;
     let key = 0;
-    // console.log("dashboard", this.dashboard.tiles);
     this.tiles = this.dashboard.tiles.map((tile) => {
       key++;
       const xkey = "tile-" + key;
-      // console.log("tile", tile);
       switch (tile.type) {
         case "ring":
           return <RingTile key={xkey} tile={tile} />;
@@ -64,7 +62,6 @@ class DashboardTab extends React.Component {
         case "blank":
           return <BlankTile key={xkey} tile={tile} />;
         default:
-          console.log(tile);
           return (
             <div
               key={xkey}

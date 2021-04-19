@@ -13,6 +13,7 @@ import {
   FaForward,
   FaFastForward,
   FaDotCircle,
+  FaUndo,
 } from "react-icons/fa";
 
 class TiVoTransport extends React.Component {
@@ -27,8 +28,16 @@ class TiVoTransport extends React.Component {
     return (
       <ButtonGroup
         className="fixed-bottom"
-        style={{ margin: 0, padding: 0, width: 1024 }}
+        style={{ margin: "auto", padding: 0, width: 1024 }}
       >
+        <MQTTButton
+          transport
+          variant="danger"
+          topic="tivo/reset/set/command"
+          message="__RESTART__"
+        >
+          <FaUndo />
+        </MQTTButton>
         <MQTTButton transport topic={this.command_topic} message="REPLAY">
           <FaFastBackward />
         </MQTTButton>

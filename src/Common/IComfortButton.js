@@ -47,12 +47,13 @@ class IComfortButton extends React.Component {
   setTarget(cool, heat) {
     const DELAY = 1000;
 
-    this.setState({ heatSetPoint: heat, coolSetPoint: cool });
+    console.log('setTarget', cool, heat);
+    this.setState({ HeatSetPoint: heat, CoolSetPoint: cool });
     console.log(this.state);
     if (!this.delayedTask) {
       console.log("new delayed task");
       this.delayedTask = new DelayedTask(() => {
-        const temp = `${this.state.coolSetPoint}:${this.state.heatSetPoint}`;
+        const temp = `${this.state.CoolSetPoint}:${this.state.HeatSetPoint}`;
         // send set target
         console.log("Set target ", temp);
         MQTT.publish(`icomfort/zone${this.zone}/set/setpoint`, temp);
@@ -65,18 +66,19 @@ class IComfortButton extends React.Component {
   }
 
   handleClickUp() {
+    console.log("click up", this.state);
     if (this.state.systemMode === "cooling") {
-      this.setTarget(this.state.coolSetPoint + 1, this.state.heatSetPoint);
+      this.setTarget(this.state.CoolSetPoint + 1, this.state.HeatSetPoint);
     } else if (this.state.systemMode === "heating") {
-      this.setTarget(this.state.coolSetPoint, this.state.heatSetPoint + 1);
+      this.setTarget(this.state.CoolSetPoint, this.state.HeatSetPoint + 1);
     }
   }
 
   handleClickDown() {
     if (this.state.systemMode === "cooling") {
-      this.setTarget(this.state.coolSetPoint - 1, this.state.heatSetPoint);
+      this.setTarget(this.state.CoolSetPoint - 1, this.state.HeatSetPoint);
     } else if (this.state.systemMode === "heating") {
-      this.setTarget(this.state.coolSetPoint, this.state.heatSetPoint - 1);
+      this.setTarget(this.state.CoolSetPoint, this.state.HeatSetPoint - 1);
     }
   }
 
@@ -86,7 +88,21 @@ class IComfortButton extends React.Component {
 
   handleIComfortMessage(topic, message) {
     const key = topic.split("/").pop(),
-      newState = {};
+          newState = {};
+    if (key === 'SystemMode') {
+      switch (Number(message)) {
+      case 0:
+        newState.systemMode = 'cooling';
+        break;
+      case 1:
+        newState.systemMode = 'heating';
+        break;
+      default:
+        newState.systemMode = 'off';
+        break;
+      }
+      
+    }
     newState[key] = message;
     this.setState(newState);
   }
@@ -177,8 +193,8 @@ class IComfortButton extends React.Component {
 
     let systemMode = "off",
       hvacMode = "off",
-      coolSetPoint = this.delayedTask ? state.coolSetPoint : state.CoolSetPoint,
-      heatSetPoint = this.delayedTask ? state.heatSetPoint : state.HeatSetPoint;
+      coolSetPoint = this.delayedTask ? state.CoolSetPoint : state.CoolSetPoint,
+      heatSetPoint = this.delayedTask ? state.HeatSetPoint : state.HeatSetPoint;
 
     switch (state.SystemMode) {
       case 0:

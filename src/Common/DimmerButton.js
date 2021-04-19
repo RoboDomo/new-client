@@ -3,11 +3,14 @@ import React from "react";
 import MQTT from "lib/MQTT";
 import MQTTButton from "Common/MQTTButton";
 
+import DimmerModal from "Common/Modals/DimmerModal";
+
 class DimmerButton extends React.Component {
   constructor(props) {
     super(props);
     this.hub = props.hub;
     this.name = props.name;
+    this.device = this.name;
     this.state = {
       switch: "off",
       level: 0,
@@ -36,18 +39,7 @@ class DimmerButton extends React.Component {
   }
 
   handleClick() {
-    const newState = Object.assign({}, this.state);
-
-    if (this.state.switch === "off") {
-      newState.switch = "on";
-      MQTT.publish(`${this.hub}/${this.name}/set/switch`, "on");
-      MQTT.publish(`${this.hub}/${this.name}/set/level`, this.state.level);
-    } else {
-      newState.switch = "off";
-      MQTT.publish(`${this.hub}/${this.name}/set/switch`, "off");
-    }
-
-    this.setState(newState);
+    this.setState({ show: true });
   }
 
   handleMessage(topic, message) {
@@ -65,6 +57,17 @@ class DimmerButton extends React.Component {
       this.state.switch === "on" ? Number(this.state.level) + "%" : "Off";
     return (
       <div>
+        <DimmerModal
+          show={this.state.show}
+          hub={this.hub}
+          device={this.device}
+          level={this.state.level}
+          power={this.state.power}
+          onHide={() => {
+            this.setState({ show: false });
+          }}
+        />
+
         <MQTTButton onClick={this.handleClick}>{value}</MQTTButton>
       </div>
     );

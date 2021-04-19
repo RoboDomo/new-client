@@ -56,7 +56,6 @@ const Picker = CustomPicker(
     };
 
     power = power === "on" ? "OFF" : "ON";
-    console.log("hex", form.hex, "form", form);
     return (
       <>
         <div style={{ width: 1024, color: "rgba(0,0,0,.0)" }}>
@@ -160,7 +159,6 @@ const Picker = CustomPicker(
             <Button
               onClick={() => {
                 update();
-                //                console.log("UPDATE ", form.current);
               }}
               style={{ width: 150 }}
               size="lg"

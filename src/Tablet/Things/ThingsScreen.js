@@ -19,7 +19,6 @@ class ThingsScreen extends React.Component {
       };
 
       for (const thing of Config.smartthings.things) {
-        console.log("thing", thing);
         this.roomsMap.All.push(thing);
         for (const room of thing.rooms) {
           if (room !== "*") {

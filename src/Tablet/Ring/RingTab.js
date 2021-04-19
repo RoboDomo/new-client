@@ -15,7 +15,6 @@ class RingTab extends React.Component {
   }
 
   handleMessage(topic, message) {
-    console.log("handleMessage", topic, message);
     const parts = topic.split("/"),
       key = parts.pop(),
       newState = {};
@@ -98,7 +97,6 @@ class RingTab extends React.Component {
           <tbody>
             {Object.keys(this.state.events).map((key, counter) => {
               const event = this.state.events[key].event;
-              console.log(event);
               return (
                 <tr key={key}>
                   <td>{counter + 1}</td>

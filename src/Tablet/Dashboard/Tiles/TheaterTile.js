@@ -2,6 +2,7 @@ import React from "react";
 import { Row, Col, ButtonGroup, ProgressBar } from "react-bootstrap";
 
 import TiVoFavorites from "Common/Modals/TiVoFavorites";
+import Marquee from "Common/Marquee";
 import Theater from "lib/Theater";
 import styles from "./styles";
 
@@ -71,6 +72,14 @@ class TheaterTile extends React.Component {
     this.devices = theater.devices;
     this.activities = theater.activities;
 
+    this.allOff = null;
+    for (const activity of this.activities) {
+      if (activity.name === "All Off") {
+        this.allOff = activity.macro;
+        break;
+      }
+    }
+
     this.state = { show: false };
   }
 
@@ -108,7 +117,6 @@ class TheaterTile extends React.Component {
                   MQTT.publish(topic, "0" + favorite.channel);
                   this.setState({ show: false });
                 } else if (activity) {
-                  /* console.log("ACTIVITY", activity.macro); */
                   MQTT.publish("macros/run", activity.macro);
                 }
               }}
@@ -159,13 +167,14 @@ class TheaterTile extends React.Component {
     const renderTitle = (title) => {
       if (title.length > 34) {
         return (
-          <marquee
-            scrolldelay="200"
+          <Marquee
+            speed={30}
             behavior="alternate"
-            style={{ fontWeight: "bold", fontSize: 14 }}
+            text={title}
+            /* style={{ fontWeight: "bold", fontSize: 14 }} */
           >
-            {title}
-          </marquee>
+            {/* {title} */}
+          </Marquee>
         );
       } else {
         return <div style={{ fontWeight: "bold", fontSize: 14 }}>{title}</div>;
@@ -367,10 +376,32 @@ class TheaterTile extends React.Component {
     let key = 0;
     return (
       <div style={this.style}>
-        <h5 style={{ marginTop: 5 }}>Theater Off</h5>
-        <div style={{ marginTop: 8 }}>Choose Activity:</div>
+        <h5
+          style={{ marginTop: 2 }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.allOff) {
+              MQTT.publish("macros/run", this.allOff);
+            }
+          }}
+        >
+          Theater Off
+        </h5>
+        <div
+          style={{ marginTop: 8 }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.allOff) {
+              MQTT.publish("macros/run", this.allOff);
+            }
+          }}
+        >
+          Choose Activity:
+        </div>
         {activities.map((activity) => {
-          if (activity.name === "All Off") {
+          if (activity.name.toLowerCase() === "all off") {
             return null;
           }
           return (
@@ -431,7 +462,6 @@ class TheaterTile extends React.Component {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log("avr", avr);
               dispatch({ type: mute ? "unmute" : "mute" });
             }}
           >
@@ -517,7 +547,6 @@ class TheaterTile extends React.Component {
     const state = Object.assign({}, this.state);
     this.theater.handleInputChange(state);
 
-    // console.log("render", state);
     const { avr, tv, currentDevice, currentActivity } = this.state;
     if (!tv || !avr) {
       return null;

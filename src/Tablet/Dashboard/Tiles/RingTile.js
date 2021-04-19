@@ -54,7 +54,6 @@ class RingTile extends React.Component {
   }
 
   handleMessage(topic, message) {
-    // console.log("handleMessage", topic, message);
     const parts = topic.split("/"),
       key = parts.pop(),
       newState = {};

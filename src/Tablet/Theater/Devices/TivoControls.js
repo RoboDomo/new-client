@@ -10,17 +10,10 @@ import {
   FaChevronRight,
   FaThumbsUp,
   FaThumbsDown,
-  FaBackward,
-  FaFastBackward,
-  FaPause,
-  FaPlay,
-  FaStepForward,
-  FaForward,
-  FaFastForward,
-  FaDotCircle,
 } from "react-icons/fa";
 
 import TiVoFavorites from "Common/Modals/TiVoFavorites";
+import TiVoTransport from "Tablet/Transport/TiVoTransport";
 
 const DEBUG = require("debug"),
   debug = DEBUG("TivoControls");
@@ -79,44 +72,6 @@ class TivoControls extends React.Component {
     MQTT.unsubscribe(this.status_topic + "/channel", this.handleTivoMessage);
     MQTT.unsubscribe(this.status_topic + "/mode", this.handleTivoMessage);
     MQTT.unsubscribe(this.guide_topic, this.handleGuideMessage);
-  }
-
-  renderTransport() {
-    return (
-      <ButtonGroup
-        className="fixed-bottom"
-        style={{ margin: 0, padding: 0, width: 1024 }}
-      >
-        <MQTTButton transport topic={this.command_topic} message="REPLAY">
-          <FaFastBackward />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="REVERSE">
-          <FaBackward />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="PAUSE">
-          <FaPause />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="PLAY">
-          <FaPlay />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="SLOW">
-          <FaStepForward />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="FORWARD">
-          <FaForward />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="ADVANCE">
-          <FaFastForward />
-        </MQTTButton>
-        <MQTTButton
-          topic={this.command_topic}
-          message="RECORD"
-          variant="danger"
-        >
-          <FaDotCircle />
-        </MQTTButton>
-      </ButtonGroup>
-    );
   }
 
   renderHomeRow() {
@@ -316,11 +271,10 @@ class TivoControls extends React.Component {
               const favorite = selection.favorite,
                 activity = selection.activity;
               if (favorite) {
-                const topic = `tivo/${this.state.tivo.device}/set/command`;
+                const topic = `tivo/${this.device.device}/set/command`;
                 MQTT.publish(topic, "0" + favorite.channel);
                 this.setState({ show: false });
               } else if (activity) {
-                /* console.log("ACTIVITY", activity.macro); */
                 MQTT.publish("macros/run", activity.macro);
               }
             }}
@@ -356,7 +310,7 @@ class TivoControls extends React.Component {
         {this.renderJoystick()}
         {this.renderABCD()}
         {this.renderNumberPad()}
-        {this.renderTransport()}
+        <TiVoTransport device={this.device}/>
       </>
     );
   }

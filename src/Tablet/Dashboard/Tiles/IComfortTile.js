@@ -41,7 +41,6 @@ class iComfortTile extends React.Component {
     this.handleIComfortMessage = this.handleIComfortMessage.bind(this);
 
     this.state = {};
-    // console.log("tile", this.tile);
   }
 
   handleIComfortMessage(topic, message) {
@@ -126,10 +125,6 @@ class iComfortTile extends React.Component {
       this.setState({ systemMode: mode });
     };
 
-    // console.log("renderNumberField", target, metric, this.state);
-    // if (this.state.systemMode === undefined) {
-    //   return null;
-    // }
     switch (mode) {
       case "Cool": // cool only
       case "Heat": // heat

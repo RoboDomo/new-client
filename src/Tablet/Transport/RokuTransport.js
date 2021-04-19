@@ -4,7 +4,7 @@ import { ButtonGroup } from "react-bootstrap";
 import MQTTButton from "Common/MQTTButton";
 
 import {
-  // FaFastBackward,
+  FaStepBackward,
   FaBackward,
   // FaPause,
   FaPlay,
@@ -18,7 +18,6 @@ class RokuTransport extends React.Component {
     super(props);
     this.device = props.device;
     this.command_topic = `roku/${this.device}/set/command`;
-    console.log("transport", this.device);
   }
 
   render() {
@@ -29,10 +28,18 @@ class RokuTransport extends React.Component {
       >
         <MQTTButton
           transport
+          variant="danger"
+          topic="bravia/reset/set/command"
+          message="__RESTART__"
+        >
+          <FaUndo />
+        </MQTTButton>
+        <MQTTButton
+          transport
           topic={this.command_topic}
           message="InstantReplay"
         >
-          <FaUndo />
+          <FaStepBackward />
         </MQTTButton>
         <MQTTButton transport topic={this.command_topic} message="Reverse">
           <FaBackward />

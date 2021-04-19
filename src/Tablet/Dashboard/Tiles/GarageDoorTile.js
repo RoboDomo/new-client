@@ -6,6 +6,8 @@ import Ripples from "react-ripples";
 
 import { RiUpload2Fill, RiDownload2Fill } from "react-icons/ri";
 
+import YesNoModal from "Common/Modals/YesNoModal";
+
 // TODO: add MyQ garage door status
 class GarageDoorTile extends React.Component {
   constructor(props) {
@@ -16,7 +18,7 @@ class GarageDoorTile extends React.Component {
     this.title = this.device.title;
     this.door = this.device.title;
     this.devices = this.tile.devices;
-    this.state = { door_state: "?" };
+    this.state = { door_state: "?", modal: false };
 
     //
     this.handleClick = this.handleClick.bind(this);
@@ -24,16 +26,13 @@ class GarageDoorTile extends React.Component {
   }
 
   handleClick() {
-    // console.log("CLICKED");
     try {
       const state = this.state.door_state.toUpperCase();
       switch (state) {
         case "OPEN":
-          console.log("Closing", this.door);
           MQTT.publish(`myq/${this.door}/set/door`, "CLOSE");
           break;
         case "CLOSED":
-          console.log("Opening", this.door);
           MQTT.publish(`myq/${this.door}/set/door`, "OPEN");
           break;
         default:
@@ -47,7 +46,6 @@ class GarageDoorTile extends React.Component {
 
   handleDoorMessage(topic, message) {
     try {
-      // console.log("handleDoorMessge", topic, message);
       const parts = topic.split("/"),
         key = parts.pop();
       const newState = Object.assign({}, this.state);
@@ -96,13 +94,19 @@ class GarageDoorTile extends React.Component {
   render() {
     const style = Object.assign({}, this.style);
     style.padding = 8;
+    let confirm = "OPEN";
     try {
       switch (this.state.door_state.toUpperCase()) {
         case "OPEN":
           style.color = "#ff0000";
+          confirm = "CLOSE";
           break;
         case "OPENING":
+          confirm = "OPENING";
+          style.color = "#00ff00";
+          break;
         case "CLOSING":
+          confirm = "CLOSING";
           style.color = "#00ff00";
           break;
         default:
@@ -112,15 +116,35 @@ class GarageDoorTile extends React.Component {
     }
 
     return (
-      <div style={{ overflow: "none" }}>
-        <Ripples color="#ffffff">
-          <div style={style} onClick={this.handleClick}>
-            <div>{this.renderIcon()}</div>
-            <div>{this.device.title}</div>
-            {this.renderDoorState()}
-          </div>
-        </Ripples>
-      </div>
+      <>
+        <YesNoModal
+          show={this.state.modal}
+          title="Garage Door"
+          question={`Confirm ${confirm} ${this.device.title} `}
+          onSelect={(button) => {
+            this.setState({ modal: false });
+            if (button) {
+              this.handleClick();
+            }
+          }}
+        />
+        <div style={{ overflow: "none" }}>
+          <Ripples color="#ffffff">
+            <div
+              style={style}
+              onClick={() => {
+                this.setState({
+                  modal: confirm !== "OPENING" && confirm !== "CLOSING",
+                });
+              }}
+            >
+              <div>{this.renderIcon()}</div>
+              <div>{this.device.title}</div>
+              {this.renderDoorState()}
+            </div>
+          </Ripples>
+        </div>
+      </>
     );
   }
 }

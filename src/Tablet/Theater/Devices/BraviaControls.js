@@ -12,15 +12,10 @@ import {
   FaVolumeMute,
   FaVolumeUp,
   FaVolumeDown,
-  FaBackward,
-  FaFastBackward,
-  FaPause,
-  FaPlay,
-  FaForward,
-  FaFastForward,
 } from "react-icons/fa";
 
-import {mangle} from "lib/Utils";
+import BraviaTransport from "Tablet/Transport/BraviaTransport";
+import { mangle } from "lib/Utils";
 
 class BraviaControls extends React.Component {
   constructor(props) {
@@ -143,7 +138,7 @@ class BraviaControls extends React.Component {
 
   renderHDMI() {
     const tv = this.device,
-          input = mangle(tv.input);
+      input = mangle(tv.input);
     return (
       <ButtonGroup>
         <MQTTButton
@@ -253,36 +248,7 @@ class BraviaControls extends React.Component {
     );
   }
 
-  renderTransport() {
-    return (
-      <ButtonGroup
-        className="fixed-bottom"
-        style={{ margin: 0, padding: 0, width: 1024 }}
-      >
-        <MQTTButton transport topic={this.command_topic} message="Prev">
-          <FaFastBackward />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="Rewind">
-          <FaBackward />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="Pause">
-          <FaPause />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="Play">
-          <FaPlay />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="Forward">
-          <FaForward />
-        </MQTTButton>
-        <MQTTButton transport topic={this.command_topic} message="Next">
-          <FaFastForward />
-        </MQTTButton>
-      </ButtonGroup>
-    );
-  }
-
   render() {
-    // console.log("render", this.device);
     return (
       <>
         <div>
@@ -296,7 +262,9 @@ class BraviaControls extends React.Component {
         <div style={{ marginTop: 24 }}>{this.renderKeypad()}</div>
         <div style={{ marginTop: 14 }}>{this.renderHDMI()}</div>
         <div style={{ marginTop: 14 }}>{this.renderLaunchPoints()}</div>
-        <div style={{ marginTop: 14 }}>{this.renderTransport()}</div>
+        <div style={{ marginTop: 14 }}>
+          <BraviaTransport device={this.device} />
+        </div>
       </>
     );
   }

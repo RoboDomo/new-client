@@ -4,6 +4,7 @@ import { data as Config } from "lib/Config";
 
 // one of these per theater
 import IComfortTab from "./IComfortTab";
+
 // one of these for overview
 import IComfortOverview from "./IComfortOverview";
 
@@ -50,7 +51,6 @@ class IComfortScreen extends React.Component {
         </Tab>
         {Array.isArray(Config.icomfort.thermostats)
           ? Config.icomfort.thermostats.map((thermostat) => {
-              /* console.log("thermostat", thermostat); */
               key++;
               return (
                 <Tab

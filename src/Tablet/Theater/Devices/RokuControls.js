@@ -72,7 +72,6 @@ class RokuControls extends React.Component {
       return null;
     }
 
-    console.log("ACTIVE", active, this.state.apps);
     return (
       <>
         <img
@@ -108,7 +107,6 @@ class RokuControls extends React.Component {
                 style={{width: 128}}
                 key={key++}
                 onClick={() => {
-                  console.log("Clicked", app);
                   MQTT.publish(this.command_topic, `launch-${app.id}`);
                 }}
               >

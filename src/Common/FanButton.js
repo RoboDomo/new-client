@@ -2,11 +2,14 @@ import React from "react";
 import MQTTButton from "Common/MQTTButton";
 import MQTT from "lib/MQTT";
 
+import FanModal from "Common/Modals/FanModal";
+
 class FanButton extends React.Component {
   constructor(props) {
     super(props);
     this.hub = props.hub;
     this.name = props.name;
+    this.device = props.name;
     this.handleClick = this.handleClick.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
     this.state = {
@@ -43,24 +46,8 @@ class FanButton extends React.Component {
   }
 
   handleClick() {
-    const fan = this.state;
-    let level = 25;
-
-    if (!fan.sw) {
-      level = 25;
-    } else if (fan.level < 34) {
-      level = 50;
-    } else if (fan.level < 67) {
-      level = 75;
-    } else {
-      level = 0;
-    }
-
-    if (level) {
-      MQTT.publish(`${this.hub}/${this.name}/set/switch`, "on");
-      MQTT.publish(`${this.hub}/${this.name}/set/level`, level);
-    } else {
-      MQTT.publish(`${this.hub}/${this.name}/set/switch`, "off");
+    if (this.state.level !== undefined) {
+      this.setState({ show: true });
     }
   }
 
@@ -78,6 +65,15 @@ class FanButton extends React.Component {
     }
     return (
       <div>
+        <FanModal
+          show={this.state.show}
+          onHide={() => {
+            this.setState({ show: false });
+          }}
+          hub={this.hub}
+          device={this.device}
+          value={value}
+        />
         <MQTTButton onClick={this.handleClick}>{value}</MQTTButton>
       </div>
     );
