@@ -26,21 +26,10 @@ enableAutoTTS();
 const main = async () => {
   MQTT.on("connect", async () => {
     await Say("welcome to Robo Domo");
-    // MQTT.subscribe("say", (topic, message) => {
-    //   debugger;
-    //   Say(message);
-    // });
     const config = new Config();
     config.registerChange(async (data) => {
       if (data) {
         debug("render");
-        // await Say("Connected");
-        // ReactDOM.render(
-        //   <React.StrictMode>
-        //     <App />
-        //   </React.StrictMode>,
-        //   document.getElementById("root")
-        // );
         console.log("render dom using config ", data);
         ReactDOM.render(<App />, document.getElementById("root"));
       }
@@ -49,12 +38,6 @@ const main = async () => {
 
   MQTT.on("error", (e) => {
     debug("error");
-    // ReactDOM.render(
-    //   <React.StrictMode>
-    //     <h1>Network Error connecting to MQTT</h1>
-    //   </React.StrictMode>,
-    //   document.getElementById("root")
-    // );
     ReactDOM.render(
       <Exception exception={e} />,
       document.getElementById("root")

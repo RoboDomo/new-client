@@ -9,6 +9,7 @@ import {
   FaPause,
   FaPlay,
   FaForward,
+  FaUndo,
   // FaFastForward,
 } from "react-icons/fa";
 
@@ -39,6 +40,14 @@ class AppleTVTransport extends React.Component {
         </MQTTButton>
         <MQTTButton transport topic={this.command_topic} message="BeginForward">
           <FaForward />
+        </MQTTButton>
+        <MQTTButton
+          transport
+          variant="danger"
+          topic="appletv/reset/set/command"
+          message="__RESTART__"
+        >
+          <FaUndo />
         </MQTTButton>
         {/* <MQTTButton transport topic={this.command_topic} message="SkipForward"> */}
         {/*   <FaFastForward /> */}

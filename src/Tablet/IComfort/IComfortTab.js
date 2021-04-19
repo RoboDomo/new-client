@@ -445,20 +445,12 @@ class IComfortTab extends React.Component {
                 <Temperature value={target} />
               </span>
             </ListGroupItem>
-            {/* <ListGroupItem> */}
-            {/*   Time To Target */}
-            {/*   <span style={{ float: "right" }}> */}
-            {/*     {thermostat.time_to_target} */}
-            {/*   </span> */}
-            {/* </ListGroupItem> */}
           </ListGroup>
           {renderTargets()}
         </Col>
       </Row>
     );
   }
-  // console.log("render", title, weather, zone, this.state);
-  // return <div>ICOMFORT TAB zone: {zone} weather: {weather}</div>;
 }
 
 //

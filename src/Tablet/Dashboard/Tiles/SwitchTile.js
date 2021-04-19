@@ -42,9 +42,7 @@ class SwitchTile extends React.Component {
   }
 
   handleClick() {
-    console.log("CLICKED!", this.state);
     if (this.pending) {
-      console.log("pending!");
       return;
     }
     this.pending = true;

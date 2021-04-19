@@ -107,7 +107,6 @@ class ThingsTab extends React.Component {
     };
 
     const thing = this.state.things.fan[name];
-    console.log("thing", thing, name, state);
     if (levels[state]) {
       if (!isOn(thing.switch)) {
         thing.switch = true;
@@ -207,7 +206,6 @@ class ThingsTab extends React.Component {
     const room = this.state.room,
       things = this.state.things;
 
-    console.log("this.state", this.state);
     return (
       <div style={{ overflow: "scroll", height: "100vh", paddingBottom: 300 }}>
         <div
@@ -252,7 +250,6 @@ class ThingsTab extends React.Component {
                     toggled={t.switch}
                     onToggle={this.toggleDimmer}
                     onValueChange={(name, level) => {
-                      console.log("value changed", name, level);
                       MQTT.publish(`${t.hub}/${t.name}/set/level`, level);
                       t.level = level;
                     }}

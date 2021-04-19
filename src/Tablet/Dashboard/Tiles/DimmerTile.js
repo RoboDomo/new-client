@@ -38,7 +38,6 @@ class DimmerTile extends React.Component {
 
   async handleClick() {
     this.setState({ show: true });
-    return;
   }
 
   componentDidMount() {

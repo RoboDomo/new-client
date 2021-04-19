@@ -85,37 +85,38 @@ class PoolTile extends React.Component {
         return <div>{text}</div>;
       };
 
-      if (on) {
-        return (
-          <div style={{ padding: 8 }}>
-            <div style={{ marginBottom: 8}}>Pool</div>
-            <div style={{ fontSize: 44, fontWeight: "bold", marginTop: -18, float: "left" }}>
-              {renderControl("pump", `${this.state.poolTemp}°F`)}
-              {/* {renderControl("pump", `${100}°F`)} */}
-            </div>
-            <div style={{fontSize: 16,  textAlign: "right", marginTop: 0, float: "right"}}>
-              {renderControl("pump", "Filter On")}
-              {renderControl("cleaner", "Cleaner On")}
-              {renderControl("waterfall", "Waterfall On")}
-              {renderControl(
-                "poolHeat",
-                "Pool Heat " + this.state.poolSetpoint
-              )}
-              {renderControl(
-                "solarHeat",
-                "Solar Heat " +
-                  (this.state.solarHeat ? this.state.solarTemp : "off")
-              )}
-            </div>
+      return (
+        <div style={{ padding: 8 }}>
+          <div
+            style={{
+              fontSize: 44,
+              fontWeight: "bold",
+              marginTop: -18,
+              float: "left",
+            }}
+          >
+            {on ? `${this.state.poolTemp}°` : "OFF"}
           </div>
-        );
-      } else {
-        return (
-          <div>
-            <div style={{ fontSize: 60 }}>{"Pool Off"}</div>
+          <div
+            style={{
+              fontSize: 16,
+              textAlign: "right",
+              marginTop: 0,
+              float: "right",
+            }}
+          >
+            {renderControl("pump", "Filter On")}
+            {renderControl("cleaner", "Cleaner On")}
+            {renderControl("waterfall", "Waterfall On")}
+            {renderControl("poolHeat", "Pool Heat " + this.state.poolSetpoint)}
+            {renderControl(
+              "solarHeat",
+              "Solar Heat " +
+                (this.state.solarHeat ? this.state.solarTemp : "off")
+            )}
           </div>
-        );
-      }
+        </div>
+      );
     };
 
     return (
@@ -131,6 +132,7 @@ class PoolTile extends React.Component {
             window.location.hash = "autelis";
           }}
         >
+          <div>POOL</div>
           <div style={{ textAlign: "center" }}>{renderPool()}</div>
         </div>
       </div>

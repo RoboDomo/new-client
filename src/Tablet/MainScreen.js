@@ -157,6 +157,7 @@ class MainScreen extends React.Component {
               </TabContent>
               <Navbar
                 fixed="top"
+                style={{margin: "auto", width: 1024}}
                 bg="primary"
                 variant="dark"
                 onSelect={(tab) => {

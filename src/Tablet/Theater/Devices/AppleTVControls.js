@@ -10,12 +10,6 @@ import {
   FaChevronDown,
   FaChevronLeft,
   FaChevronRight,
-  // FaFastBackward,
-  // FaBackward,
-  // FaPause,
-  // FaPlay,
-  // FaForward,
-  // FaFastForward,
 } from "react-icons/fa";
 
 const rowStyle = {
@@ -79,13 +73,17 @@ class AppleTVControls extends React.Component {
       return null;
     }
     return (
-      <img style={{ height: 120, marginBottom: 10 }} alt="artwork" src={`data:image;base64,${info.artwork}`} />
+      <img
+        style={{ height: 120, marginBottom: 10 }}
+        alt="artwork"
+        src={`data:image;base64,${info.artwork}`}
+      />
     );
   }
 
   renderNowPlaying() {
     const info = this.state.info;
-    console.log("info", info);
+    // console.log("info", info);
     if (!info || !info.title) {
       return (
         <div

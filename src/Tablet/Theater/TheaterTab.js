@@ -86,15 +86,6 @@ class TheaterTab extends React.Component {
       return null;
     }
     this.theater.handleInputChange(state);
-    // console.log(
-    //   "render",
-    //   "tv",
-    //   state.tv.power,
-    //   state.tv.input,
-    //   "avr",
-    //   state.avr.power,
-    //   state.avr.input
-    // );
     return (
       <Row style={{ marginTop: 12 }}>
         <Col sm={2}>

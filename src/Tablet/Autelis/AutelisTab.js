@@ -47,15 +47,14 @@ class AutelisTab extends React.Component {
 
   dispatch({ type, value }) {
     const key = Config.autelis.deviceMap.forward[type];
-    console.log("dispatch", key, value);
     switch (type) {
-    case "spaSetpoint":
-    case "poolSetpoint":
-      MQTT.publish(`autelis/set/${key}`, Number(value));
-      break;
-    default:
-      MQTT.publish(`autelis/set/${key}`, value ? "on" : "off");
-      break;
+      case "spaSetpoint":
+      case "poolSetpoint":
+        MQTT.publish(`autelis/set/${key}`, Number(value));
+        break;
+      default:
+        MQTT.publish(`autelis/set/${key}`, value ? "on" : "off");
+        break;
     }
   }
 
@@ -113,7 +112,10 @@ class AutelisTab extends React.Component {
         this.setState({ spaLight: isOn(message) });
         break;
       default:
-      console.log(`autelis message invalid "${topic}" "${key}"`, Config.autelis.deviceMap.backward);
+        console.log(
+          `autelis message invalid "${topic}" "${key}"`,
+          Config.autelis.deviceMap.backward
+        );
         break;
     }
   }

@@ -1,3 +1,8 @@
+/**
+ */
+
+// TODO create overlay while heating (show temperature in modal, whatever)
+
 import React from "react";
 import styles from "./styles";
 
@@ -102,22 +107,10 @@ class SpaTile extends React.Component {
       backgroundColor = on ? "red" : undefined,
       color = on ? "white" : undefined;
 
-    const renderControl = (ndx, text, big) => {
-      const thing = this.state[ndx];
-      if (!thing) {
-        return null;
-      }
-      if (big) {
-        return <div style={{ fontSize: 30 }}>{text}</div>;
-      }
-
-      return <div>{text}</div>;
-    };
-
     const renderSpa = () => {
       return (
         <div style={{ padding: 8 }}>
-          {renderControl("spa", `Spa ${this.state.spaTemp}°F`)}
+          {/* {renderControl("spa", `Spa ${this.state.spaTemp}°F`)} */}
           <div
             style={{
               fontSize: 44,
@@ -126,15 +119,19 @@ class SpaTile extends React.Component {
               float: "left",
             }}
           >
-            {/* {`${this.state.spaTemp}°F`} */}
-            {isOn("spa") ? this.state.spaTemp : "OFF"}
-            {/* {this.state.spaTemp} */}
+            {isOn("spa") ? `${this.state.spaTemp}°` : "OFF"}
           </div>
           <div style={{ fontSize: 16, float: "right" }}>
-            {isOn("jet") ? <div style={{marginTop: -4}}>JETS ON</div> : null}
-            {isOn("spaHeat") ? <div style={{marginTop: -4}}>HEAT ON</div> : null}
-            {isOn("blower") ? <div style={{marginTop: -4}}>BLOWER ON</div> : null}
-            {isOn("spaLight") ? <div style={{marginTop: -4}}>LIGHT ON</div> : null}
+            {isOn("jet") ? <div style={{ marginTop: -4 }}>JETS ON</div> : null}
+            {isOn("spaHeat") ? (
+              <div style={{ marginTop: -4 }}>HEAT -> {this.state.spaSetPoint}&deg;</div>
+            ) : null}
+            {isOn("blower") ? (
+              <div style={{ marginTop: -4 }}>BLOWER ON</div>
+            ) : null}
+            {isOn("spaLight") ? (
+              <div style={{ marginTop: -4 }}>LIGHT ON</div>
+            ) : null}
           </div>
         </div>
       );

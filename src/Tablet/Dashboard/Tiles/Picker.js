@@ -66,7 +66,6 @@ const Picker = CustomPicker(
       onChange(data, e);
     };
 
-    console.log("hex", form.hex, "form", form, power, active);
     return (
       <>
         <div style={{ width: 1024, color: "rgba(0,0,0,.0)" }}>

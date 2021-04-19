@@ -24,7 +24,6 @@ import MQTT from "lib/MQTT";
 class HarmonyControls extends React.Component {
   constructor(props) {
     super(props);
-    console.log("Harmony", props.hub);
     this.hub = props.hub;
 
     this.state = {};

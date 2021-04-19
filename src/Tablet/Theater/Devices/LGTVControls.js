@@ -22,51 +22,15 @@ import {
   FaChevronDown,
   FaChevronLeft,
   FaChevronRight,
-  // FaBackward,
-  // FaFastBackward,
-  // FaPause,
-  // FaPlay,
-  // FaStepForward,
-  // FaForward,
-  // FaFastForward,
-  // FaDotCircle,
 } from "react-icons/fa";
 
 import LGTVTransport from "Tablet/Transport/LGTVTransport";
 
 import MQTT from "lib/MQTT";
 
-/*
-const ignoredLaunchPoints = [
-  "HDMI1",
-  "HDMI2",
-  "HDMI3",
-  "HDMI4",
-  "HDMI 1",
-  "HDMI 2",
-  "HDMI 3",
-  "HDMI 4",
-  "Web Browser",
-  "User Guide",
-  "Device Connector",
-  "Music",
-  "Photo & Video",
-  "GALLERY",
-  "TV Scheduler",
-  "Screen Share",
-  "Multi-view",
-  "Accessibility",
-  "Notifications",
-  "Set Up TV for Google Assistant",
-  "Set Up TV for Amazon Alexa",
-  "LG Remote Service",
-];
-*/
-
 class LGTVControls extends React.Component {
   constructor(props) {
     super(props);
-    console.log("lgtv props", props.device);
     this.state = {};
     this.device = props.device;
     //
@@ -92,7 +56,6 @@ class LGTVControls extends React.Component {
       `lgtv/${this.device.device}/status/foregroundApp`,
       this.handleForegroundAppMessage
     );
-    console.log("DID MOUNT");
   }
 
   componentWillUnmount() {
@@ -112,9 +75,6 @@ class LGTVControls extends React.Component {
       return null;
     }
 
-    const dispatch = (...args) => {
-      console.log("dispatch", args);
-    };
     const foregroundApp = lgtv.foregroundApp,
       launchPoints = lgtv.launchPoints,
       apps = {};
@@ -125,73 +85,6 @@ class LGTVControls extends React.Component {
         apps[info.title.replace(/\s+/g, "")] = info;
       }
     } catch (e) {}
-
-    /*
-    const renderLaunchPoints = () => {
-      if (!launchPoints) {
-        return null;
-      }
-      if (lgtv.tuner) {
-        return (
-          <div style={{ marginTop: 4 }}>
-            <ButtonGroup>
-              <MQTTButton>Netflix</MQTTButton>
-              <MQTTButton>Prime</MQTTButton>
-              <MQTTButton>YouTube</MQTTButton>
-              <MQTTButton>CBS</MQTTButton>
-            </ButtonGroup>
-          </div>
-        );
-      }
-
-      return (
-        <>
-          {Object.keys(lgtv.launchPoints).map((key) => {
-            const info = lgtv.launchPoints[key];
-            if (~ignoredLaunchPoints.indexOf(info.title)) {
-              return null;
-            }
-            console.log("info", info);
-            const ttkey = `tt-${info.id}`,
-              okey = `o-${ttkey}`,
-              overlay = (
-                <Tooltip id={info.title} key={ttkey}>
-                  {info.title}
-                </Tooltip>
-              );
-            const appId = foregroundApp.appId,
-              app = launchPoints[appId];
-            const border =
-              app === info ? "6px inset white" : "6px outset white";
-            return (
-              <div
-                style={{
-                  marginRight: 10,
-                  marginBottom: 10,
-                  float: "left",
-                  border: border,
-                }}
-                key={info.id}
-                onClick={() => {
-                  console.log("info", info);
-                  dispatch({ type: `LAUNCH-${info.id}` });
-                }}
-              >
-                <OverlayTrigger key={okey} overlay={overlay}>
-                  <Image
-                    fluid
-                    alt={info.title}
-                    style={{ maxWidth: 40, minHeight: 40 }}
-                    src={info.icon}
-                  />
-                </OverlayTrigger>
-              </div>
-            );
-          })}
-        </>
-      );
-    };
-    */
 
     const renderNowPlaying = () => {
       if (true || !foregroundApp || !launchPoints) {
@@ -220,7 +113,6 @@ class LGTVControls extends React.Component {
         const hdmi = "hdmi" + n;
         return (
           <MQTTButton
-            dispatch={dispatch}
             action={hdmi}
             variant={lgtv.input === hdmi ? "success" : undefined}
           >
@@ -241,16 +133,16 @@ class LGTVControls extends React.Component {
     const renderControlButtons = () => {
       return (
         <div style={{ marginTop: 4 }}>
-          <MQTTButton dispatch={dispatch} action="back">
+          <MQTTButton action="back">
             Back
           </MQTTButton>
-          <MQTTButton dispatch={dispatch} action="menu">
+          <MQTTButton  action="menu">
             Menu
           </MQTTButton>
-          <MQTTButton dispatch={dispatch} action="home">
+          <MQTTButton action="home">
             Home
           </MQTTButton>
-          <MQTTButton dispatch={dispatch} action="guide">
+          <MQTTButton action="guide">
             Guide
           </MQTTButton>
         </div>
@@ -260,7 +152,7 @@ class LGTVControls extends React.Component {
     const renderJoystick = () => {
       const button = (action, label, variant) => {
         return (
-          <MQTTButton variant={variant} dispatch={dispatch} action={action}>
+          <MQTTButton variant={variant} action={action}>
             {label}
           </MQTTButton>
         );
@@ -288,9 +180,6 @@ class LGTVControls extends React.Component {
     };
 
     const renderKeypad = () => {
-      //    if (!lgtv.tuner) {
-      //      return null;
-      //    }
       const button = (n) => {
         let label = "" + n;
         if (n === "clear") {
@@ -299,7 +188,7 @@ class LGTVControls extends React.Component {
           label = "Enter";
         }
         return (
-          <MQTTButton dispatch={dispatch} action={"" + n}>
+          <MQTTButton action={"" + n}>
             {label}
           </MQTTButton>
         );
@@ -334,33 +223,6 @@ class LGTVControls extends React.Component {
         </>
       );
     };
-
-    // const renderTransport = () => {
-    //   const button = (action, label, variant) => {
-    //     return (
-    //       <MQTTButton
-    //         variant={variant}
-    //         dispatch={dispatch}
-    //         action={action}
-    //         mini
-    //       >
-    //         {label}
-    //       </MQTTButton>
-    //     );
-    //   };
-    //   return (
-    //     <ButtonGroup>
-    //       {button("replay", <FaFastBackward />)}
-    //       {button("reverse", <FaBackward />)}
-    //       {button("pause", <FaPause />)}
-    //       {button("play", <FaPlay />)}
-    //       {button("slow", <FaStepForward />)}
-    //       {button("forward", <FaForward />)}
-    //       {button("advance", <FaFastForward />)}
-    //       {button("record", <FaDotCircle />, "danger")}
-    //     </ButtonGroup>
-    //   );
-    // };
 
     return (
       <div style={{ textAlign: "center" }}>

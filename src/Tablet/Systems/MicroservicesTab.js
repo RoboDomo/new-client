@@ -94,14 +94,12 @@ class MicroservicesSettings extends React.Component {
           </thead>
           <tbody>
             {Config.microservices.services.map((service) => {
-              /* console.log("service", service); */
               return (
                 <tr key={++key}>
                   <td style={{ verticalAlign: "middle" }}>{service.title}</td>
                   <td style={{ verticalAlign: "middle" }}>
                     {service.description}
                   </td>
-                  {/* <td style={{verticalAlign: "middle"}}>{service.name}</td> */}
                   <td style={{ verticalAlign: "middle" }}>{service.type}</td>
                   <td>
                     <Button

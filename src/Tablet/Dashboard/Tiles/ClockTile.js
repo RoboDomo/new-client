@@ -2,6 +2,8 @@ import React from "react";
 import styles from "./styles";
 
 import Clock from "Common/Clock";
+// import Marquee from "Common/Marquee";
+
 // import { data as Config} from "lib/Config";
 import MQTT from "lib/MQTT";
 
@@ -97,6 +99,7 @@ class ClockTile extends React.Component {
           <div style={{ fontSize: 8 }}>
             {window.innerWidth} x {window.innerHeight}
           </div>
+          {/* <Marquee text="now is the time for all good men to come to the aid of their country" speed={20}/> */}
         </div>
       </div>
     );

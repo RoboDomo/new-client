@@ -29,19 +29,12 @@ class WeatherTile extends React.Component {
     this.metric = Config.metric;
 
     this.state = { now: null };
-    // console.log(
-    //   "weather tile",
-    //   this.location,
-    //   this.metric ? "metric" : "us",
-    //   this.loc
-    // );
 
     //
     this.handleWeatherMessage = this.handleWeatherMessage.bind(this);
   }
 
   handleWeatherMessage(topic, message) {
-    // console.log("weather", new Date(message.utcTime * 1000).toLocaleTimeString(), message);
     this.setState({ now: message });
   }
 

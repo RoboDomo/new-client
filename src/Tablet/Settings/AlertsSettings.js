@@ -5,6 +5,7 @@ import Logger from "lib/Logger";
 class AlertsSettings extends React.Component {
   constructor(props) {
     super(props);
+
     //
     this.handleChange = this.handleChange.bind(this);
   }
@@ -37,7 +38,6 @@ class AlertsSettings extends React.Component {
     const renderHistory = () => {
       return history.reverse().map((packet) => {
         const time = new Date(packet.timestamp).toLocaleString();
-        // console.log("packet", packet, time);
         try {
           return (
             <tr key={++key}>

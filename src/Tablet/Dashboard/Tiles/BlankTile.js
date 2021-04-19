@@ -5,7 +5,6 @@ class BlankTile extends React.Component {
     super();
     this.size = props.size;
     this.tile = props.tile;
-    console.log("BlankTile")
   }
 
   render() {
