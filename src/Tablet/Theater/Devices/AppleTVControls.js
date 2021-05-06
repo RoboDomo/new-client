@@ -83,7 +83,6 @@ class AppleTVControls extends React.Component {
 
   renderNowPlaying() {
     const info = this.state.info;
-    // console.log("info", info);
     if (!info || !info.title) {
       return (
         <div
@@ -131,8 +130,13 @@ class AppleTVControls extends React.Component {
             <Col sm={8}>
               <ProgressBar
                 variant="success"
+                animated
                 style={{ width: "100%" }}
-                now={(info.position / info.total_time) * 100}
+                now={
+                  info.total_time != null
+                    ? (info.position / info.total_time) * 100
+                    : 100
+                }
               />
             </Col>
             <Col sm={2}>
@@ -144,7 +148,10 @@ class AppleTVControls extends React.Component {
                   textAlign: "left",
                 }}
               >
-                -{formatTime(info.total_time - info.position)}
+                {info.total_time != null ? "-" : ""}
+                {info.total_time != null
+                  ? formatTime(info.total_time - info.position)
+                  : ""}
               </div>
             </Col>
           </Row>
