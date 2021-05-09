@@ -112,9 +112,10 @@ class Theater extends EventEmitter {
   }
 
   startActivity(activity) {
+    const device = this.findDevice(activity.defaultDevice);
     this.setState({
       currentActivity: activity,
-      currentDevice: this.findDevice(activity.defaultDevice),
+      currentDevice: device,
     });
 
     if (activity.macro) {
@@ -127,6 +128,7 @@ class Theater extends EventEmitter {
   }
 
   handleInputChange(state) {
+//    console.log('state', state);
     try {
       if (!state.tv) {
         state = this.state;
@@ -149,22 +151,30 @@ class Theater extends EventEmitter {
       const tvInput = mangle(state.tv.input),
         avrInput = mangle(state.avr.input);
 
+      // const tvInput = state.tv.input,
+      //   avrInput = state.avr.input;
+
       if (tvInput === undefined || avrInput === undefined) {
         return;
       }
 
       for (const activity of this.activities) {
         const inputs = activity.inputs;
+//        console.log('tvInput', tvInput, avrInput, inputs);
         if (inputs) {
           if (
             inputs.tv.indexOf(tvInput) !== -1 &&
             inputs.avr.indexOf(avrInput) !== -1
           ) {
+//            console.log('yes', inputs.tv, tvInput, inputs.tv.indexOf(tvInput));
+//            console.log('yes', inputs.avr, avrInput, inputs.avr.indexOf(avrInput));
             state.currentActivity = activity;
             state.currentDevice = this.findDevice(activity.defaultDevice);
+//            console.log('state', state);
             return;
           }
         } else {
+          console.log('NO');
           state.currentActivity = activity;
           state.currentDevice = null;
         }

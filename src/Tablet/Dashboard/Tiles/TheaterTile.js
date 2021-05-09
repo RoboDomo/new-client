@@ -182,6 +182,7 @@ class TheaterTile extends React.Component {
     };
 
     const renderPlaybackState = () => {
+      console.log('renderPlayback', this.state);
       try {
         const info = this.state.appletv.info;
         if (info) {
@@ -522,6 +523,7 @@ class TheaterTile extends React.Component {
   }
 
   renderActivity(currentActivity) {
+    console.log('renderActivity', currentActivity);
     if (!currentActivity) {
       return null;
     }
@@ -570,9 +572,9 @@ class TheaterTile extends React.Component {
       return this.renderActivities();
     }
 
-    if (this.config.guide && (!state.channels || !state.channel)) {
-      return this.renderActivities();
-    }
+//    if (this.config.guide && (!state.channels || !state.channel)) {
+//      return this.renderActivities();
+//    }
 
     if (currentDevice === null || currentActivity === null) {
       return this.renderActivities();
