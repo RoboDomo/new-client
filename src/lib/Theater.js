@@ -99,6 +99,7 @@ class Theater extends EventEmitter {
     for (const key of Object.keys(newState)) {
       this.state[key] = newState[key];
     }
+//    console.log('>>>>>>> state', this.state);
     this.emit("statechange", this.state);
   }
 
@@ -160,7 +161,9 @@ class Theater extends EventEmitter {
 
       for (const activity of this.activities) {
         const inputs = activity.inputs;
-//        console.log('tvInput', tvInput, avrInput, inputs);
+//        console.log('activity', activity, 'tvInput', tvInput, inputs.tv, 'avrInput', avrInput, inputs.avr);
+//        console.log('inputs.tv.indexOf(tvInput)', inputs.tv.indexOf(tvInput));
+//        console.log('inputs.avr.indexOf(avrInput)', inputs.avr.indexOf(avrInput));
         if (inputs) {
           if (
             inputs.tv.indexOf(tvInput) !== -1 &&
