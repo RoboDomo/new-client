@@ -2,7 +2,7 @@ import React from "react";
 import { Tabs, Tab } from "react-bootstrap";
 
 import SystemsTab from "./SystemsTab";
-import MicroservicesTab from "./MicroservicesTab";
+// import MicroservicesTab from "./MicroservicesTab";
 
 import { data as Config } from "lib/Config";
 // import MQTT from "lib/MQTT";
@@ -43,16 +43,16 @@ class SystemsScreen extends React.Component {
         unmountOnExit
         transition={false}
       >
-        <Tab
-          style-={{ padding: 10 }}
-          title="Microservices"
-          eventKey={key}
-          key={key}
-        >
-          <div style={{ overflow: "auto", height: "85vh" }}>
-            <MicroservicesTab type="table" />
-          </div>
-        </Tab>
+        {/* <Tab */}
+        {/*   style-={{ padding: 10 }} */}
+        {/*   title="Microservices" */}
+        {/*   eventKey={key} */}
+        {/*   key={key} */}
+        {/* > */}
+        {/*   <div style={{ overflow: "auto", height: "85vh" }}> */}
+        {/*     <MicroservicesTab type="table" /> */}
+        {/*   </div> */}
+        {/* </Tab> */}
         {this.state.systems.map((system) => {
           key++;
           return (

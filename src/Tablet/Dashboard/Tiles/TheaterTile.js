@@ -165,6 +165,9 @@ class TheaterTile extends React.Component {
 
   renderAppleTV(currentActivity) {
     const renderTitle = (title) => {
+      if (title == null) {
+        return null;
+      }
       if (title.length > 34) {
         return (
           <Marquee
@@ -185,8 +188,9 @@ class TheaterTile extends React.Component {
       //      console.log('renderPlayback', this.state);
       try {
         const info = this.state.appletv.info,
-          title = (info.app ? (info.app + ': ') : '') + info.title;
-        if (info) {
+              title = info.title != null ? (info.app ? (info.app + ': ') : '') + info.title : null;
+        console.log('info', info);
+        if (info.title != null) {
           return (
             <>
               {renderTitle(title)}
@@ -238,7 +242,9 @@ class TheaterTile extends React.Component {
           );
         }
         // if (!info.playbackState) {
-      } catch (e) {}
+      } catch (e) {
+        console.log("e", e);
+      }
       const device = this.state.appletv;
       return (
         <div>
