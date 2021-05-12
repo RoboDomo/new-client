@@ -47,12 +47,14 @@ class MQTT extends EventEmitter {
   }
 
   onMessageArrived(topic, payload) {
-    const message = payload.toString();
+    let  message = payload.toString();
+    try { message = JSON.parse(message); } catch (e) {}
     console.log(
-      "%cmessage <<< %c" + topic + " %c" + message.substr(0, 20),
+      "%cmessage <<< %c" + topic + " %c",
       "font-weight: bold;",
       "color:red; font-weight: bold",
-      "color:blue; font-weight: bold"
+      "color:blue; font-weight: bold",
+      message
     );
     // localStorage.setItem(topic, message);
     this.cache[topic] = message;

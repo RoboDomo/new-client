@@ -1,7 +1,6 @@
 import React from "react";
 import { Tabs, Tab } from "react-bootstrap";
 
-import AlertsSettings from "./AlertsSettings";
 import DashboardsSettings from "./DashboardsSettings";
 import TheatersSettings from "./TheatersSettings";
 import HVACSettings from "./HVACSettings";
@@ -15,11 +14,6 @@ import SensorsSettings from "./SensorsSettings";
 const LOCALSTORAGE_KEY = "settingstab";
 
 const tabConfig = [
-  // {
-  //   title: "Microservices",
-  //   content: <MicroservicesSettings type="table" />,
-  // },
-  { title: "Alerts", content: <AlertsSettings /> },
   // { title: "Voices", content: <VoicesSettings /> },
   { title: "Dashboards", content: <DashboardsSettings /> },
   { title: "Theaters", content: <TheatersSettings /> },

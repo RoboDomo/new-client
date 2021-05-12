@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Tabs, Tab } from "react-bootstrap";
+import { Tabs, Tab } from "react-bootstrap";
 
 import AlertsTab from "./AlertsTab.js";
 

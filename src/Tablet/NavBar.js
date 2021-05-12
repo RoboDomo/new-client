@@ -7,7 +7,7 @@ import {
   TabContainer,
   TabContent,
   TabPane,
-  Form,
+  // Form,
   Nav,
   NavDropdown,
 } from "react-bootstrap";
@@ -16,11 +16,16 @@ import {
 import { MdDashboard } from "react-icons/md";
 import { IoIosTv } from "react-icons/io";
 import { TiThermometer } from "react-icons/ti";
-import { IoIosAnalytics } from "react-icons/io";
-import { RiArrowRightCircleFill } from "react-icons/ri";
+// import { IoIosAnalytics } from "react-icons/io";
+// import { RiArrowRightCircleFill } from "react-icons/ri";
 import { FaSwimmingPool, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { TiWeatherCloudy } from "react-icons/ti";
-import { MdMenu, MdSettings, MdVideoLibrary } from "react-icons/md";
+import { SiSmartthings} from "react-icons/si";
+import {
+  // MdMenu,
+  // MdSettings,
+  MdVideoLibrary,
+} from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 
 // screens
@@ -84,7 +89,7 @@ class NavBar extends React.Component {
     this.state = {
       activeTab: localStorage.getItem(LOCALSTORAGE_KEY) || "1",
       muteSpeech: localStorage.getItem("mute-speech") || "false",
-      burger: burger ? `(${burger})`: "More",
+      burger: burger ? `(${burger})` : "More",
     };
     document.body.classList.add("tablet");
   }
@@ -110,7 +115,7 @@ class NavBar extends React.Component {
         if (info < 8) {
           this.setState({ burger: "More" });
         } else {
-          this.setState({ burger: `(${navDropdownTitles[info]})`});
+          this.setState({ burger: `(${navDropdownTitles[info]})` });
         }
         debug("hashchange", hash);
       },
@@ -120,8 +125,9 @@ class NavBar extends React.Component {
 
   renderTopBar() {
     const muteSpeech = this.state.muteSpeech,
-          itemStyle = { width: 100, textAlign: 'center' };
-      // itemStyle = { width: 'auto' };
+          itemStyle = { width: 100, textAlign: "center" },
+          menuStyle = { fontSize: 24 };
+    // itemStyle = { width: 'auto' };
     return (
       <Navbar
         fixed="top"
@@ -182,7 +188,7 @@ class NavBar extends React.Component {
           </Nav.Link>
 
           <Nav.Link style={itemStyle} eventKey={6}>
-            <MdMenu /> Things
+            <SiSmartthings /> Things
           </Nav.Link>
 
           <Nav.Link style={itemStyle} eventKey={7}>
@@ -200,6 +206,7 @@ class NavBar extends React.Component {
             /* id="more-dropdown" */
           >
             <NavDropdown.Item
+              style={menuStyle}
               onClick={() => {
                 this.setState({ burger: "(Settings)" });
                 window.location.hash = "settings";
@@ -208,6 +215,7 @@ class NavBar extends React.Component {
               Settings
             </NavDropdown.Item>
             <NavDropdown.Item
+              style={menuStyle}
               onClick={() => {
                 this.setState({ burger: "(Alerts)" });
                 window.location.hash = "alerts";
@@ -216,6 +224,7 @@ class NavBar extends React.Component {
               Alerts
             </NavDropdown.Item>
             <NavDropdown.Item
+              style={menuStyle}
               onClick={() => {
                 this.setState({ burger: "(Microservices)" });
                 window.location.hash = "microservices";
@@ -224,6 +233,7 @@ class NavBar extends React.Component {
               Microservices
             </NavDropdown.Item>
             <NavDropdown.Item
+              style={menuStyle}
               onClick={() => {
                 this.setState({ burger: "(Systems)" });
                 window.location.hash = "systems";
@@ -232,10 +242,13 @@ class NavBar extends React.Component {
               Systems
             </NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item onClick={() => {
-              localStorage.clear();
-              window.location.reload();
-            }}>
+            <NavDropdown.Item
+              style={menuStyle}
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+            >
               Clear localStorage
             </NavDropdown.Item>
           </NavDropdown>
@@ -290,7 +303,6 @@ class NavBar extends React.Component {
         <TabPane mountOnEnter unmountOnExit eventKey={11}>
           <AlertsScreen />
         </TabPane>
-
       </TabContent>
     );
   }
