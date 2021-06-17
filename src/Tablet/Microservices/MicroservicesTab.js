@@ -7,14 +7,15 @@ import { Table, Row, Col, ButtonGroup, Button } from "react-bootstrap";
 
 import { VscDebugRestart } from "react-icons/vsc";
 
-class MicroservicesSettings extends React.Component {
+class MicroservicesTab extends React.Component {
   constructor(props) {
     super(props);
-    this.type = props.type || "table";
+    this.display = props.display || "table";
+    this.type = props.type || "All";
   }
 
   render() {
-    switch (this.props.type) {
+    switch (this.props.display) {
       case "table":
         return this.renderTable();
       default:
@@ -64,25 +65,7 @@ class MicroservicesSettings extends React.Component {
     let key = 1;
     return (
       <>
-        <div style={{ textAlign: "center" }}>
-          <Button
-            style={{
-              marginRight: "auto",
-              marginLeft: "auto",
-              marginTop: 8,
-              marginBottom: 8,
-            }}
-            variant="danger"
-            size="sm"
-            onClick={() => {
-              localStorage.clear();
-              window.location.reload();
-            }}
-          >
-            Clear localStorage
-          </Button>
-        </div>
-        <Table striped>
+        <Table striped style={{ marginTop: 4 }}>
           <thead>
             <tr>
               <th>Title</th>
@@ -94,29 +77,34 @@ class MicroservicesSettings extends React.Component {
           </thead>
           <tbody>
             {Config.microservices.services.map((service) => {
-              return (
-                <tr key={++key}>
-                  <td style={{ verticalAlign: "middle" }}>{service.title}</td>
-                  <td style={{ verticalAlign: "middle" }}>
-                    {service.description}
-                  </td>
-                  <td style={{ verticalAlign: "middle" }}>{service.type}</td>
-                  <td>
-                    <Button
-                      size="sm"
-                      variant="danger"
-                      onClick={() => {
-                        MQTT.publish(
-                          `${service.mqtt}/reset/set/command`,
-                          "__RESTART__"
-                        );
-                      }}
-                    >
-                      <VscDebugRestart style={{ marginRight: 10 }} />
-                    </Button>
-                  </td>
-                </tr>
-              );
+              /* console.log('service', service, this.type); */
+              if (service.type === this.type || this.type === "All") {
+                return (
+                  <tr key={++key}>
+                    <td style={{ verticalAlign: "middle" }}>{service.title}</td>
+                    <td style={{ verticalAlign: "middle" }}>
+                      {service.description}
+                    </td>
+                    <td style={{ verticalAlign: "middle" }}>{service.type}</td>
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={() => {
+                          MQTT.publish(
+                            `${service.mqtt}/reset/set/command`,
+                            "__RESTART__"
+                          );
+                        }}
+                      >
+                        <VscDebugRestart style={{ marginRight: 10 }} />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              } else {
+                return null;
+              }
             })}
           </tbody>
         </Table>
@@ -126,4 +114,4 @@ class MicroservicesSettings extends React.Component {
 }
 
 //
-export default MicroservicesSettings;
+export default MicroservicesTab;

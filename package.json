@@ -18,7 +18,7 @@
     "popper": "^1.0.1",
     "rc-slider": "^9.7.1",
     "react": "^16.14.0",
-    "react-bootstrap": "^1.4.3",
+    "react-bootstrap": "^1.6.0",
     "react-bootstrap-slider": "^3.0.0",
     "react-bootstrap-toggle": "^2.3.2",
     "react-color": "^2.19.3",

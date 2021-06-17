@@ -82,7 +82,23 @@ class AppleTVControls extends React.Component {
   }
 
   renderNowPlaying() {
-    const info = this.state.info;
+    const getInfo = () => {
+      const info = this.state.info;
+      if (info == null) {
+        return null;
+      }
+      if (info.total_time !== null) {
+        return info;
+      }
+      const now = new Date(),
+            minutes = now.getMinutes();
+      
+      info.total_time = minutes > 30 ? 60 * 60 : 30*60;
+      info.position = 60 * minutes  + now.getSeconds();
+      return info;
+    };
+
+    const info = getInfo();
     if (!info || !info.title) {
       return (
         <div
