@@ -77,6 +77,11 @@ class AppleTVControls extends React.Component {
         style={{ height: 120, marginBottom: 10 }}
         alt="artwork"
         src={`data:image;base64,${info.artwork}`}
+        onClick={() => {
+          if (this.props.exit) {
+            this.props.exit();
+          }
+        }}
       />
     );
   }
@@ -99,7 +104,7 @@ class AppleTVControls extends React.Component {
     };
 
     const info = getInfo();
-    if (!info || !info.title) {
+    if (!info) {
       return (
         <div
           style={{

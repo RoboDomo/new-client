@@ -177,7 +177,7 @@ class Theater extends EventEmitter {
             return;
           }
         } else {
-          console.log('NO');
+          // console.log('NO');
           state.currentActivity = activity;
           state.currentDevice = null;
         }
