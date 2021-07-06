@@ -67,12 +67,12 @@ class Marquee extends React.Component {
   }
 
   render() {
-    console.log("render", this.state.scroll);
+    // console.log("render", this.props, this.props.height, this.state.scroll);
     return (
       <div
         style={{
           width: "100",
-          height: 20,
+          height: this.props.height || 20,
           overflow: "hidden",
         }}
       >

@@ -32,6 +32,7 @@ class DevicesListGroup extends React.Component {
             let badge = "OFF";
             switch (device.type) {
               case "bravia":
+              case "samsung":
               case "lgtv":
                 badge = tv;
                 break;
