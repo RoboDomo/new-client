@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, ButtonGroup, ProgressBar } from "react-bootstrap";
+import { ProgressBar } from "react-bootstrap";
 
 import Marquee from "Common/Marquee";
 import AppleTVTransport from "Tablet/Transport/AppleTVTransport";
@@ -21,9 +21,25 @@ class NowPlaying extends React.Component {
       </div>
     );
   }
+
   renderAppleTV(info) {
-    if (!info) {
+    if (!info || !info.power) {
       return null;
+    }
+    if (info.deviceState === "Idle") {
+      return (
+        <div
+          style={{
+            width: "100%",
+            textAlign: "center",
+            clear: "both",
+            marginBottom: 40,
+          }}
+        >
+          <h1>Apple TV</h1>
+          <h2>Not Playing</h2>
+        </div>
+      );
     }
     const getInfo = (info) => {
       // const info = this.state.info;
@@ -87,7 +103,7 @@ class NowPlaying extends React.Component {
                 backgroundImage: `url(data:image;base64,${info.artwork})`,
               }}
               onClick={() => {
-                console.log('click!');
+                console.log("click!");
                 if (this.props.exit) {
                   this.props.exit();
                 }

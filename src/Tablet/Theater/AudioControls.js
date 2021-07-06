@@ -28,6 +28,9 @@ const format = (n) => {
 class AudioControls extends React.Component {
   constructor(props) {
     super();
+    if (!props.avr) {
+      return;
+    }
     this.avr = props.avr;
     this.status_topic = `denon/${this.avr.device}/status`;
 
@@ -42,11 +45,15 @@ class AudioControls extends React.Component {
   }
 
   componentDidMount() {
-    MQTT.subscribe(this.status_topic + "/MU", this.handleMuteMessage);
+    if (this.props.avr) {
+      MQTT.subscribe(this.status_topic + "/MU", this.handleMuteMessage);
+    }
   }
 
   componentWillUnmount() {
-    MQTT.unsubscribe(this.status_topic + "/MU", this.handleMuteMessage);
+    if (this.props.avr) {
+      MQTT.unsubscribe(this.status_topic + "/MU", this.handleMuteMessage);
+    }
   }
 
   button(action, children, variant) {
@@ -64,6 +71,9 @@ class AudioControls extends React.Component {
   }
 
   render() {
+    if (!this.props.avr) {
+      return null;
+    }
     const avr = this.props.avr,
       mute = this.state.mute;
 
@@ -120,7 +130,7 @@ class AudioControls extends React.Component {
           {this.button("MSMOVIE", "Movie")}
           {this.button("MSMUSIC", "Music")}
         </ButtonGroup>
-      <ButtonGroup vertical style={{marginTop: 28}}>
+        <ButtonGroup vertical style={{ marginTop: 28 }}>
           <MQTTButton
             variant="danger"
             topic="denon/reset/set/command"

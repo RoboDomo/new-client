@@ -165,6 +165,7 @@ class TheaterTile extends React.Component {
   }
 
   renderAppleTV(currentActivity) {
+    const device = this.state.appletv;
     const renderTitle = (title) => {
       if (title == null) {
         return null;
@@ -182,11 +183,48 @@ class TheaterTile extends React.Component {
         return info;
       }
       const now = new Date(),
-            minutes = now.getMinutes();
-      
-      info.total_time = minutes > 30 ? 60 * 60 : 30*60;
-      info.position = 60 * minutes  + now.getSeconds();
+        minutes = now.getMinutes();
+
+      info.total_time = minutes > 30 ? 60 * 60 : 30 * 60;
+      info.position = 60 * minutes + now.getSeconds();
       return info;
+    };
+
+    const renderArtwork = (artwork) => {
+      if (!this.state.appletv || !artwork) {
+        return null;
+      }
+      try {
+        // const img = new Image();
+        // img.onload = () => {
+        //   const w = img.width,
+        //     h = img.height;
+        //   if (this.state.w !== w || this.state.h !== h) {
+        //     this.setState({ w: w, h: h });
+        //   }
+        // };
+        // img.src = "data:image;base64," + device.info.artwork;
+
+        // const {w,h} = this.state;
+        // let ww = w, hh = h;
+        return (
+          <>
+            <div>
+              {/* {this.state.w} x {this.state.h} */}
+            </div>
+            <img
+              style={{ maxWidth: 210, maxHeight: 120, marginBottom: 10 }}
+              alt="artwork"
+              src={`data:image;base64,${device.info.artwork}`}
+              onClick={() => {
+                window.location.hash = "theater";
+              }}
+            />
+          </>
+        );
+      } catch (e) {}
+
+      return null;
     };
 
     const renderPlaybackState = () => {
@@ -194,7 +232,8 @@ class TheaterTile extends React.Component {
       try {
         const info = getInfo(),
           // total_time = getTotalTime(info.position, info.total_time),
-          total_time = info.total_time || (info.position > 30 * 60 ? 60 * 60 : 30 * 60),
+          total_time =
+            info.total_time || (info.position > 30 * 60 ? 60 * 60 : 30 * 60),
           title =
             info.title != null
               ? (info.app ? info.app + ": " : "") + info.title
@@ -203,10 +242,12 @@ class TheaterTile extends React.Component {
         if (info.title != null) {
           return (
             <>
+              <AppleTVTransport device={this.state.appletv} />
               {renderTitle(title)}
               <div style={{ fontSize: 10, marginTop: -2 }}>
                 {info.deviceState}
               </div>
+              {renderArtwork(info.artwork)}
               <Row style={{ marginTop: 2, fontSize: 14 }}>
                 <Col sm={3}>
                   <div
@@ -249,9 +290,9 @@ class TheaterTile extends React.Component {
         }
         // if (!info.playbackState) {
       } catch (e) {
-        console.log("e", e);
+        // console.log("e", e);
+        return null;
       }
-      const device = this.state.appletv;
       return (
         <div>
           <div style={{ fontSize: 18, fontWeight: "bold" }}>{device.title}</div>
@@ -260,9 +301,12 @@ class TheaterTile extends React.Component {
       );
     };
 
-    if (!this.state.appletv) {
-      return null;
-    }
+    try {
+      if (this.state.appletv.info.artwork) {
+        return <div>{renderPlaybackState()}</div>;
+      }
+    } catch (e) {}
+    // debugger
     const topic = `appletv/${this.state.appletv.device}/set/command`;
     return (
       <div>
@@ -438,6 +482,9 @@ class TheaterTile extends React.Component {
   }
 
   renderAudioControls() {
+    if (!this.state.avr) {
+      return null;
+    }
     const mute = this.state.avr.mute,
       avr = this.theater.avr;
 
@@ -536,7 +583,6 @@ class TheaterTile extends React.Component {
   }
 
   renderActivity(currentActivity) {
-    //    console.log('renderActivity', currentActivity);
     if (!currentActivity) {
       return null;
     }
@@ -546,6 +592,11 @@ class TheaterTile extends React.Component {
     }
 
     const device = this.theater.findDevice(currentActivity.defaultDevice);
+    try {
+      if (!device.info.power) {
+        return this.renderActivities();
+      }
+    } catch (e) {}
     if (!device) {
       return null;
     }
@@ -569,8 +620,10 @@ class TheaterTile extends React.Component {
     const state = Object.assign({}, this.state);
     this.theater.handleInputChange(state);
 
+    // console.log("render", state);
+
     const { avr, tv, currentDevice, currentActivity } = this.state;
-    if (!tv || !avr) {
+    if (!tv) {
       return null;
     }
 
@@ -580,14 +633,10 @@ class TheaterTile extends React.Component {
 
     if (
       (avr && state.avr.power === undefined) ||
-      state.avr.input === undefined
+      (avr && state.avr.input === undefined)
     ) {
       return this.renderActivities();
     }
-
-    //    if (this.config.guide && (!state.channels || !state.channel)) {
-    //      return this.renderActivities();
-    //    }
 
     if (currentDevice === null || currentActivity === null) {
       return this.renderActivities();

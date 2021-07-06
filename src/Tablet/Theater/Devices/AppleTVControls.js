@@ -104,7 +104,7 @@ class AppleTVControls extends React.Component {
     };
 
     const info = getInfo();
-    if (!info) {
+    if (!info || info.deviceState === 'Idle') {
       return (
         <div
           style={{

@@ -20,15 +20,16 @@ class Theater extends EventEmitter {
       currentActivity: { name: "All Off" },
       currentDevice: { name: "None" },
       devices: this.devices,
-      avr: {
-        power: false,
-        input: "",
-        mute: false,
-        masterVolume: 0,
-        surroundMode: "",
-        centerVolume: 0,
-        inputMode: "AUTO",
-      },
+      avr: null,
+      // avr: {
+      //   power: false,
+      //   input: "",
+      //   mute: false,
+      //   masterVolume: 0,
+      //   surroundMode: "",
+      //   centerVolume: 0,
+      //   inputMode: "AUTO",
+      // },
       appletv: null,
       roku: null,
       tivo: null,
@@ -62,6 +63,9 @@ class Theater extends EventEmitter {
         case "bravia":
           this.state.tv = device;
           break;
+        case "samsung":
+          this.state.tv = device;
+          break;
         case "lgtv":
           this.state.tv = device;
           break;
@@ -88,6 +92,7 @@ class Theater extends EventEmitter {
     //
     this.handleAppleTVMessage = this.handleAppleTVMessage.bind(this);
     this.handleBraviaMessage = this.handleBraviaMessage.bind(this);
+    this.handleSamsungMessage = this.handleSamsungMessage.bind(this);
     this.handleLGTVMessage = this.handleLGTVMessage.bind(this);
     this.handleDenonMessage = this.handleDenonMessage.bind(this);
     this.handleRokuMessage = this.handleRokuMessage.bind(this);
@@ -99,7 +104,7 @@ class Theater extends EventEmitter {
     for (const key of Object.keys(newState)) {
       this.state[key] = newState[key];
     }
-//    console.log('>>>>>>> state', this.state);
+    //    console.log('>>>>>>> state', this.state);
     this.emit("statechange", this.state);
   }
 
@@ -129,7 +134,6 @@ class Theater extends EventEmitter {
   }
 
   handleInputChange(state) {
-//    console.log('state', state);
     try {
       if (!state.tv) {
         state = this.state;
@@ -150,7 +154,7 @@ class Theater extends EventEmitter {
       }
 
       const tvInput = mangle(state.tv.input),
-        avrInput = mangle(state.avr.input);
+        avrInput = state.avr ? mangle(state.avr.input) : null;
 
       // const tvInput = state.tv.input,
       //   avrInput = state.avr.input;
@@ -161,20 +165,32 @@ class Theater extends EventEmitter {
 
       for (const activity of this.activities) {
         const inputs = activity.inputs;
-//        console.log('activity', activity, 'tvInput', tvInput, inputs.tv, 'avrInput', avrInput, inputs.avr);
-//        console.log('inputs.tv.indexOf(tvInput)', inputs.tv.indexOf(tvInput));
-//        console.log('inputs.avr.indexOf(avrInput)', inputs.avr.indexOf(avrInput));
+        //        console.log('activity', activity, 'tvInput', tvInput, inputs.tv, 'avrInput', avrInput, inputs.avr);
+        //        console.log('inputs.tv.indexOf(tvInput)', inputs.tv.indexOf(tvInput));
+        //        console.log('inputs.avr.indexOf(avrInput)', inputs.avr.indexOf(avrInput));
         if (inputs) {
-          if (
-            inputs.tv.indexOf(tvInput) !== -1 &&
-            inputs.avr.indexOf(avrInput) !== -1
-          ) {
-//            console.log('yes', inputs.tv, tvInput, inputs.tv.indexOf(tvInput));
-//            console.log('yes', inputs.avr, avrInput, inputs.avr.indexOf(avrInput));
-            state.currentActivity = activity;
-            state.currentDevice = this.findDevice(activity.defaultDevice);
-//            console.log('state', state);
-            return;
+          if (state.avr !== null) {
+            if (
+              inputs.tv.indexOf(tvInput) !== -1 &&
+              avrInput &&
+              inputs.avr.indexOf(avrInput) !== -1
+            ) {
+              //            console.log('yes', inputs.tv, tvInput, inputs.tv.indexOf(tvInput));
+              //            console.log('yes', inputs.avr, avrInput, inputs.avr.indexOf(avrInput));
+              state.currentActivity = activity;
+              state.currentDevice = this.findDevice(activity.defaultDevice);
+              //            console.log('state', state);
+              return;
+            }
+          } else {
+            if (inputs.tv.indexOf(tvInput) !== -1) {
+              //            console.log('yes', inputs.tv, tvInput, inputs.tv.indexOf(tvInput));
+              //            console.log('yes', inputs.avr, avrInput, inputs.avr.indexOf(avrInput));
+              state.currentActivity = activity;
+              state.currentDevice = this.findDevice(activity.defaultDevice);
+              //            console.log('state', state);
+              return;
+            }
           }
         } else {
           // console.log('NO');
@@ -182,7 +198,9 @@ class Theater extends EventEmitter {
           state.currentDevice = null;
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log("exception", e);
+    }
   }
 
   handleTiVoMessage(topic, message) {
@@ -208,6 +226,41 @@ class Theater extends EventEmitter {
       const state = Object.assign({}, this.state);
       state.appletv.info = message;
 
+      this.setState(state);
+    } catch (e) {}
+  }
+
+  handleSamsungMessage(topic, message) {
+    try {
+      const t = topic.split("/").pop();
+      const state = Object.assign({}, this.state);
+      switch (t) {
+        case "power":
+          console.log("POWER", topic, message);
+          if (isOn(message)) {
+            state.tv.power = true;
+            this.handleInputChange(state);
+            console.log("on", state);
+            state.tv.power = false;
+          } else {
+            this.handleInputChange(state);
+            state.currentDevice = null;
+            state.currentActivity = { name: "All Off" };
+            state.tv.input = "OFF";
+            console.log("off", state);
+          }
+          break;
+        case "input":
+          state.tv.input = message.toUpperCase();
+          if (state.tv.power) {
+            this.handleInputChange(state);
+          }
+          break;
+        default:
+          console.log("invalid", topic, message);
+          return;
+      }
+      // console.log("samsung", state);
       this.setState(state);
     } catch (e) {}
   }
@@ -370,6 +423,18 @@ class Theater extends EventEmitter {
           );
           break;
 
+        case "samsung":
+          this.tv = device;
+          MQTT.subscribe(
+            `samsung/${device.device}/status/power`,
+            this.handleSamsungMessage
+          );
+          MQTT.subscribe(
+            `samsung/${device.device}/status/input`,
+            this.handleSamsungMessage
+          );
+          break;
+
         case "lgtv":
           this.tv = device;
           MQTT.subscribe(
@@ -400,34 +465,36 @@ class Theater extends EventEmitter {
 
         case "denon":
           this.avr = device;
-          MQTT.subscribe(
-            `denon/${device.device}/status/SI`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/MU`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/PW`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/MV`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/MS`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/CVC`,
-            this.handleDenonMessage
-          );
-          MQTT.subscribe(
-            `denon/${device.device}/status/DC`,
-            this.handleDenonMessage
-          );
+          if (this.avr !== null) {
+            MQTT.subscribe(
+              `denon/${device.device}/status/SI`,
+              this.handleDenonMessage
+            );
+            MQTT.subscribe(
+              `denon/${device.device}/status/MU`,
+              this.handleDenonMessage
+            );
+            MQTT.subscribe(
+              `denon/${device.device}/status/PW`,
+              this.handleDenonMessage
+            );
+            MQTT.subscribe(
+              `denon/${device.device}/status/MV`,
+              this.handleDenonMessage
+            );
+            MQTT.subscribe(
+              `denon/${device.device}/status/MS`,
+              this.handleDenonMessage
+            );
+            MQTT.subscribe(
+              `denon/${device.device}/status/CVC`,
+              this.handleDenonMessage
+            );
+            MQTT.subscribe(
+              `denon/${device.device}/status/DC`,
+              this.handleDenonMessage
+            );
+          }
           break;
 
         default:
@@ -457,6 +524,18 @@ class Theater extends EventEmitter {
           );
           break;
 
+        case "samsung":
+          this.tv = device;
+          MQTT.unsubscribe(
+            `samsung/${device.device}/status/power`,
+            this.handleSamsungMessage
+          );
+          MQTT.unsubscribe(
+            `samsung/${device.device}/status/input`,
+            this.handleSamsungMessage
+          );
+          break;
+
         case "lgtv":
           MQTT.unsubscribe(
             `lgtv/${device.device}/status/power`,
@@ -482,34 +561,36 @@ class Theater extends EventEmitter {
 
         case "denon":
           this.avr = device;
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/SI`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/MU`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/PW`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/MV`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/MS`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/CVC`,
-            this.handleDenonMessage
-          );
-          MQTT.unsubscribe(
-            `denon/${device.device}/status/DC`,
-            this.handleDenonMessage
-          );
+          if (this.avr) {
+            MQTT.unsubscribe(
+              `denon/${device.device}/status/SI`,
+              this.handleDenonMessage
+            );
+            MQTT.unsubscribe(
+              `denon/${device.device}/status/MU`,
+              this.handleDenonMessage
+            );
+            MQTT.unsubscribe(
+              `denon/${device.device}/status/PW`,
+              this.handleDenonMessage
+            );
+            MQTT.unsubscribe(
+              `denon/${device.device}/status/MV`,
+              this.handleDenonMessage
+            );
+            MQTT.unsubscribe(
+              `denon/${device.device}/status/MS`,
+              this.handleDenonMessage
+            );
+            MQTT.unsubscribe(
+              `denon/${device.device}/status/CVC`,
+              this.handleDenonMessage
+            );
+            MQTT.unsubscribe(
+              `denon/${device.device}/status/DC`,
+              this.handleDenonMessage
+            );
+          }
           break;
 
         default:
