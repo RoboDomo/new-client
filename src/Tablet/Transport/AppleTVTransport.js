@@ -6,9 +6,9 @@ import MQTTButton from "Common/MQTTButton";
 import {
   // FaFastBackward,
   FaBackward,
+  FaForward,
   FaPause,
   FaPlay,
-  FaForward,
   FaUndo,
   // FaFastForward,
 } from "react-icons/fa";
@@ -22,8 +22,9 @@ class AppleTVTransport extends React.Component {
 
   render() {
     const sh = window.screen.availHeight,
-          top = sh > 1024 ? sh - 42 : 708,
-          left = (window.screen.availWidth - 1024)/2; // 171; // sw/2 - 512;
+      top = sh > 1024 ? sh - 42 : 708,
+      adjust = window.screen.width < 750 ? 37 : 0,
+      left = adjust + (window.screen.availWidth - 1024) / 2; // 171; // sw/2 - 512;
 
     return (
       <>

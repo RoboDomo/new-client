@@ -84,15 +84,19 @@ class TheaterTile extends React.Component {
   }
 
   componentDidMount() {
-    this.theater.subscribe();
-    this.theater.on("statechange", (newState) => {
-      //      console.log('theater state change', newState);
-      this.setState({ ...newState, timestamp: Date.now() });
-    });
+    if (this.theater) {
+      this.theater.subscribe();
+      this.theater.on("statechange", (newState) => {
+        //      console.log('theater state change', newState);
+        this.setState({ ...newState, timestamp: Date.now() });
+      });
+    }
   }
 
   componentWillUnmount() {
-    this.theater.unsubscribe();
+    if (this.theater) {
+      this.theater.unsubscribe();
+    }
   }
 
   renderTivo(currentActivity) {
@@ -617,6 +621,10 @@ class TheaterTile extends React.Component {
   }
 
   render() {
+    if (!this.theater) {
+      return null;
+    }
+
     const state = Object.assign({}, this.state);
     this.theater.handleInputChange(state);
 

@@ -97,7 +97,7 @@ class ClockTile extends React.Component {
           {this.renderWeather()}
           {this.renderPresence()}
           <div style={{ fontSize: 8 }}>
-            {window.innerWidth} x {window.innerHeight}
+            {window.screen.height} x {window.screen.width} ({window.innerWidth} x {window.innerHeight})
           </div>
           {/* <Marquee text="now is the time for all good men to come to the aid of their country" speed={20}/> */}
         </div>
