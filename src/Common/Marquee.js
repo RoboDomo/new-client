@@ -79,7 +79,8 @@ class Marquee extends React.Component {
         <div
           style={{
             whiteSpace: "nowrap",
-            overflow: "scroll",
+//            overflow: "scroll",
+          overflow: "hidden",
             /* paddingRight: this.width, */
           }}
           ref={this.myElement}

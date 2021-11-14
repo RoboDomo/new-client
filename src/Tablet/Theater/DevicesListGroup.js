@@ -43,7 +43,7 @@ class DevicesListGroup extends React.Component {
                 badge = null;
                 break;
             }
-            if (badge == 'DVD Player') {
+            if (badge === 'DVD Player') {
               badge = 'HDMI 2';
             }
             return (

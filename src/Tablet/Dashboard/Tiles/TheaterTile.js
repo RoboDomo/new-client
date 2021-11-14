@@ -38,7 +38,7 @@ const formatTime = (time) => {
   const seconds = parseInt(time % 60, 10);
   return `${hours ? hours + ":" : ""}${
     minutes < 10 ? "0" + minutes : minutes
-  }:${seconds < 10 ? "0" + seconds : seconds}`;
+    }:${seconds < 10 ? "0" + seconds : seconds}`;
 };
 const rowStyle = {
   display: "flex",
@@ -87,7 +87,6 @@ class TheaterTile extends React.Component {
     if (this.theater) {
       this.theater.subscribe();
       this.theater.on("statechange", (newState) => {
-        //      console.log('theater state change', newState);
         this.setState({ ...newState, timestamp: Date.now() });
       });
     }
@@ -168,6 +167,22 @@ class TheaterTile extends React.Component {
     );
   }
 
+  getInfo() {
+    const info = this.state.appletv.info;
+    if (!info) {
+      return {};
+    }
+    if (info.total_time !== null) {
+      return info;
+    }
+    const now = new Date(),
+      minutes = now.getMinutes();
+
+    info.total_time = minutes > 30 ? 60 * 60 : 30 * 60;
+    info.position = 60 * minutes + now.getSeconds();
+    return info;
+  }
+
   renderAppleTV(currentActivity) {
     const device = this.state.appletv;
     const renderTitle = (title) => {
@@ -181,18 +196,6 @@ class TheaterTile extends React.Component {
       }
     };
 
-    const getInfo = () => {
-      const info = this.state.appletv.info;
-      if (info.total_time !== null) {
-        return info;
-      }
-      const now = new Date(),
-        minutes = now.getMinutes();
-
-      info.total_time = minutes > 30 ? 60 * 60 : 30 * 60;
-      info.position = 60 * minutes + now.getSeconds();
-      return info;
-    };
 
     const renderArtwork = (artwork) => {
       if (!this.state.appletv || !artwork) {
@@ -226,69 +229,27 @@ class TheaterTile extends React.Component {
             />
           </>
         );
-      } catch (e) {}
+      } catch (e) { }
 
       return null;
     };
 
     const renderPlaybackState = () => {
-      //      console.log('renderPlayback', this.state);
       try {
-        const info = getInfo(),
-          // total_time = getTotalTime(info.position, info.total_time),
-          total_time =
-            info.total_time || (info.position > 30 * 60 ? 60 * 60 : 30 * 60),
+        const info = this.getInfo(),
           title =
             info.title != null
               ? (info.app ? info.app + ": " : "") + info.title
               : null;
-        // console.log("info", info);
         if (info.title != null) {
           return (
             <>
-              <AppleTVTransport device={this.state.appletv} />
               {renderTitle(title)}
-              <div style={{ fontSize: 10, marginTop: -2 }}>
+              <div style={{ fontSize: 10, marginTop: -2, marginBottom: -8 }}>
                 {info.deviceState}
               </div>
               {renderArtwork(info.artwork)}
-              <Row style={{ marginTop: 2, fontSize: 14 }}>
-                <Col sm={3}>
-                  <div
-                    style={{
-                      marginLeft: 20,
-                      width: "100%",
-                      marginTop: -1,
-                      textAlign: "right",
-                    }}
-                  >
-                    {formatTime(info.position)}
-                  </div>
-                </Col>
-                <Col sm={6}>
-                  <ProgressBar
-                    animated
-                    variant="success"
-                    style={{ width: "100%" }}
-                    now={(info.position / total_time) * 100}
-                  />
-                </Col>
-                <Col sm={3}>
-                  <div
-                    style={{
-                      marginLeft: -16,
-                      width: "100%",
-                      marginTop: -1,
-                      textAlign: "left",
-                    }}
-                  >
-                    {total_time != null ? "-" : ""}
-                    {total_time != null
-                      ? formatTime(total_time - info.position)
-                      : ""}
-                  </div>
-                </Col>
-              </Row>
+              <AppleTVTransport device={this.state.appletv} />
             </>
           );
         }
@@ -309,7 +270,7 @@ class TheaterTile extends React.Component {
       if (this.state.appletv.info.artwork) {
         return <div>{renderPlaybackState()}</div>;
       }
-    } catch (e) {}
+    } catch (e) { }
     // debugger
     const topic = `appletv/${this.state.appletv.device}/set/command`;
     return (
@@ -600,7 +561,7 @@ class TheaterTile extends React.Component {
       if (!device.info.power) {
         return this.renderActivities();
       }
-    } catch (e) {}
+    } catch (e) { }
     if (!device) {
       return null;
     }
@@ -628,8 +589,6 @@ class TheaterTile extends React.Component {
     const state = Object.assign({}, this.state);
     this.theater.handleInputChange(state);
 
-    // console.log("render", state);
-
     const { avr, tv, currentDevice, currentActivity } = this.state;
     if (!tv) {
       return null;
@@ -650,11 +609,56 @@ class TheaterTile extends React.Component {
       return this.renderActivities();
     }
 
+    const renderProgress = () => {
+      const info = this.getInfo(),
+        total_time =
+          info.total_time || (info.position > 30 * 60 ? 60 * 60 : 30 * 60);
+      return (
+        <Row style={{ marginTop: -12, fontSize: 14 }}>
+          <Col sm={3}>
+            <div
+              style={{
+                marginLeft: 20,
+                width: "100%",
+                marginTop: -1,
+                textAlign: "right",
+              }}
+            >
+              {formatTime(info.position)}
+            </div>
+          </Col>
+          <Col sm={6}>
+            <ProgressBar
+              animated
+              variant="success"
+              style={{ width: "100%" }}
+              now={(info.position / total_time) * 100}
+            />
+          </Col>
+          <Col sm={3}>
+            <div
+              style={{
+                marginLeft: -16,
+                width: "100%",
+                marginTop: -1,
+                textAlign: "left",
+              }}
+            >
+              {total_time != null ? "-" : ""}
+              {total_time != null
+                ? formatTime(total_time - info.position)
+                : ""}
+            </div>
+          </Col>
+        </Row>
+      )
+    }
     return (
       <div style={this.style}>
         <div style={{ height: 180 }}>
           {this.renderActivity(currentActivity)}
         </div>
+        {renderProgress()}
         {state.tv.power !== undefined
           ? this.renderAudioControls(currentActivity)
           : null}

@@ -7,19 +7,21 @@ import Theater from "lib/Theater";
 // import { isOn, mangle } from "lib/Utils";
 //import { data as Config } from "lib/Config";
 
-import AudioControls from "./Devices/AudioControls";
+//import AudioControls from "./Devices/AudioControls";
+//import AudioControls from "Tablet/Theater/Devices/AudioControls";
 //import ButtonList from "Tablet/Theater/ButtonList";
 import ActivitiesListGroup from "Tablet/Theater/ActivitiesListGroup";
 import DevicesListGroup from "Tablet/Theater/DevicesListGroup";
 import SpeakersListGroup from "Tablet/Theater/SpeakersListGroup";
+import AudioControls from "./Devices/AudioControls";
 
-import AppleTVControls from "Tablet/Theater/Devices/AppleTVControls";
-import RokuControls from "Tablet/Theater/Devices/RokuControls";
-import TivoControls from "Tablet/Theater/Devices/TivoControls";
-import BraviaControls from "Tablet/Theater/Devices/BraviaControls";
-import LGTVControls from "Tablet/Theater/Devices/LGTVControls";
-import DenonControls from "Tablet/Theater/Devices/DenonControls";
-import HarmonyControls from "Tablet/Theater/Devices/HarmonyControls";
+import AppleTVControls from ".//Devices/AppleTVControls";
+import RokuControls from "./Devices/RokuControls";
+import TivoControls from "./Devices/TivoControls";
+import BraviaControls from "./Devices/BraviaControls";
+import LGTVControls from "./Devices/LGTVControls";
+import DenonControls from "./Devices/DenonControls";
+import HarmonyControls from "./Devices/HarmonyControls";
 
 class TheaterTab extends React.Component {
   constructor(props) {
@@ -97,7 +99,7 @@ class TheaterTab extends React.Component {
     this.theater.unsubscribe();
   }
 
-  renderDevice() {
+  renderDevice(nowPlaying = false) {
     const currentDevice = this.state.currentDevice;
     if (!currentDevice || !currentDevice.type) {
       return null;
@@ -105,21 +107,21 @@ class TheaterTab extends React.Component {
 
     switch (currentDevice.type) {
       case "tivo":
-        return <TivoControls device={this.state.tivo} />;
+        return nowPlaying ? null : <TivoControls device={this.state.tivo} />;
       case "bravia":
-        return <BraviaControls device={this.state.tv} />;
+        return nowPlaying ? null : <BraviaControls device={this.state.tv} />;
       case "lgtv":
         return (
-          <LGTVControls device={this.state.tv} input={this.state.tv.input} />
+          nowPlaying ? null : <LGTVControls device={this.state.tv} input={this.state.tv.input} />
         );
       case "denon":
-        return <DenonControls device={this.state.avr} />;
+        return nowPlaying ? null : <DenonControls device={this.state.avr} />;
       case "harmony":
-        return <HarmonyControls hub={this.state.harmony} />;
+        return nowPlaying ? null : <HarmonyControls hub={this.state.harmony} />;
       case "roku":
-        return <RokuControls device={this.state.roku} />;
+        return nowPlaying ? null : <RokuControls device={this.state.roku} />;
       default:
-        return <AppleTVControls device={this.state.appletv} />;
+        return <AppleTVControls device={this.state.appletv} nowPlaying={nowPlaying} />;
     }
   }
 
@@ -137,6 +139,9 @@ class TheaterTab extends React.Component {
     //     );
     return (
       <>
+        <div>
+          {this.renderDevice(true)}
+        </div>
         <Row style={{ marginTop: 12, padding: 8 }}>
           <Col sm={3}>
             <ActivitiesListGroup
@@ -161,14 +166,18 @@ class TheaterTab extends React.Component {
             <SpeakersListGroup tv={state.tv} avr={state.avr} />
           </Col>
 
-          <Col sm={9}>
-            <Row style={{ width: "100%", textAlign: "center", paddingLeft: 50 }}>
+          <Col sm={6}>
+            <Row style={{ width: "100%",  }}>
               <Col sm={10}>
                 {this.renderDevice()}
-                <div style={{marginTop: 30}}><AudioControls avr={state.avr} /></div>
               </Col>
             </Row>
           </Col>
+
+          <Col sm={3} style={{ paddingLeft: 60, marginRight: 0, width: '100%' }}>
+            <AudioControls avr={state.avr} />
+          </Col>
+
         </Row>
       </>
     );
