@@ -4,14 +4,14 @@ import { ButtonGroup, Button } from "react-bootstrap";
 import MQTTButton from "Common/MQTTButton";
 
 import {
-  FaChevronUp,
-  FaChevronDown,
-  FaChevronLeft,
-  FaChevronRight,
-  FaPowerOff,
-  FaVolumeMute,
-  FaVolumeUp,
-  FaVolumeDown,
+//  FaChevronUp,
+//  FaChevronDown,
+//  FaChevronLeft,
+//  FaChevronRight,
+//  FaPowerOff,
+//  FaVolumeMute,
+//  FaVolumeUp,
+//  FaVolumeDown,
   FaBackward,
   FaFastBackward,
   FaPause,

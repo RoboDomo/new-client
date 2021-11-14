@@ -21,18 +21,20 @@ class AppleTVTransport extends React.Component {
   }
 
   render() {
-    const sh = window.screen.availHeight,
+    const sh = window.innerHeight,
       top = sh > 1024 ? sh - 42 : 708,
-      adjust = window.screen.width < 750 ? 37 : 0,
-      left = adjust + (window.screen.availWidth - 1024) / 2; // 171; // sw/2 - 512;
+      adjust = window.innerWidth < 750 ? 37 : 0,
+      left = adjust + (window.innerWidth - 1024) / 2; // 171; // sw/2 - 512;
 
+    console.log('top', top, adjust, left, window.innerWidth);
     return (
       <>
-        <div style={{ margin: "auto" }}>
+        <div style={{ marginLeft: 0, width: 1024 }}>
           <ButtonGroup
             style={{
               position: "fixed",
-              top: top,
+              top: 708,
+//              bottom: 0,
               left: left,
               margin: 0,
               padding: 0,
