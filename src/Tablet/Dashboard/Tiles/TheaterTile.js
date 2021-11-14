@@ -245,7 +245,7 @@ class TheaterTile extends React.Component {
           return (
             <>
               {renderTitle(title)}
-              <div style={{ fontSize: 10, marginTop: -2, marginBottom: -8 }}>
+              <div style={{ fontSize: 10, marginTop: 2, marginBottom: 8 }}>
                 {info.deviceState}
               </div>
               {renderArtwork(info.artwork)}
