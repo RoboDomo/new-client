@@ -27,7 +27,7 @@ const formatTime = (time) => {
   const seconds = parseInt(time % 60, 10);
   return `${hours ? hours + ":" : ""}${
     minutes < 10 ? "0" + minutes : minutes
-  }:${seconds < 10 ? "0" + seconds : seconds}`;
+    }:${seconds < 10 ? "0" + seconds : seconds}`;
 };
 
 class AppleTVControls extends React.Component {
@@ -55,7 +55,10 @@ class AppleTVControls extends React.Component {
         info: JSON.parse(message),
       });
     } catch (e) {
-      this.setState({ info: message });
+//      console.log('e', e);
+      if (typeof message === 'object') {
+        this.setState({ info: message });
+      }
     }
   }
 
@@ -89,6 +92,7 @@ class AppleTVControls extends React.Component {
   renderNowPlaying() {
     const getInfo = () => {
       const info = this.state.info;
+//      console.log('state', this.state);
       if (info == null) {
         return null;
       }
@@ -96,10 +100,10 @@ class AppleTVControls extends React.Component {
         return info;
       }
       const now = new Date(),
-            minutes = now.getMinutes();
-      
-      info.total_time = minutes > 30 ? 60 * 60 : 30*60;
-      info.position = 60 * minutes  + now.getSeconds();
+        minutes = now.getMinutes();
+
+      info.total_time = minutes > 30 ? 60 * 60 : 30 * 60;
+      info.position = 60 * minutes + now.getSeconds();
       return info;
     };
 

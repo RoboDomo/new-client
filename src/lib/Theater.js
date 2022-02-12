@@ -210,7 +210,7 @@ class Theater extends EventEmitter {
       } else if (~topic.indexOf("mode")) {
         this.setState({ mode: message });
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   handleGuideMessage(topic, message) {
@@ -223,11 +223,15 @@ class Theater extends EventEmitter {
 
   handleAppleTVMessage(topic, message) {
     try {
+      if (message === "") {
+        return;
+      }
       const state = Object.assign({}, this.state);
-      state.appletv.info = message;
-
-      this.setState(state);
-    } catch (e) {}
+      if (typeof message !== "string") {
+        state.appletv.info = message;
+        this.setState(state);
+      }
+    } catch (e) { }
   }
 
   handleSamsungMessage(topic, message) {
@@ -262,7 +266,7 @@ class Theater extends EventEmitter {
       }
       // console.log("samsung", state);
       this.setState(state);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   handleBraviaMessage(topic, message) {
@@ -282,7 +286,7 @@ class Theater extends EventEmitter {
       }
       this.handleInputChange(state);
       this.setState(state);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   handleRokuMessage(topic, message) {
@@ -350,7 +354,7 @@ class Theater extends EventEmitter {
           return;
       }
       this.setState(state);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   handleDenonMessage(topic, message) {
@@ -397,7 +401,7 @@ class Theater extends EventEmitter {
           return;
       }
       this.setState(state);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   subscribe() {

@@ -40,6 +40,7 @@ const formatTime = (time) => {
     minutes < 10 ? "0" + minutes : minutes
     }:${seconds < 10 ? "0" + seconds : seconds}`;
 };
+
 const rowStyle = {
   display: "flex",
   alignItems: "center",
@@ -87,7 +88,14 @@ class TheaterTile extends React.Component {
     if (this.theater) {
       this.theater.subscribe();
       this.theater.on("statechange", (newState) => {
-        this.setState({ ...newState, timestamp: Date.now() });
+        try {
+          //          console.log('statechange', newState);
+          if (typeof newState !== "string" && newState && typeof newState.appletv.info === "object") {
+            this.setState({ ...newState, timestamp: Date.now() });
+          }
+        }
+        catch (e) {
+        }
       });
     }
   }
@@ -185,6 +193,7 @@ class TheaterTile extends React.Component {
 
   renderAppleTV(currentActivity) {
     const device = this.state.appletv;
+
     const renderTitle = (title) => {
       if (title == null) {
         return null;
@@ -235,13 +244,30 @@ class TheaterTile extends React.Component {
     };
 
     const renderPlaybackState = () => {
+      const formatTitle = (info) => {
+        if (info.title) {
+          if (info.album) {
+            return info.title + " " + info.album;
+          }
+          else if (info.app) {
+            return info.app + ': ' + info.title;
+          }
+          else {
+            return info.title;
+          }
+        }
+        else if (info.app) {
+          return info.app;
+        }
+        return null;
+      };
+
       try {
         const info = this.getInfo(),
-          title =
-            info.title != null
-              ? (info.app ? info.app + ": " : "") + info.title
-              : null;
-        if (info.title != null) {
+          title = formatTitle(info);
+
+//        console.log('info', info);
+        if (info.deviceState === 'Playing' || info.deviceState === 'Paused') {
           return (
             <>
               {renderTitle(title)}
@@ -258,10 +284,11 @@ class TheaterTile extends React.Component {
         // console.log("e", e);
         return null;
       }
+
       return (
         <div>
-          <div style={{ fontSize: 18, fontWeight: "bold" }}>{device.title}</div>
-          <div style={{ fontSize: 16 }}>Not Playing</div>
+          <div style={{ fontSize: 16, fontWeight: "bold" }}>{device.title}</div>
+          <div style={{ fontSize: 14 }}>Not Playing</div>
         </div>
       );
     };
@@ -271,7 +298,7 @@ class TheaterTile extends React.Component {
         return <div>{renderPlaybackState()}</div>;
       }
     } catch (e) { }
-    // debugger
+
     const topic = `appletv/${this.state.appletv.device}/set/command`;
     return (
       <div>
@@ -557,14 +584,15 @@ class TheaterTile extends React.Component {
     }
 
     const device = this.theater.findDevice(currentActivity.defaultDevice);
-    try {
-      if (!device.info.power) {
-        return this.renderActivities();
-      }
-    } catch (e) { }
+    //    console.log('device', device);
     if (!device) {
       return null;
     }
+    //    try {
+    //      if (!device.info.power) {
+    //        return this.renderActivities();
+    //      }
+    //    } catch (e) { }
 
     if (!device.type) {
       return null;
@@ -594,14 +622,16 @@ class TheaterTile extends React.Component {
       return null;
     }
 
-    if (tv && (tv.power === false || tv.input === undefined)) {
+    //    console.log('tv', tv, 'avr', avr);
+    if (tv && (tv.power === false)) { //  || tv.input === undefined)) {
       return this.renderActivities();
     }
 
-    if (
-      (avr && state.avr.power === undefined) ||
-      (avr && state.avr.input === undefined)
-    ) {
+    if (avr && !avr.power) {
+      //      (avr && state.avr.power === undefined) ||
+      //      (avr && state.avr.input === undefined)
+      //    ) {
+      //      debugger
       return this.renderActivities();
     }
 
@@ -613,6 +643,10 @@ class TheaterTile extends React.Component {
       const info = this.getInfo(),
         total_time =
           info.total_time || (info.position > 30 * 60 ? 60 * 60 : 30 * 60);
+
+      if (!info.power || (!info.title && !info.app)) {
+        return null;
+      }
       return (
         <Row style={{ marginTop: -12, fontSize: 14 }}>
           <Col sm={3}>
@@ -653,6 +687,8 @@ class TheaterTile extends React.Component {
         </Row>
       )
     }
+
+    //    console.log('here');
     return (
       <div style={this.style}>
         <div style={{ height: 180 }}>
